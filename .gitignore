@@ -1,0 +1,11 @@
+.python-version
+.env
+.vscode/
+.DS_Store
+.mypy_cache
+tmp/
+
+docker/volumes/
+
+*.tgz
+/site

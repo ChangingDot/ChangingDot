@@ -1,0 +1,22 @@
+site_name: ChangingDocs
+
+copyright: Copyright &copy; 2024 - ChangingDot Team
+
+theme:
+  name: material
+  palette:
+    - scheme: cdot
+  features:
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - navigation.indexes
+    - content.tooltips
+    - navigation.path
+    - content.code.annotate
+    - content.code.copy
+    - content.code.select
+    - navigation.tabs
+
+extra_css:
+  - stylesheets/extra.css

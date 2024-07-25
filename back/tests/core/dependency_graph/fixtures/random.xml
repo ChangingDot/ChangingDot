@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library>
+    <book id="1">
+        <title>Introduction to Python</title>
+        <author>John Doe</author>
+        <genre>Programming</genre>
+        <published>2021-03-15</published>
+        <rating>4.5</rating>
+    </book>
+    <book id="2">
+        <title>Advanced Machine Learning</title>
+        <author>Jane Smith</author>
+        <genre>Technology</genre>
+        <published>2020-08-22</published>
+        <rating>4.7</rating>
+    </book>
+    <book id="3">
+        <title>Cooking 101</title>
+        <author>Emily Johnson</author>
+        <genre>Cooking</genre>
+        <published>2019-05-11</published>
+        <rating>4.2</rating>
+    </book>
+    <magazine id="1">
+        <title>Tech Monthly</title>
+        <issue>2024-07</issue>
+        <editor>Michael Brown</editor>
+        <articles>
+            <article>
+                <title>AI in 2024</title>
+                <author>Sarah Lee</author>
+                <pages>34-39</pages>
+            </article>
+            <article>
+                <title>Quantum Computing Advances</title>
+                <author>David Kim</author>
+                <pages>40-45</pages>
+            </article>
+        </articles>
+    </magazine>
+    <dvd id="1">
+        <title>Inception</title>
+        <director>Christopher Nolan</director>
+        <genre>Sci-Fi</genre>
+        <release_date>2010-07-16</release_date>
+        <rating>PG-13</rating>
+    </dvd>
+</library>

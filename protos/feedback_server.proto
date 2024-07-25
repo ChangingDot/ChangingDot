@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option csharp_namespace = "DotnetAnalyzer";
+
+package feedback_server;
+
+service FeedbackServer {
+  rpc GetCompileErrors (GetCompileErrorsRequest) returns (GetCompileErrorsReply);
+  rpc HasSyntaxErrors (HasSyntaxErrorsRequest) returns (HasSyntaxErrorsReply);
+
+}
+
+message HasSyntaxErrorsRequest {
+  string filePath = 1;
+}
+
+message HasSyntaxErrorsReply {
+  bool HasSyntaxErrors = 1;
+}
+
+message GetCompileErrorsRequest {
+  string filePath = 1;
+}
+
+message GetCompileErrorsReply {
+  repeated Error Errors = 1;
+}
+
+message Error {
+  string errorText = 1;
+  string projectName = 2;
+  string filePath = 3;
+  repeated int32 position = 4;  // Assuming position as a list of integers
+}

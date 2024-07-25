@@ -1,0 +1,161 @@
+[tool.poetry]
+name = "changing_back"
+version = "0.1.0"
+description = "ChangingDot repo"
+authors = ["Matthieu Rossignon <matthieu.rossignon@hotmail.fr>"]
+packages = [
+    { include = "cli", from = "src" },
+    { include = "core", from = "src" },
+    { include = "config", from = "src" },
+    { include = "utils", from = "src" },
+    { include = "visualize", from = "src" },
+]
+
+[tool.poetry.dependencies]
+python = "3.11.4"
+loguru = "^0.7.0"
+grpcio = "^1.60.0"
+python-dotenv = "^1.0.0"
+langchain = "^0.1.0"
+langchain-openai = "^0.0.2.post1"
+langchain-mistralai = "^0.0.2.post1"
+networkx = "^3.2.1"
+vizro = "^0.1.11"
+nbformat = "^5.9.2"
+visdcc = "^0.0.50"
+pyyaml = "^6.0.1"
+gitpython = "^3.1.42"
+wandb = "^0.16.6"
+click = "^8.1.7"
+tree-sitter = "^0.22.3"
+tree-sitter-python = {git = "https://github.com/tree-sitter/tree-sitter-python"}
+tree-sitter-c-sharp = "^0.21.3"
+tree-sitter-xml = "^0.6.4"
+
+
+[tool.poetry.group.dev.dependencies]
+networkx-stubs = "^0.0.1"
+pre-commit = "^2"
+pytest = "^7"
+pytest-cov = "^3"
+ruff = "0.3.7"
+grpcio-tools = "^1.60.0"
+grpc-stubs = "^1.53.0.5"
+mypy = "^1.9.0"
+types-pyyaml = "^6.0.12.12"
+types-requests = "^2.31.0.20240218"
+pandas-stubs = "^2.2.1.240316"
+google-api-python-client-stubs = "^1.25.0"
+types-tree-sitter-languages = "^1.10.0.20240612"
+
+[tool.poetry.scripts]
+cdot = "cli.cli:cdot"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+# Packages configs
+
+## coverage
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+skip_empty = true
+fail_under = 70.00
+precision = 2
+
+## ruff
+# Recommended ruff config for now, to be updated as we go along.
+[tool.ruff]
+target-version = 'py311'
+exclude = ["*/generated_grpc/","*/generated_grpc_types/", "*/fixtures/"]
+
+# See all rules at https://beta.ruff.rs/docs/rules/
+lint.select = [
+    "E",   # pycodestyle
+    "W",   # pycodestyle
+    "F",   # Pyflakes
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "I",   # isort
+    "SIM", # flake8-simplify
+    "TCH", # flake8-type-checking
+    "TID", # flake8-tidy-imports
+    "Q",   # flake8-quotes
+    "UP",  # pyupgrade
+    "PT",  # flake8-pytest-style
+    "RUF", # Ruff-specific rules
+]
+
+lint.ignore = [
+    "E501", # "Line too long"
+    "PT011", # "pytest.raises() should specify expected exception"
+    # -> would imply to update tests every time you update exception message
+    "SIM102", # "Use a single `if` statement instead of nested `if` statements"
+    # -> too restrictive
+    "B008",
+]
+
+[tool.ruff.lint.pydocstyle]
+# Automatically disable rules that are incompatible with Google docstring convention
+convention = "google"
+
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 88
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.flake8-type-checking]
+strict = true
+runtime-evaluated-base-classes = ["pydantic.BaseModel"]
+# Pydantic needs to be able to evaluate types at runtime
+# see https://pypi.org/project/flake8-type-checking/ for flake8-type-checking documentation
+# see https://beta.ruff.rs/docs/settings/#flake8-type-checking-runtime-evaluated-base-classes for ruff documentation
+
+[tool.ruff.lint.per-file-ignores]
+# Allow missing docstrings for tests
+"tests/**/*.py" = ["D1"]
+
+[tool.ruff.lint.isort]
+known-third-party = ["wandb"]
+
+## mypy
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+exclude = [
+  '^.*generated_grpc/.*\.(py|pyi)$',
+  '^.*generated_grpc_types/.*\.(py|pyi)$',
+  '^.*fixtures/.*\.(py|pyi)$',
+]
+check_untyped_defs = true
+explicit_package_bases = true
+namespace_packages = true
+disallow_untyped_calls = false
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = "dash.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "visdcc.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "google.cloud.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "*.generated_grpc.*"
+follow_imports = "skip"
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "src"
+]

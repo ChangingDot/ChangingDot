@@ -1,0 +1,17 @@
+iteration_name:
+project_name:
+
+# if using fake instruct
+memory_folder:
+memory_key:
+
+solution_path:
+
+initial_change:
+  error:
+  file_path:
+  error_position: [X, X, X, X]
+
+commit:
+  branch_name:
+  git_path:
