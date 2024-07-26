@@ -8,7 +8,6 @@ from time import sleep
 
 import click
 import requests
-from dotenv import load_dotenv
 
 FEEDBACK_SERVER_VERSION = "v0.0.1-alpha"
 
@@ -31,12 +30,8 @@ def get_platform_slug() -> str:
 
 
 def get_feedback_server_download_url() -> str:
-    load_dotenv()
-    api_url = f"https://api.github.com/repos/ChangingDot/ChangingBack/releases/tags/{FEEDBACK_SERVER_VERSION}"
-    headers = {
-        "Authorization": f"Bearer {os.getenv('GITHUB_API_KEY')}",
-    }
-    response = requests.get(api_url, headers=headers)
+    api_url = f"https://api.github.com/repos/ChangingDot/ChangingDot/releases/tags/{FEEDBACK_SERVER_VERSION}"
+    response = requests.get(api_url)
     response.raise_for_status()
 
     release_data = response.json()
@@ -50,10 +45,7 @@ def get_feedback_server_download_url() -> str:
 
 
 def download_binary(url: str, save_path: str) -> None:
-    load_dotenv()
-    token = os.getenv("GITHUB_API_KEY")
     headers = {
-        "Authorization": f"Bearer {token}",
         "Accept": "application/octet-stream",
     }
     response = requests.get(
