@@ -33,3 +33,4 @@ pas_de_sens
 wandb
 src/scripts/manual_tests/
 dist/
+build/

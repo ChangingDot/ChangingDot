@@ -1,5 +1,4 @@
 import tree_sitter_c_sharp as tscsharp
-import tree_sitter_python as tspython
 from core.custom_types import SupportedLanguages
 from tree_sitter import Language, Parser
 from tree_sitter_xml import language_xml
@@ -44,7 +43,6 @@ extension_to_language: dict["str", SupportedLanguages] = {
     "xml": "xml",
 }
 
-PY_LANGUAGE = Language(tspython.language())
 CS_LANGUAGE = Language(tscsharp.language())
 XML_LANGUAGE = Language(language_xml())
 
@@ -55,7 +53,7 @@ def parser_from_file_path(file_path: str) -> Parser | None:
     if language is None:
         return None
     if language == "python":
-        return Parser(PY_LANGUAGE)
+        raise NotImplementedError("Python not implemented yet")
     if language == "c_sharp":
         return Parser(CS_LANGUAGE)
     if language == "xml":

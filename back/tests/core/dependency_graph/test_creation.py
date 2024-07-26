@@ -1,3 +1,4 @@
+import pytest
 from core.dependency_graph.dependency_graph import DependencyGraph, DependencyGraphNode
 
 
@@ -140,6 +141,7 @@ def test_imports() -> None:
     ) in graph.get_node_by_type("Import")
 
 
+@pytest.mark.skip(reason="Waiting for tree-sitter-python pip fix")
 def test_full_python() -> None:
     graph_py = DependencyGraph([get_fixture_path("full.py")])
     assert len(graph_py.get_node_by_type("Import")) == 2
@@ -216,6 +218,7 @@ def test_class_parent_of_method() -> None:
     ]
 
 
+@pytest.mark.skip(reason="Waiting for tree-sitter-python pip fix")
 def test_full_python_relationships() -> None:
     graph_py = DependencyGraph([get_fixture_path("full.py")])
     parent_child_relationships = graph_py.get_parent_child_relationships()
