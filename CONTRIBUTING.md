@@ -1,8 +1,8 @@
-Hi! We're really exited that you're considering contributing to ChangingDot!
+Hi! We're really excited that you're considering contributing to ChangingDot!
 
 Pull request are welcome for small changes. For major changes, or features you would like to see, please open an issue beforehand to discuss the changes with the team.
 
-If you not sure how to contribute, or have any questions regarding the guidelines, or setup, please reach out.
+If you are not sure how to contribute, or have any questions regarding the guidelines, or setup, please reach out.
 
 ## Guidelines
 
@@ -13,7 +13,7 @@ If you not sure how to contribute, or have any questions regarding the guideline
 
 ### Commit Guidelines: 
 
-For commits we try to follow the conventional commit specification ([Cheatsheet](https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13))
+For commits, we try to follow the conventional commit specification ([Cheatsheet](https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13))
 
 ## Setup 
 
