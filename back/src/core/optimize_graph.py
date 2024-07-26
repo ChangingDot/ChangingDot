@@ -1,6 +1,5 @@
 import uuid
 
-from rq import get_current_job
 from utils.process_pickle_files import process_pickle_files
 from visualize.observer import Observer
 
@@ -23,10 +22,7 @@ def optimize_graph(G: ChangingGraph, observer: Observer) -> None:
 def run_optimize_graph(
     iteration_name: str, project_name: str, base_path: str, is_local: bool
 ) -> None:
-    job = get_current_job()
     job_id = str(uuid.uuid4())
-    if job is not None:
-        job_id = job.id
 
     graphs = process_pickle_files(f"{base_path}/{iteration_name}/", is_local)
 

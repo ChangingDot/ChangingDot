@@ -1,7 +1,6 @@
 import uuid
 from typing import TYPE_CHECKING
 
-from rq import get_current_job
 from utils.process_pickle_files import process_pickle_files
 from visualize.observer import Observer
 
@@ -41,10 +40,7 @@ def run_resume_graph(
 ) -> None:
     set_repo(commit)
 
-    job = get_current_job()
     job_id = str(uuid.uuid4())
-    if job is not None:
-        job_id = job.id
 
     instruction_manager = create_openai_instruction_manager(goal)
 

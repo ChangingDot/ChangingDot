@@ -47,7 +47,7 @@ class Observer:
 
     def save_graph_state(self) -> None:
         if not self.is_local:
-            from config.storage import bucket
+            raise NotImplementedError("Remote not yet implemented")
 
         # Create the path for the file in GCS
         path = f"{self.output_folder}/{self.iteration_name}/{self.step}_{self.project_name}.pickle"
@@ -65,10 +65,6 @@ class Observer:
         if self.is_local:
             with open(path, "wb") as file:
                 file.write(pickle_data)
-        else:
-            # Create a blob and upload the bytes
-            blob = bucket.blob(path)
-            blob.upload_from_string(pickle_data)
 
         # Increment step and reset logs
         self.step += 1

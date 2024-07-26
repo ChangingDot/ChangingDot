@@ -41,9 +41,4 @@ class StepPresentation(vm.VizroBaseModel):
                 G: nx.Graph = pickle.load(handle)
                 return G
         else:
-            from config.storage import bucket
-
-            blob = bucket.blob(file_path)
-            with blob.open("rb") as handle:
-                blob_G: nx.Graph = pickle.load(handle)
-                return blob_G
+            raise NotImplementedError("Remote not yet implemented")

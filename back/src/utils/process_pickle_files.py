@@ -21,12 +21,7 @@ def process_pickle_files(directory: str, is_local: bool) -> list[nx.DiGraph]:
                 file_path = os.path.join(directory, file)
                 files.append(file_path)
     else:
-        from config.storage import bucket
-
-        blobs = bucket.list_blobs(prefix=directory)
-        for blob in blobs:
-            if blob.name.endswith(".pkl") or blob.name.endswith(".pickle"):
-                files.append(blob.name)
+        raise NotImplementedError("Remote not yet implemented")
 
     graph_dict = {}
 
@@ -37,10 +32,7 @@ def process_pickle_files(directory: str, is_local: bool) -> list[nx.DiGraph]:
                 data = pickle.load(pickle_file)
                 graph_dict[file_number] = data
         else:
-            blob = bucket.blob(file_path)
-            with blob.open("rb") as pickle_file:
-                data = pickle.load(pickle_file)
-                graph_dict[file_number] = data
+            raise NotImplementedError("Remote not yet implemented")
 
     sorted_graphs = [graph_dict[num] for num in sorted(graph_dict)]
 
