@@ -45,12 +45,12 @@ To test out the tech, you can first download our simple test repo :
 git clone git@github.com:ChangingDot/ChangingLevels.git
 ```
 
-Our CLI takes as input a path to a configuration file. In this readme we use a very simple change with config file stored in a CDN. If you want to try out the technology on one of your own repo, check out the [documentation](to_docu).
+Our CLI takes as input a path to a configuration file. In this readme we use a very simple change with config file stored in a CDN. If you want to try out the technology on one of your own repo, check out the [documentation](https://changingdot.github.io/ChangingDot/).
 
 Make sure you are in the ChangingLevels repo and run :
 
 ```bash
-cdot run create https://rawcdn.githack.com/ChangingDot/ChangingBack/main/examples/example.yaml
+cdot create -c https://rawcdn.githack.com/ChangingDot/ChangingDot/main/examples/example.yaml
 ```
 
 ### Visualizing your graph
@@ -58,7 +58,7 @@ cdot run create https://rawcdn.githack.com/ChangingDot/ChangingBack/main/example
 You can then visualize the created graph by running this command : 
 
 ```bash
-cdot run visualize https://rawcdn.githack.com/ChangingDot/ChangingBack/main/examples/example.yaml
+cdot visualize -c https://rawcdn.githack.com/ChangingDot/ChangingDot/main/examples/example.yaml
 ```
 
 ### Running analyses on the graph
@@ -77,5 +77,5 @@ If you have any ideas for other analyses or uses for the graph, to not hesitate 
 A longer term goal of ChangingDot is to automate actual refactorings and therefore actually change the code. You can actually test this out using the following command.
 
 ```bash
-cdot run commit https://rawcdn.githack.com/ChangingDot/ChangingBack/main/examples/example.yaml
+cdot commit -c https://rawcdn.githack.com/ChangingDot/ChangingBack/main/examples/example.yaml
 ```
