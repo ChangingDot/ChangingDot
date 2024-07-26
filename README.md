@@ -25,10 +25,10 @@ This information can be used before any major change to :
 - Never be surprised by unexpected coupling
 
 
-## Test us out using our CLI  
+## Test us out using our CLI
 
 ``` bash
-pip install cdot
+pip install changing-dot
 ```
 
 ### Installation
