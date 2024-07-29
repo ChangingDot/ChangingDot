@@ -1,7 +1,7 @@
 import json
 
-from core.changing_graph.changing_graph import ChangingGraph
-from core.instruction_manager.basic_instruction_manager.basic_instruction_manager import (
+from changing_dot.changing_graph.changing_graph import ChangingGraph
+from changing_dot.instruction_manager.basic_instruction_manager.basic_instruction_manager import (
     create_openai_instruction_manager,
 )
 from loguru import logger

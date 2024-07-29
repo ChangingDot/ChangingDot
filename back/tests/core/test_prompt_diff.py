@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
-from core.instruction_manager.prompt_diff import create_prompt_diff_block
+from changing_dot.instruction_manager.prompt_diff import create_prompt_diff_block
 
 if TYPE_CHECKING:
-    from core.custom_types import (
+    from changing_dot.custom_types import (
         AddEdit,
         CompileError,
         Edits,

@@ -1,15 +1,15 @@
 from typing import TYPE_CHECKING
 
-from core.instruction_interpreter.basic_instruction_interpreter import (
+from changing_dot.instruction_interpreter.basic_instruction_interpreter import (
     BasicInstructionInterpreter,
 )
-from core.instruction_interpreter.instruction_interpreter import (
+from changing_dot.instruction_interpreter.instruction_interpreter import (
     IInstructionInterpreter,
 )
 from langchain_community.chat_models.fake import FakeListChatModel
 
 if TYPE_CHECKING:
-    from core.custom_types import Edits, Instruction
+    from changing_dot.custom_types import Edits, Instruction
 
 
 def make_instruction_interpreter(expected_llm_output: str) -> IInstructionInterpreter:

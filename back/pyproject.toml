@@ -4,9 +4,9 @@ version = "0.0.1-alpha.2"
 description = "ChangingDot repo"
 authors = ["Matthieu Rossignon <matthieu.rossignon@hotmail.fr>"]
 packages = [
-    { include = "cli", from = "src" },
-    { include = "core", from = "src" },
-    { include = "visualize", from = "src" },
+    { include = "changing_dot_cli", from = "src" },
+    { include = "changing_dot", from = "src" },
+    { include = "changing_dot_visualize", from = "src" },
 ]
 
 [tool.poetry.dependencies]
@@ -45,7 +45,7 @@ types-requests = "^2.31.0.20240218"
 pandas-stubs = "^2.2.1.240316"
 
 [tool.poetry.scripts]
-cdot = "cli.cli:cdot"
+cdot = "changing_dot_cli.cli:cdot"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

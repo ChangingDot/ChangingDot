@@ -5,11 +5,11 @@ from typing import TypedDict
 
 import pandas as pd
 import wandb
-from core.changing_graph.changing_graph import ChangingGraph
-from core.error_manager.error_manager import IErrorManager
+from changing_dot.changing_graph.changing_graph import ChangingGraph
+from changing_dot.error_manager.error_manager import IErrorManager
+from changing_dot_visualize.observer import Observer
 from dotenv import load_dotenv
 from loguru import logger
-from visualize.observer import Observer
 from wandb.sdk.wandb_run import Run
 
 

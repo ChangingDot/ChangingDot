@@ -2,11 +2,11 @@ from collections.abc import Generator
 from typing import TYPE_CHECKING
 
 import pytest
-from core.modifyle.modifyle import IModifyle, Modifyle
-from core.utils.text_functions import write_text
+from changing_dot.modifyle.modifyle import IModifyle, Modifyle
+from changing_dot.utils.text_functions import write_text
 
 if TYPE_CHECKING:
-    from core.custom_types import Edits
+    from changing_dot.custom_types import Edits
 
 
 def get_fixture(file_path: str) -> str:

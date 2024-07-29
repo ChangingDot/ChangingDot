@@ -3,29 +3,29 @@ import uuid
 
 import yaml
 from analytics.wandb_analytics import WandbAnalytics
-from core.changing_graph.changing_graph import ChangingGraph
-from core.commit.conflict_handler import (
+from changing_dot.changing_graph.changing_graph import ChangingGraph
+from changing_dot.commit.conflict_handler import (
     create_openai_conflict_handler,
 )
-from core.commit.reset_repo import reset_repo, set_repo
-from core.commit_graph import commit_graph
-from core.create_graph import create_graph
-from core.custom_types import ErrorInitialization
-from core.error_manager.error_manager import (
+from changing_dot.commit.reset_repo import reset_repo, set_repo
+from changing_dot.commit_graph import commit_graph
+from changing_dot.create_graph import create_graph
+from changing_dot.custom_types import ErrorInitialization
+from changing_dot.error_manager.error_manager import (
     RoslynErrorManager,
 )
-from core.instruction_interpreter.basic_instruction_interpreter import (
+from changing_dot.instruction_interpreter.basic_instruction_interpreter import (
     create_openai_interpreter,
 )
-from core.instruction_interpreter.instruction_interpreter import (
+from changing_dot.instruction_interpreter.instruction_interpreter import (
     IInstructionInterpreter,
 )
-from core.instruction_manager.basic_instruction_manager.basic_instruction_manager import (
+from changing_dot.instruction_manager.basic_instruction_manager.basic_instruction_manager import (
     create_mistral_instruction_manager,
 )
-from core.modifyle.modifyle import IModifyle, IntegralModifyle
-from core.optimize_graph import optimize_graph
-from visualize.observer import Observer
+from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
+from changing_dot.optimize_graph import optimize_graph
+from changing_dot_visualize.observer import Observer
 
 if __name__ == "__main__":
     analytics = WandbAnalytics()
