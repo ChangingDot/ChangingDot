@@ -5,25 +5,29 @@ from collections.abc import Generator
 from typing import TYPE_CHECKING
 
 import pytest
-from core.changing_graph.changing_graph import ChangingGraph
-from core.create_graph import create_graph
-from core.custom_types import InitialChange, RestrictionOptions, ResumeInitialNode
-from core.error_manager.error_manager import (
+from changing_dot.changing_graph.changing_graph import ChangingGraph
+from changing_dot.create_graph import create_graph
+from changing_dot.custom_types import (
+    InitialChange,
+    RestrictionOptions,
+    ResumeInitialNode,
+)
+from changing_dot.error_manager.error_manager import (
     HardCodedErrorManager,
 )
-from core.handle_node import resume_problem_node
-from core.instruction_interpreter.hard_coded_instruction_interpreter import (
+from changing_dot.handle_node import resume_problem_node
+from changing_dot.instruction_interpreter.hard_coded_instruction_interpreter import (
     HardCodedInstructionInterpreter,
 )
-from core.instruction_manager.hard_coded_instruction_manager import (
+from changing_dot.instruction_manager.hard_coded_instruction_manager import (
     HardCodedInstructionManager,
 )
-from core.modifyle.modifyle import FakeModifyle
-from core.optimize_graph import optimize_graph
-from visualize.observer import Observer
+from changing_dot.modifyle.modifyle import FakeModifyle
+from changing_dot.optimize_graph import optimize_graph
+from changing_dot_visualize.observer import Observer
 
 if TYPE_CHECKING:
-    from core.custom_types import ErrorInitialization
+    from changing_dot.custom_types import ErrorInitialization
 
 
 @pytest.fixture(autouse=True)

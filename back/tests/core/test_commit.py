@@ -4,16 +4,16 @@ from collections.abc import Generator
 from typing import TYPE_CHECKING
 
 import pytest
-from core.commit.commit_edits import commit_edits
-from core.commit.conflict_handler import ConflictHandler
-from core.modifyle.modifyle import IModifyle, Modifyle
-from core.utils.text_functions import write_text
+from changing_dot.commit.commit_edits import commit_edits
+from changing_dot.commit.conflict_handler import ConflictHandler
+from changing_dot.modifyle.modifyle import IModifyle, Modifyle
+from changing_dot.utils.text_functions import write_text
 from git import Repo
 from langchain_community.chat_models.fake import FakeListChatModel
 from loguru import logger
 
 if TYPE_CHECKING:
-    from core.custom_types import Edits
+    from changing_dot.custom_types import Edits
 
 repo_dir = os.path.abspath("./tests/core/fake_repo/")
 

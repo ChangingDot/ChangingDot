@@ -25,7 +25,7 @@ ci:
 ########################################################################################################################
 
 generate-grpc-client:
-	poetry run python -m grpc_tools.protoc -I../protos --python_out=./src/core/generated_grpc --pyi_out=./src/core/generated_grpc_types --grpc_python_out=./src/core/generated_grpc ../protos/feedback_server.proto
+	poetry run python -m grpc_tools.protoc -I../protos --python_out=./src/changing_dot/generated_grpc --pyi_out=./src/changing_dot/generated_grpc_types --grpc_python_out=./src/changing_dot/generated_grpc ../protos/feedback_server.proto
 
 start-api:
 	docker compose up -d

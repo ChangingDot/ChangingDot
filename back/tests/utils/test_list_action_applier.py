@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
-from core.utils.list_action_applier import apply_actions_on_list
+from changing_dot.utils.list_action_applier import apply_actions_on_list
 
 if TYPE_CHECKING:
-    from core.utils.list_action_applier import Action
+    from changing_dot.utils.list_action_applier import Action
 
 
 def test_empty_action_applier() -> None:

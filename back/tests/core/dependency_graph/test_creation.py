@@ -1,5 +1,8 @@
 import pytest
-from core.dependency_graph.dependency_graph import DependencyGraph, DependencyGraphNode
+from changing_dot.dependency_graph.dependency_graph import (
+    DependencyGraph,
+    DependencyGraphNode,
+)
 
 
 def get_fixture_path(file_path: str) -> str:

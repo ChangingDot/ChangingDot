@@ -24,8 +24,6 @@ test_codebase/
 outputs/
 outputs_*/
 *.ipynb
-src/core/instructions/custom_instructions/
-src/core/instruction_manager/custom_instructions/
 src/scripts/run_configs/
 benchmark_configs
 benchmark_config_store
