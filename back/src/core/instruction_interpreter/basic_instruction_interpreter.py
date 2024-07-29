@@ -8,6 +8,7 @@ from core.instruction_interpreter.prompts import (
     one_liner_edits_template,
     system_prompt,
 )
+from core.utils.text_functions import read_text
 from dotenv import load_dotenv
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.output_parsers import StrOutputParser
@@ -15,7 +16,6 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_mistralai import ChatMistralAI
 from langchain_openai import ChatOpenAI
 from pydantic.v1.types import SecretStr
-from utils.text_functions import read_text
 from visualize.observer import Observer
 
 

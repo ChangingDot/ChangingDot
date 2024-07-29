@@ -3,8 +3,8 @@ import os
 from core.commit.conflict_handler import ConflictHandler
 from core.custom_types import Edits
 from core.modifyle.modifyle import IModifyle
+from core.utils.text_functions import read_text, write_text
 from git import GitCommandError, Repo
-from utils.text_functions import read_text, write_text
 from visualize.observer import Observer
 
 CONFLICT_MARKER = "<<<<<<< HEAD"

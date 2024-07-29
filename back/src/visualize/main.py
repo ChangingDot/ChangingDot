@@ -5,8 +5,8 @@ import networkx as nx
 import vizro.models as vm
 import yaml
 from core.custom_types import NodeData
+from core.utils.process_pickle_files import process_pickle_files
 from dash import Input, Output, callback, html
-from utils.process_pickle_files import process_pickle_files
 from vizro import Vizro
 
 from visualize.format_text import get_text_from_graph

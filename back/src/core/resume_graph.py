@@ -1,7 +1,6 @@
 import uuid
 from typing import TYPE_CHECKING
 
-from utils.process_pickle_files import process_pickle_files
 from visualize.observer import Observer
 
 from core.changing_graph.changing_graph import ChangingGraph
@@ -18,6 +17,7 @@ from core.instruction_manager.basic_instruction_manager.basic_instruction_manage
     create_openai_instruction_manager,
 )
 from core.modifyle.modifyle import IntegralModifyle
+from core.utils.process_pickle_files import process_pickle_files
 
 if TYPE_CHECKING:
     from core.custom_types import ProblemNode

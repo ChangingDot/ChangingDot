@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 from core.modifyle.modifyle import IModifyle, Modifyle
-from utils.text_functions import write_text
+from core.utils.text_functions import write_text
 
 if TYPE_CHECKING:
     from core.custom_types import Edits

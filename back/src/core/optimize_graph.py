@@ -1,10 +1,10 @@
 import uuid
 
-from utils.process_pickle_files import process_pickle_files
 from visualize.observer import Observer
 
 from core.changing_graph.changing_graph import ChangingGraph
 from core.checks.merge_cycles import merge_cycles
+from core.utils.process_pickle_files import process_pickle_files
 
 
 def optimize_graph(G: ChangingGraph, observer: Observer) -> None:

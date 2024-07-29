@@ -3,7 +3,7 @@ from time import sleep
 
 import grpc
 import requests
-from config.environment import ANAYLZER_URL
+from core.config.environment import ANAYLZER_URL
 from core.custom_types import CompileError, RestrictionOptions
 from core.generated_grpc.feedback_server_pb2 import (
     GetCompileErrorsRequest,

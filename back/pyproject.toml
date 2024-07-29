@@ -6,8 +6,6 @@ authors = ["Matthieu Rossignon <matthieu.rossignon@hotmail.fr>"]
 packages = [
     { include = "cli", from = "src" },
     { include = "core", from = "src" },
-    { include = "config", from = "src" },
-    { include = "utils", from = "src" },
     { include = "visualize", from = "src" },
 ]
 

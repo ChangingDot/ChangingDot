@@ -1,6 +1,6 @@
 from typing import Literal, TypedDict
 
-from utils.index_manager import IndexManager
+from core.utils.index_manager import IndexManager
 
 
 class Action(TypedDict):

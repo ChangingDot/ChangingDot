@@ -1,4 +1,4 @@
-from utils.index_manager import IndexManager
+from core.utils.index_manager import IndexManager
 
 
 def test_basic_index_manager() -> None:

@@ -3,11 +3,11 @@ import re
 from typing import TYPE_CHECKING, Literal, TypedDict
 
 from core.custom_types import CompileError, Edit, Edits
-from utils.list_action_applier import apply_actions_on_list
-from utils.text_functions import read_text
+from core.utils.list_action_applier import apply_actions_on_list
+from core.utils.text_functions import read_text
 
 if TYPE_CHECKING:
-    from utils.list_action_applier import Action
+    from core.utils.list_action_applier import Action
 
 
 class ErrorIndex(TypedDict):

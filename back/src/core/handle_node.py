@@ -1,6 +1,5 @@
 import traceback
 
-from utils.index_manager import IndexManager
 from visualize.observer import Observer
 
 from core.changing_graph.changing_graph import ChangingGraph
@@ -32,6 +31,7 @@ from core.instruction_manager.instruction_manager import (
     IInstructionManager,
 )
 from core.modifyle.modifyle import IModifyle
+from core.utils.index_manager import IndexManager
 
 
 def get_solution_node_from_problem(
