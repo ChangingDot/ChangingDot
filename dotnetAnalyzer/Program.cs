@@ -12,7 +12,7 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Limits.MaxRequestBodySize = 50 * 1024 * 1024;
 });
 
-builder.WebHost.UseUrls("http://localhost:5177");
+builder.WebHost.UseUrls("http://+:5177");
 
 // Add services to the container.
 builder.Services.AddGrpc(options =>
