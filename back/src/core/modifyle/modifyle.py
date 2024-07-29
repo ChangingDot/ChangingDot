@@ -3,11 +3,11 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from core.custom_types import Edits
-from utils.list_action_applier import apply_actions_on_list
-from utils.text_functions import read_text, write_text
+from core.utils.list_action_applier import apply_actions_on_list
+from core.utils.text_functions import read_text, write_text
 
 if TYPE_CHECKING:
-    from utils.list_action_applier import Action
+    from core.utils.list_action_applier import Action
 
 
 class IModifyle:

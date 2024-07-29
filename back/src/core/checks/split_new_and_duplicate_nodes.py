@@ -2,7 +2,7 @@ from core.changing_graph.changing_graph import ChangingGraph
 from core.custom_types import (
     ProblemNode,
 )
-from utils.index_manager import IndexManager
+from core.utils.index_manager import IndexManager
 from visualize.observer import Observer
 
 

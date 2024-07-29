@@ -7,10 +7,10 @@ import pytest
 from core.commit.commit_edits import commit_edits
 from core.commit.conflict_handler import ConflictHandler
 from core.modifyle.modifyle import IModifyle, Modifyle
+from core.utils.text_functions import write_text
 from git import Repo
 from langchain_community.chat_models.fake import FakeListChatModel
 from loguru import logger
-from utils.text_functions import write_text
 
 if TYPE_CHECKING:
     from core.custom_types import Edits

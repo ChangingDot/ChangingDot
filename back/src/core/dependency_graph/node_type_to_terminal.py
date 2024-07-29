@@ -1,9 +1,9 @@
 import tree_sitter_c_sharp as tscsharp
 from core.custom_types import SupportedLanguages
+from core.utils.file_utils import get_file_extension
 from tree_sitter import Language, Parser
 from tree_sitter_xml import language_xml
 from typing_extensions import TypedDict
-from utils.file_utils import get_file_extension
 
 
 class NodeTypeToTerminal(TypedDict):

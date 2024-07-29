@@ -2,7 +2,6 @@ import uuid
 from typing import TYPE_CHECKING, Any
 
 from git import Repo
-from utils.process_pickle_files import process_pickle_files
 from visualize.observer import Observer
 
 from core.changing_graph.changing_graph import ChangingGraph
@@ -13,6 +12,7 @@ from core.commit.conflict_handler import (
 )
 from core.custom_types import Commit
 from core.modifyle.modifyle import IModifyle, Modifyle
+from core.utils.process_pickle_files import process_pickle_files
 
 if TYPE_CHECKING:
     from core.custom_types import (

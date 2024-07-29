@@ -2,7 +2,7 @@ from collections.abc import Generator
 
 import pytest
 from core.dependency_graph.dependency_graph import DependencyGraph, DependencyGraphNode
-from utils.text_functions import write_text
+from core.utils.text_functions import write_text
 
 
 def get_fixture_path(file_path: str) -> str:
