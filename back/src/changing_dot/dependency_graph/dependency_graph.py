@@ -6,6 +6,7 @@ from changing_dot.dependency_graph.node_type_to_terminal import (
     get_node_type_to_terminal_from_file_path,
     parser_from_file_path,
 )
+from changing_dot.utils.tree_sitter_utils import get_node_text_from_file_path
 from pydantic import BaseModel
 from tree_sitter import Node, Range, Tree
 
@@ -20,6 +21,7 @@ class DependencyGraphNode(BaseModel):
     start_point: tuple[int, int]
     end_point: tuple[int, int]
     file_path: str
+    text: str
 
 
 class DependencyGraph:
@@ -72,6 +74,7 @@ class DependencyGraph:
                         start_point=node.start_point,
                         end_point=node.end_point,
                         file_path=file_path,
+                        text=get_node_text_from_file_path(node, file_path),
                     )
                 )
                 if parent_index is not None:
@@ -87,6 +90,7 @@ class DependencyGraph:
                         start_point=node.start_point,
                         end_point=node.end_point,
                         file_path=file_path,
+                        text=get_node_text_from_file_path(node, file_path),
                     )
                 )
                 if parent_index is not None:
@@ -101,6 +105,7 @@ class DependencyGraph:
                         start_point=node.start_point,
                         end_point=node.end_point,
                         file_path=file_path,
+                        text=get_node_text_from_file_path(node, file_path),
                     )
                 )
                 if parent_index is not None:
@@ -116,6 +121,7 @@ class DependencyGraph:
                         start_point=node.start_point,
                         end_point=node.end_point,
                         file_path=file_path,
+                        text=get_node_text_from_file_path(node, file_path),
                     )
                 )
                 if parent_index is not None:
@@ -139,6 +145,7 @@ class DependencyGraph:
             start_point=node.start_point,
             end_point=node.end_point,
             file_path=node.file_path,
+            text=node.text,
         )
         self.next_index += 1
         return index

@@ -29,6 +29,9 @@ def test_empty_class() -> None:
         start_point=(0, 0),
         end_point=(2, 1),
         file_path=get_fixture_path("empty_class.cs"),
+        text="""public class EmptyClass
+{
+}""",
     )
     assert graph.get_parent_child_relationships() == []
 
@@ -42,6 +45,13 @@ def test_simple_method() -> None:
             start_point=(0, 0),
             end_point=(6, 1),
             file_path=get_fixture_path("simple_method.cs"),
+            text="""class SimpleClass
+{
+    static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }
+}""",
         ),
     ]
     assert (graph.get_node_by_type("Method")) == [
@@ -50,6 +60,10 @@ def test_simple_method() -> None:
             start_point=(2, 4),
             end_point=(5, 5),
             file_path=get_fixture_path("simple_method.cs"),
+            text="""static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }""",
         )
     ]
 
@@ -63,6 +77,10 @@ def test_simple_field() -> None:
             start_point=(0, 0),
             end_point=(3, 1),
             file_path=get_fixture_path("simple_field.cs"),
+            text="""public class SimpleField
+{
+    public int Field;
+}""",
         )
     ]
     assert (graph.get_node_by_type("Field")) == [
@@ -71,6 +89,7 @@ def test_simple_field() -> None:
             start_point=(2, 4),
             end_point=(2, 21),
             file_path=get_fixture_path("simple_field.cs"),
+            text="""public int Field;""",
         )
     ]
 
@@ -84,6 +103,14 @@ def test_simple_constructor() -> None:
             start_point=(0, 0),
             end_point=(7, 1),
             file_path=get_fixture_path("simple_constructor.cs"),
+            text="""public class Person
+{
+    public string Name;
+    public Person(string name)
+    {
+        Name = name;
+    }
+}""",
         )
     ]
     assert (graph.get_node_by_type("Field")) == [
@@ -92,6 +119,7 @@ def test_simple_constructor() -> None:
             start_point=(2, 4),
             end_point=(2, 23),
             file_path=get_fixture_path("simple_constructor.cs"),
+            text="""public string Name;""",
         ),
     ]
     assert (graph.get_node_by_type("Method")) == [
@@ -100,6 +128,10 @@ def test_simple_constructor() -> None:
             start_point=(3, 4),
             end_point=(6, 5),
             file_path=get_fixture_path("simple_constructor.cs"),
+            text="""public Person(string name)
+    {
+        Name = name;
+    }""",
         ),
     ]
 
@@ -113,6 +145,14 @@ def test_simple_property() -> None:
             start_point=(0, 0),
             end_point=(7, 1),
             file_path=get_fixture_path("simple_property.cs"),
+            text="""public class Person
+{
+    public string Name { get; }
+    public Person(string name)
+    {
+        Name = name;
+    }
+}""",
         )
     ]
     assert (graph.get_node_by_type("Field")) == [
@@ -121,6 +161,7 @@ def test_simple_property() -> None:
             start_point=(2, 4),
             end_point=(2, 31),
             file_path=get_fixture_path("simple_property.cs"),
+            text="""public string Name { get; }""",
         ),
     ]
     assert (graph.get_node_by_type("Method")) == [
@@ -129,6 +170,10 @@ def test_simple_property() -> None:
             start_point=(3, 4),
             end_point=(6, 5),
             file_path=get_fixture_path("simple_property.cs"),
+            text="""public Person(string name)
+    {
+        Name = name;
+    }""",
         ),
     ]
 
@@ -141,6 +186,7 @@ def test_imports() -> None:
         start_point=(10, 0),
         end_point=(10, 25),
         file_path=get_fixture_path("imports.cs"),
+        text="using PostHog.Exceptions;",
     ) in graph.get_node_by_type("Import")
 
 
@@ -175,6 +221,14 @@ def test_multiple_files() -> None:
             start_point=(0, 0),
             end_point=(7, 1),
             file_path=get_fixture_path("simple_property.cs"),
+            text="""public class Person
+{
+    public string Name { get; }
+    public Person(string name)
+    {
+        Name = name;
+    }
+}""",
         )
     ]
     assert (graph.get_node_by_type("Field")) == [
@@ -183,6 +237,7 @@ def test_multiple_files() -> None:
             start_point=(2, 4),
             end_point=(2, 31),
             file_path=get_fixture_path("simple_property.cs"),
+            text="""public string Name { get; }""",
         ),
     ]
     assert (graph.get_node_by_type("Method")) == [
@@ -191,6 +246,10 @@ def test_multiple_files() -> None:
             start_point=(3, 4),
             end_point=(6, 5),
             file_path=get_fixture_path("simple_property.cs"),
+            text="""public Person(string name)
+    {
+        Name = name;
+    }""",
         ),
     ]
     assert DependencyGraphNode(
@@ -198,6 +257,7 @@ def test_multiple_files() -> None:
         start_point=(10, 0),
         end_point=(10, 25),
         file_path=get_fixture_path("imports.cs"),
+        text="using PostHog.Exceptions;",
     ) in graph.get_node_by_type("Import")
 
 
@@ -210,12 +270,23 @@ def test_class_parent_of_method() -> None:
                 start_point=(0, 0),
                 end_point=(6, 1),
                 file_path=get_fixture_path("simple_method.cs"),
+                text="""class SimpleClass
+{
+    static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }
+}""",
             ),
             DependencyGraphNode(
                 node_type="Method",
                 start_point=(2, 4),
                 end_point=(5, 5),
                 file_path=get_fixture_path("simple_method.cs"),
+                text="""static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }""",
             ),
         )
     ]
@@ -231,12 +302,54 @@ def test_full_python_relationships() -> None:
             start_point=(6, 0),
             end_point=(39, 23),
             file_path=get_fixture_path("full.py"),
+            text="""class GenericClass:
+    def __init__(
+        self, name: str, value: int, created_at: datetime.datetime | None = None
+    ):
+        self.name = name
+        self.value = value
+        self.created_at = created_at if created_at else datetime.datetime.now()
+        logging.info(f"GenericClass created: {self}")
+
+    def __repr__(self) -> str:
+        return f"GenericClass(name={self.name}, value={self.value}, created_at={self.created_at})"
+
+    def update_value(self, new_value: int) -> None:
+        logging.info(f"Updating value from {self.value} to {new_value}")
+        self.value = new_value
+
+    def save_to_file(self, file_path: str) -> None:
+        try:
+            with open(file_path, "w") as file:
+                file.write(str(self))
+            logging.info(f"Object saved to file: {file_path}")
+        except Exception as e:
+            logging.error(f"Failed to save object to file: {e}")
+
+    def load_from_file(cls, file_path: str) -> None:
+        try:
+            with open(file_path) as file:
+                data = file.read()
+            name, value, created_at = data.strip().split(", ")
+            name = name.split("=")[1]
+            return None
+        except Exception as e:
+            logging.error(f"Failed to load object from file: {e}")
+            return None
+""",
         ),
         DependencyGraphNode(
             node_type="Method",
             start_point=(7, 4),
             end_point=(13, 53),
             file_path=get_fixture_path("full.py"),
+            text="""def __init__(
+        self, name: str, value: int, created_at: datetime.datetime | None = None
+    ):
+        self.name = name
+        self.value = value
+        self.created_at = created_at if created_at else datetime.datetime.now()
+        logging.info(f"GenericClass created: {self}")""",
         ),
     ) in parent_child_relationships
     assert len(parent_child_relationships) == 5
