@@ -24,6 +24,10 @@ class DependencyGraphNode(BaseModel):
     text: str
 
 
+class DependencyGraphNodeWithIndex(DependencyGraphNode):
+    index: int
+
+
 class DependencyGraph:
     def __init__(self, file_paths: list[str]) -> None:
         self.G: nx.DiGraph = nx.DiGraph()
@@ -170,6 +174,12 @@ class DependencyGraph:
     def get_nodes(self) -> list[DependencyGraphNode]:
         return [
             DependencyGraphNode(**self.G.nodes()[index]) for index in self.G.nodes()
+        ]
+
+    def get_nodes_with_index(self) -> list[DependencyGraphNodeWithIndex]:
+        return [
+            DependencyGraphNodeWithIndex(**self.G.nodes()[index], index=index)
+            for index in self.G.nodes()
         ]
 
     def get_parent_child_relationships(
