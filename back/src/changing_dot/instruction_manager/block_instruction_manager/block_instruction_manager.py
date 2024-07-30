@@ -30,13 +30,13 @@ class InstructionOutputParser(BaseOutputParser[InstructionOutput]):
     def parse(self, text: str) -> InstructionOutput:
         try:
             lines = text.split("\n")
+            if len(lines[0]) == 0:
+                lines.pop(0)
             block_id_line = lines[0].strip()
+            block_id = int(block_id_line.split(":")[1])
             instructions_lines = lines[1:]
-
-            block_id = int(block_id_line.split(": ")[1])
-
             instructions = "\n".join(
-                line.split(": ", 1)[1] if ": " in line else line
+                line.split(":", 1)[1] if ":" in line else line
                 for line in instructions_lines
             ).strip()
 
@@ -117,7 +117,7 @@ class BlockInstructionManager(IInstructionManagerBlock):
         output: InstructionOutput = chain.invoke(task)
 
         return {
-            "block_id": 1,
+            "block_id": output.block_id,
             "file_path": error["file_path"],
             "solution": output.instructions,
         }
