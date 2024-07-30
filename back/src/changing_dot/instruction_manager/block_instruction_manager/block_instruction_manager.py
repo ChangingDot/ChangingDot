@@ -29,17 +29,26 @@ class InstructionOutput(BaseModel):
 class InstructionOutputParser(BaseOutputParser[InstructionOutput]):
     def parse(self, text: str) -> InstructionOutput:
         try:
-            lines = text.split("\n")
-            if len(lines[0]) == 0:
-                lines.pop(0)
-            block_id_line = lines[0].strip()
+            lines = text.strip().split("\n")
+
+            block_line_index = next(
+                (
+                    i
+                    for i, line in enumerate(lines)
+                    if line.strip().startswith("Block:")
+                ),
+                -1,
+            )
+            if block_line_index == -1:
+                raise ValueError("No 'Block:' line found in the input")
+
+            block_id_line = lines[block_line_index].strip()
             block_id = int(block_id_line.split(":")[1])
-            instructions_lines = lines[1:]
+            instructions_lines = lines[block_line_index + 1 :]
             instructions = "\n".join(
-                line.split(":", 1)[1] if ":" in line else line
+                line.split(":", 1)[1].strip() if ":" in line else line.strip()
                 for line in instructions_lines
             ).strip()
-
             return InstructionOutput(block_id=block_id, instructions=instructions)
         except (IndexError, ValueError, ValidationError) as e:
             raise ValueError(f"Error parsing output: {e}") from e
@@ -70,6 +79,14 @@ def get_failed_attempts(G: ChangingGraph, node_index: int) -> str:
     ]
 
     return f"We have already tried this, but it did not fix the error : {attempt_diffs}"
+
+
+def get_blocks_from_dependency_graph(dependency_graph: DependencyGraph) -> str:
+    blocks = ""
+    for node in dependency_graph.get_nodes_with_index():
+        blocks += f"\nBlock : {node}"
+
+    return blocks
 
 
 class BlockInstructionManager(IInstructionManagerBlock):
@@ -108,9 +125,12 @@ class BlockInstructionManager(IInstructionManagerBlock):
 
         failed_attempts = get_failed_attempts(G, node_index)
 
+        blocks = get_blocks_from_dependency_graph(DG)
+
         task = {
             "goal": self.goal,
             "prompt_diff": prompt_diff,
+            "blocks": blocks,
             "failed_attempts": failed_attempts,
         }
 

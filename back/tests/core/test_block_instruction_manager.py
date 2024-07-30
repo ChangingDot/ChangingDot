@@ -52,7 +52,9 @@ def test_with_multiple_blocks_instruction() -> None:
 
     model = FakeListChatModel(
         responses=[
-            "\nBlock: 7\nInstruction: Change line 26 from `public int ChangedSize { get; set; }` to `public int Size { get; set; }`\n"
+            """
+                Block: 7
+    Instruction: Change line 26 from `public int ChangedSize { get; set; }` to `public int Size { get; set; }`"""
         ]
     )
 

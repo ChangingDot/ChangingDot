@@ -7,12 +7,16 @@ Our overall goal is to {goal}
 After a few steps, we arrived here :
 The following file change caused the following ERROR :
 {prompt_diff}
+
+Here are the possible blocks that you can use :
+{blocks}
+
 What is the easiest most straitforward way to fix this error.
 Please add the line number to change in your response
 {failed_attempts}
 Please answer using the following format :
 "
-Block: <int that is the id of the affected block (for the moment put 1)>
+Block: <int that is the id of the affected block>
 Instruction: <Your instructions on how to change this block to solve the issue>
 "
 """
