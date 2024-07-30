@@ -57,6 +57,13 @@ def test_update_with_no_graph_impact() -> None:
             start_point=(0, 0),
             end_point=(6, 1),
             file_path=get_fixture_path("subject_1.cs"),
+            text="""class SimpleClass
+{
+    static string SimpleMethod()
+    {
+        return "Updated Hello, World!";
+    }
+}""",
         ),
     ]
     assert (graph.get_node_by_type("Method")) == [
@@ -65,6 +72,10 @@ def test_update_with_no_graph_impact() -> None:
             start_point=(2, 4),
             end_point=(5, 5),
             file_path=get_fixture_path("subject_1.cs"),
+            text="""static string SimpleMethod()
+    {
+        return "Updated Hello, World!";
+    }""",
         )
     ]
 
@@ -86,18 +97,37 @@ def test_update_that_adds_a_node() -> None:
             start_point=(0, 0),
             end_point=(10, 1),
             file_path=get_fixture_path("subject_1.cs"),
+            text="""class SimpleClass
+{
+    static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }
+    static string AnotherMethod()
+    {
+        return "Another Hello, World!";
+    }
+}""",
         ),
         DependencyGraphNode(
             node_type="Method",
             start_point=(2, 4),
             end_point=(5, 5),
             file_path=get_fixture_path("subject_1.cs"),
+            text="""static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }""",
         ),
         DependencyGraphNode(
             node_type="Method",
             start_point=(6, 4),
             end_point=(9, 5),
             file_path=get_fixture_path("subject_1.cs"),
+            text="""static string AnotherMethod()
+    {
+        return "Another Hello, World!";
+    }""",
         ),
     ]:
         assert method_dependency in graph.get_nodes()
