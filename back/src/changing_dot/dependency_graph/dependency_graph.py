@@ -50,6 +50,7 @@ class DependencyGraph:
             self.trees[path] = tree
 
     def update_graph_from_file_paths(self, file_paths: list[str]) -> list[Range]:
+        self.next_index = 0
         all_change_ranges = []
         for path in file_paths:
             parser = parser_from_file_path(path)
