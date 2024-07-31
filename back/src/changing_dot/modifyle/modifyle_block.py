@@ -63,6 +63,8 @@ def apply_edits(DG: DependencyGraph, edits: list[BlockEdit]) -> None:
 
         write_text(edit.file_path, changed_file)
 
+        DG.update_graph_from_file_paths([edit.file_path])
+
 
 class IntegralModifyle(IModifyle):
     def __init__(self) -> None:
