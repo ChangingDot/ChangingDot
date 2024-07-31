@@ -55,3 +55,71 @@ def test_basic_change(modifyle: IModifyle, base: str) -> None:
 
     assert get_subject() == get_fixture("basic_change.cs")
 
+
+def test_duplicate_change(modifyle: IModifyle, base: str) -> None:
+    edits: list[BlockEdit] = [
+        BlockEdit(
+            file_path="./tests/core/fixtures/subject.cs",
+            block_id=7,
+            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
+            after="        [JsonDataIgnore]\n        public int Size { get; set; }\n",
+        )
+    ]
+    DG = DependencyGraph([edit.file_path for edit in edits])
+
+    modifyle.apply_change(DG, edits)
+
+    assert get_subject() == get_fixture("duplicate_change.cs")
+
+
+def test_basic_add(modifyle: IModifyle, base: str) -> None:
+    edits: list[BlockEdit] = [
+        BlockEdit(
+            file_path="./tests/core/fixtures/subject.cs",
+            block_id=1,
+            before="using Newtonsoft.Json;\n",
+            after="// New line yo !\nusing Newtonsoft.Json;\n",
+        )
+    ]
+    DG = DependencyGraph([edit.file_path for edit in edits])
+
+    modifyle.apply_change(DG, edits)
+
+    assert get_subject() == get_fixture("basic_add.cs")
+
+
+def test_basic_remove(modifyle: IModifyle, base: str) -> None:
+    edits: list[BlockEdit] = [
+        BlockEdit(
+            file_path="./tests/core/fixtures/subject.cs",
+            block_id=7,
+            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
+            after="        public int Size { get; set; }\n",
+        )
+    ]
+    DG = DependencyGraph([edit.file_path for edit in edits])
+
+    modifyle.apply_change(DG, edits)
+
+    assert get_subject() == get_fixture("basic_remove.cs")
+
+
+def test_revert(modifyle: IModifyle, base: str) -> None:
+    edits: list[BlockEdit] = [
+        BlockEdit(
+            file_path="./tests/core/fixtures/subject.cs",
+            block_id=7,
+            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
+            after="        public int Size { get; set; }\n",
+        )
+    ]
+    DG = DependencyGraph([edit.file_path for edit in edits])
+
+    modifyle.apply_change(DG, edits)
+
+    assert get_subject() == get_fixture("basic_remove.cs")
+
+    modifyle.revert_change(edits)
+
+    assert get_subject() == get_fixture("base.cs")
+
