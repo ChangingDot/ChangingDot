@@ -3,14 +3,18 @@ import json
 import networkx as nx
 from dash import dcc, html
 
+from changing_dot_visualize.utils import convert_to_dict
+
 
 def get_text_from_graph(G: nx.Graph, i: int) -> html:
     if G.number_of_nodes() == 0:
         return "No nodes"
 
+    node = convert_to_dict(G.nodes[i])
+
     common = [
         html.P(
-            f"{json.dumps(G.nodes[i], indent=4)}",
+            f"{json.dumps(convert_to_dict(node), indent=4)}",
             id=f"node_{i}",
             style={
                 "display": "none",
@@ -26,11 +30,11 @@ def get_text_from_graph(G: nx.Graph, i: int) -> html:
             },
         ),
         html.P(f"Node index : {i}"),
-        html.P(f"Node Type : {G.nodes[i]['node_type']}"),
-        html.P(f"Node Status : {G.nodes[i]['status']}"),
+        html.P(f"Node Type : {node['node_type']}"),
+        html.P(f"Node Status : {node['status']}"),
     ]
 
-    if G.nodes[i]["node_type"] == "problem":
+    if node["node_type"] == "problem":
         return html.Div(
             [
                 *common,
@@ -40,7 +44,7 @@ def get_text_from_graph(G: nx.Graph, i: int) -> html:
                         html.Div(
                             [
                                 html.P(f" - {key} : {value}")
-                                for key, value in G.nodes[i]["error"].items()
+                                for key, value in node["error"].items()
                             ]
                         ),
                     ],
@@ -54,7 +58,7 @@ def get_text_from_graph(G: nx.Graph, i: int) -> html:
             style={"position": "relative"},
         )
 
-    if G.nodes[i]["node_type"] == "solution":
+    if node["node_type"] == "solution":
         return html.Div(
             [
                 *common,
@@ -64,7 +68,7 @@ def get_text_from_graph(G: nx.Graph, i: int) -> html:
                         html.Div(
                             [
                                 html.P(f" - {key} : {value}")
-                                for key, value in G.nodes[i]["instruction"].items()
+                                for key, value in node["instruction"].items()
                             ]
                         ),
                     ],
@@ -84,7 +88,7 @@ def get_text_from_graph(G: nx.Graph, i: int) -> html:
                                     for key, value in edit.items()
                                 ]
                             )
-                            for edit in G.nodes[i]["edits"]
+                            for edit in node["edits"]
                         ],
                     ],
                     style={
@@ -97,7 +101,7 @@ def get_text_from_graph(G: nx.Graph, i: int) -> html:
             style={"position": "relative"},
         )
 
-    if G.nodes[i]["node_type"] == "error_solution":
+    if node["node_type"] == "error_solution":
         return html.Div(
             [
                 *common,
@@ -107,7 +111,7 @@ def get_text_from_graph(G: nx.Graph, i: int) -> html:
                         html.Div(
                             [
                                 html.P(f" - {key} : {value}")
-                                for key, value in G.nodes[i]["instruction"].items()
+                                for key, value in node["instruction"].items()
                             ]
                         ),
                     ],
@@ -127,7 +131,7 @@ def get_text_from_graph(G: nx.Graph, i: int) -> html:
                                     for key, value in edit.items()
                                 ]
                             )
-                            for edit in G.nodes[i]["edits"]
+                            for edit in node["edits"]
                         ],
                     ],
                     style={
@@ -136,20 +140,18 @@ def get_text_from_graph(G: nx.Graph, i: int) -> html:
                         "font-weight": "var(--text-weight-regular)",
                     },
                 ),
-                html.P(f"Error : {G.nodes[i]['error_text']}"),
+                html.P(f"Error : {node['error_text']}"),
             ],
             style={"position": "relative"},
         )
 
-    if G.nodes[i]["node_type"] == "error_problem":
+    if node["node_type"] == "error_problem":
         suspected_edits = (
-            G.nodes[i]["suspected_edits"]
-            if G.nodes[i]["suspected_edits"] is not None
-            else []
+            node["suspected_edits"] if node["suspected_edits"] is not None else []
         )
         suspected_instruction = (
-            G.nodes[i]["suspected_instruction"]
-            if G.nodes[i]["suspected_instruction"] is not None
+            node["suspected_instruction"]
+            if node["suspected_instruction"] is not None
             else {}
         )
         return html.Div(
@@ -161,7 +163,7 @@ def get_text_from_graph(G: nx.Graph, i: int) -> html:
                         html.Div(
                             [
                                 html.P(f" - {key} : {value}")
-                                for key, value in G.nodes[i]["error"].items()
+                                for key, value in node["error"].items()
                             ]
                         ),
                     ],
@@ -206,7 +208,7 @@ def get_text_from_graph(G: nx.Graph, i: int) -> html:
                         "font-weight": "var(--text-weight-regular)",
                     },
                 ),
-                html.P(f"Error : {G.nodes[i]['error_text']}"),
+                html.P(f"Error : {node['error_text']}"),
             ],
             style={"position": "relative"},
         )

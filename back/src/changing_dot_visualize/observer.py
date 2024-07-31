@@ -6,6 +6,8 @@ from changing_dot.changing_graph.changing_graph import ChangingGraph
 from dash import html
 from loguru import logger
 
+from changing_dot_visualize.utils import get_items
+
 
 def ensure_directory_exists(file_path: str) -> None:
     directory = os.path.dirname(file_path)
@@ -89,7 +91,7 @@ class Observer:
                             html.Div(
                                 [
                                     html.P(f" - {key} : {value}")
-                                    for key, value in dic.items()
+                                    for key, value in get_items(dic)
                                 ]
                             ),
                         ],
