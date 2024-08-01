@@ -8,7 +8,7 @@ from changing_dot.custom_types import (
     NodeStatus,
     ProblemNode,
     SolutionNode,
-    edit_to_diff,
+    SolutionNodeBlock,
 )
 
 
@@ -26,6 +26,19 @@ class ChangingGraph:
         self.next_index = next_index
 
     def add_solution_node(self, node_data: SolutionNode) -> int:
+        index = self.next_index
+        self.G.add_node(
+            index,
+            index=index,
+            node_type=node_data["node_type"],
+            status=node_data["status"],
+            instruction=node_data["instruction"],
+            edits=node_data["edits"],
+        )
+        self.next_index += 1
+        return index
+
+    def add_solution_node_block(self, node_data: SolutionNodeBlock) -> int:
         index = self.next_index
         self.G.add_node(
             index,
@@ -64,7 +77,7 @@ class ChangingGraph:
 
     def get_node(self, index: int) -> NodeData:
         node = self.G.nodes()[index]
-        if node["node_type"] == "solution":
+        if node["node_type"] == "solution" or node["node_type"] == "solution_block":
             return {
                 "index": node["index"],
                 "node_type": node["node_type"],
@@ -159,34 +172,6 @@ class ChangingGraph:
         for node in G_reduced:
             G_reduced.nodes[node].update(self.G.nodes[node])
         self.G = G_reduced
-
-    def find_same_solution(
-        self,
-        instruction_path_to_match: str,
-        line_number_to_match: int,
-        diff_to_match: str,
-    ) -> list[int]:
-        matching_nodes = []
-        for node, attrs in self.G.nodes(data=True):
-            if attrs.get("node_type") != "solution":
-                continue
-
-            if attrs.get("status") == "failed":
-                continue
-
-            if attrs.get("instruction").get("file_path") != instruction_path_to_match:
-                continue
-
-            node_line_number = attrs.get("instruction").get("line_number")
-            if node_line_number != line_number_to_match:
-                continue
-
-            if edit_to_diff(attrs.get("edits")[0]) != diff_to_match:
-                continue
-
-            matching_nodes.append(node)
-
-        return matching_nodes
 
     def find_same_problem(
         self,

@@ -1,10 +1,8 @@
+from changing_dot.custom_types import BlockEdit, InstructionBlock
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_interpreter.block_prompts import (
     edits_template,
     system_prompt,
-)
-from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
-    InstructionBlock,
 )
 from changing_dot_visualize.observer import Observer
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -13,14 +11,6 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import (
     RunnableSerializable,
 )
-from pydantic import BaseModel
-
-
-class BlockEdit(BaseModel):
-    file_path: str
-    block_id: int
-    before: str
-    after: str
 
 
 class BlockInstructionInterpreter:

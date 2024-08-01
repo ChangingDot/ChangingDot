@@ -1,16 +1,14 @@
 from typing import TYPE_CHECKING
 
+from changing_dot.custom_types import BlockEdit
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
-    BlockEdit,
     BlockInstructionInterpreter,
 )
 from langchain_community.chat_models.fake import FakeListChatModel
 
 if TYPE_CHECKING:
-    from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
-        InstructionBlock,
-    )
+    from changing_dot.custom_types import InstructionBlock
 
 
 def make_instruction_interpreter(

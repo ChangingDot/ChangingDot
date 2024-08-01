@@ -1,8 +1,8 @@
 from collections.abc import Iterator
 from contextlib import contextmanager
 
+from changing_dot.custom_types import BlockEdit
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
-from changing_dot.instruction_interpreter.block_instruction_interpreter import BlockEdit
 from changing_dot.utils.text_functions import read_text, write_text
 
 
