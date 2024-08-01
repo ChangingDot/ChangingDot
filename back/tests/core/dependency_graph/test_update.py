@@ -172,3 +172,15 @@ def test_update_that_adds_a_node() -> None:
         ),
     ]:
         assert method_dependency in graph.get_nodes()
+
+
+def test_handle_multiple_files() -> None:
+    graph = DependencyGraph(
+        [get_fixture_path("subject_1.cs"), get_fixture_path("subject_2.cs")]
+    )
+
+    assert graph.get_number_of_nodes() == 4
+
+    graph.update_graph_from_file_paths([get_fixture_path("subject_1.cs")])
+
+    assert graph.get_number_of_nodes() == 4
