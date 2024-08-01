@@ -1,7 +1,6 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 import networkx as nx
-from changing_dot.custom_types import DependencyGraphNodeType
 from changing_dot.dependency_graph.node_type_to_terminal import (
     get_node_type_to_terminal_from_file_path,
     parser_from_file_path,
@@ -14,6 +13,8 @@ if TYPE_CHECKING:
     from changing_dot.dependency_graph.node_type_to_terminal import (
         NodeTypeToTerminal,
     )
+
+DependencyGraphNodeType = Literal["Import", "Class", "Method", "Field"]
 
 
 class DependencyGraphNode(BaseModel):
@@ -63,7 +64,12 @@ class DependencyGraph:
                 old_tree = self.trees[path]
                 changed_ranges = old_tree.changed_ranges(new_tree)
                 all_change_ranges += changed_ranges
-                self.G = nx.DiGraph()
+                nodes_to_remove = [
+                    node
+                    for node, data in self.G.nodes(data=True)
+                    if data.get("file_path") == path
+                ]
+                self.G.remove_nodes_from(nodes_to_remove)
                 self.create_graph_from_tree(new_tree, path)
             self.trees[path] = new_tree
         return all_change_ranges
