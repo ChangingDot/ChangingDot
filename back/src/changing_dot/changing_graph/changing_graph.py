@@ -152,6 +152,19 @@ class ChangingGraph:
         ]
         return failed_successors
 
+    def get_failed_solution_to_problem_block(
+        self, node_index: int
+    ) -> list[SolutionNodeBlock]:
+        problem_node = self.get_node(node_index)
+        assert problem_node["node_type"] == "problem"
+        failed_successors: list[SolutionNodeBlock] = [
+            self.get_node(node_index)  # type: ignore
+            for node_index in self.G.successors(node_index)
+            if self.G.nodes[node_index]["status"] == "failed"
+            and self.G.nodes[node_index]["node_type"] == "solution_block"
+        ]
+        return failed_successors
+
     def get_cycles(self) -> list[set[int]]:
         strongly_connected_components = list(nx.strongly_connected_components(self.G))
         cycles = [scc for scc in strongly_connected_components if len(scc) != 1]
