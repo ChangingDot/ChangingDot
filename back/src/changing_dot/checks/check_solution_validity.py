@@ -1,11 +1,16 @@
 from typing import TYPE_CHECKING
 
 from changing_dot.changing_graph.changing_graph import ChangingGraph
-from changing_dot.custom_types import CompileError, Edits, SolutionNode
+from changing_dot.custom_types import BlockEdit, CompileError, Edits, SolutionNode
+from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.error_manager.error_manager import (
     IErrorManager,
 )
-from changing_dot.modifyle.modifyle import IModifyle, applied_edits_context
+from changing_dot.modifyle.modifyle import IModifyle as OldIModifyle
+from changing_dot.modifyle.modifyle import (
+    applied_edits_context as old_applied_edits_context,
+)
+from changing_dot.modifyle.modifyle_block import applied_edits_context
 from changing_dot_visualize.observer import Observer
 
 if TYPE_CHECKING:
@@ -79,7 +84,7 @@ def check_solution_validity(
     G: ChangingGraph,
     solution_node: SolutionNode,
     problem_node_index: int,
-    file_modifier: IModifyle,
+    file_modifier: OldIModifyle,
     error_manager: IErrorManager,
     observer: Observer,
 ) -> bool:
@@ -128,7 +133,24 @@ def simple_check_solution_validity(
     problem_node = G.get_node(problem_node_index)
     assert problem_node["node_type"] == "problem"
     # TODO [] does not make it work with omnisharp errormanager
-    with applied_edits_context(edits):
+    with old_applied_edits_context(edits):
+        compile_errors = error_manager.get_compile_errors([], observer)
+
+    return problem_node["error"] not in compile_errors
+
+
+def simple_check_solution_validity_block(
+    G: ChangingGraph,
+    DG: DependencyGraph,
+    problem_node_index: int,
+    edits: list[BlockEdit],
+    error_manager: IErrorManager,
+    observer: Observer,
+) -> bool:
+    problem_node = G.get_node(problem_node_index)
+    assert problem_node["node_type"] == "problem"
+    with applied_edits_context(DG, edits):
+        # TODO [] does not make it work with omnisharp errormanager
         compile_errors = error_manager.get_compile_errors([], observer)
 
     return problem_node["error"] not in compile_errors
