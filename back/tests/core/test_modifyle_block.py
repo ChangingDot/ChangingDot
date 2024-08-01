@@ -1,8 +1,8 @@
 from collections.abc import Generator
 
 import pytest
+from changing_dot.custom_types import BlockEdit
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
-from changing_dot.instruction_interpreter.block_instruction_interpreter import BlockEdit
 from changing_dot.modifyle.modifyle_block import IModifyle, IntegralModifyle
 from changing_dot.utils.text_functions import write_text
 

@@ -1,8 +1,8 @@
 from changing_dot.changing_graph.changing_graph import ChangingGraph
+from changing_dot.custom_types import InstructionBlock
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
     BlockInstructionManager,
-    InstructionBlock,
 )
 from langchain_community.chat_models.fake import FakeListChatModel
 

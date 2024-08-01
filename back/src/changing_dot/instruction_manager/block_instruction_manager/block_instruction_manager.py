@@ -1,7 +1,5 @@
-from typing import TypedDict
-
 from changing_dot.changing_graph.changing_graph import ChangingGraph
-from changing_dot.custom_types import edit_to_diff
+from changing_dot.custom_types import InstructionBlock, edit_to_diff
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_manager.block_instruction_manager.prompt import (
     prompt,
@@ -52,12 +50,6 @@ class InstructionOutputParser(BaseOutputParser[InstructionOutput]):
             return InstructionOutput(block_id=block_id, instructions=instructions)
         except (IndexError, ValueError, ValidationError) as e:
             raise ValueError(f"Error parsing output: {e}") from e
-
-
-class InstructionBlock(TypedDict):
-    block_id: int
-    file_path: str
-    solution: str
 
 
 class IInstructionManagerBlock:

@@ -14,6 +14,19 @@ def validate_and_convert_path(value: Any) -> str:
         raise ValueError(f"Invalid path: {value}")
 
 
+class InstructionBlock(TypedDict):
+    block_id: int
+    file_path: str
+    solution: str
+
+
+class BlockEdit(BaseModel):
+    file_path: str
+    block_id: int
+    before: str
+    after: str
+
+
 class ErrorInitialization(TypedDict):
     init_type: Literal["error"]
     initial_error: str
@@ -103,6 +116,14 @@ class SolutionNode(TypedDict):
     edits: Edits
 
 
+class SolutionNodeBlock(TypedDict):
+    index: int
+    node_type: Literal["solution_block"]
+    status: NodeStatus
+    instruction: InstructionBlock
+    edits: list[BlockEdit]
+
+
 class ProblemNode(TypedDict):
     index: int
     node_type: Literal["problem"]
@@ -129,7 +150,13 @@ class ErrorProblemNode(TypedDict):
     suspected_edits: Edits | None
 
 
-NodeData = SolutionNode | ProblemNode | ErrorSolutionNode | ErrorProblemNode
+NodeData = (
+    SolutionNode
+    | ProblemNode
+    | ErrorSolutionNode
+    | ErrorProblemNode
+    | SolutionNodeBlock
+)
 
 
 class InitialChange(BaseModel):
