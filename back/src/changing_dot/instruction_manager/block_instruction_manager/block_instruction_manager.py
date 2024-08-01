@@ -5,7 +5,6 @@ from changing_dot.instruction_manager.block_instruction_manager.prompt import (
     prompt,
     system_prompt,
 )
-from changing_dot.instruction_manager.prompt_diff import create_prompt_diff_block
 from dotenv import load_dotenv
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.output_parsers import (
@@ -113,15 +112,14 @@ class BlockInstructionManager(IInstructionManagerBlock):
         root_node = G.get_node(0)
         assert root_node["node_type"] == "problem"
 
-        prompt_diff = create_prompt_diff_block(error, edits)
-
         failed_attempts = get_failed_attempts(G, node_index)
 
         blocks = get_blocks_from_dependency_graph(DG)
 
         task = {
             "goal": self.goal,
-            "prompt_diff": prompt_diff,
+            "cause_edits": "\n".join([str(edit) for edit in edits]),
+            "error": str(error),
             "blocks": blocks,
             "failed_attempts": failed_attempts,
         }

@@ -5,8 +5,8 @@ Your role is to give precise baby step instructions. You have a selection of act
 prompt = """
 Our overall goal is to {goal}
 After a few steps, we arrived here :
-The following file change caused the following ERROR :
-{prompt_diff}
+The following file change {cause_edits} caused the following ERROR :
+{error}
 
 Here are the possible blocks that you can use :
 {blocks}
