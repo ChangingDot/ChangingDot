@@ -1,6 +1,7 @@
 from collections.abc import Generator
 
 import pytest
+from changing_dot.custom_types import BlockEdit
 from changing_dot.dependency_graph.dependency_graph import (
     DependencyGraph,
     DependencyGraphNode,
@@ -29,7 +30,7 @@ def base() -> Generator[None, None, str]:
 
 def test_empty_updates() -> None:
     graph = DependencyGraph([get_fixture_path("subject_1.cs")])
-    graph.update_graph_from_file_paths([])
+    graph.update_graph_from_edits([])
     assert graph.get_node_by_type("Class") == [
         DependencyGraphNode(
             node_type="Class",
@@ -61,7 +62,22 @@ def test_empty_updates() -> None:
 
 def test_no_updates() -> None:
     graph = DependencyGraph([get_fixture_path("subject_1.cs")])
-    graph.update_graph_from_file_paths([get_fixture_path("subject_1.cs")])
+    graph.update_graph_from_edits(
+        [
+            BlockEdit(
+                block_id=1,
+                file_path=get_fixture_path("subject_1.cs"),
+                before="""static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }""",
+                after="""static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }""",
+            )
+        ]
+    )
     assert graph.get_node_by_type("Class") == [
         DependencyGraphNode(
             node_type="Class",
@@ -96,7 +112,22 @@ def test_update_with_no_graph_impact() -> None:
 
     write_text(get_fixture_path("subject_1.cs"), get_fixture("update_1.cs"))
 
-    graph.update_graph_from_file_paths([get_fixture_path("subject_1.cs")])
+    graph.update_graph_from_edits(
+        [
+            BlockEdit(
+                block_id=1,
+                file_path=get_fixture_path("subject_1.cs"),
+                before="""static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }""",
+                after="""static string SimpleMethod()
+    {
+        return "Updated Hello, World!";
+    }""",
+            )
+        ]
+    )
 
     assert graph.get_number_of_nodes() == 2
     assert graph.get_node_by_type("Class") == [
@@ -133,8 +164,22 @@ def test_update_with_no_graph_impact_keeps_same_indexes() -> None:
 
     write_text(get_fixture_path("subject_1.cs"), get_fixture("update_1.cs"))
 
-    graph.update_graph_from_file_paths([get_fixture_path("subject_1.cs")])
-
+    graph.update_graph_from_edits(
+        [
+            BlockEdit(
+                block_id=1,
+                file_path=get_fixture_path("subject_1.cs"),
+                before="""static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }""",
+                after="""static string SimpleMethod()
+    {
+        return "Updated Hello, World!";
+    }""",
+            )
+        ]
+    )
     assert graph.get_number_of_nodes() == 2
     assert graph.get_nodes_with_index() == [
         DependencyGraphNodeWithIndex(
@@ -170,7 +215,32 @@ def test_update_that_adds_a_node() -> None:
 
     write_text(get_fixture_path("subject_1.cs"), get_fixture("update_2.cs"))
 
-    graph.update_graph_from_file_paths([get_fixture_path("subject_1.cs")])
+    graph.update_graph_from_edits(
+        [
+            BlockEdit(
+                block_id=0,
+                file_path=get_fixture_path("subject_1.cs"),
+                before="""class SimpleClass
+{
+    static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }
+}""",
+                after="""class SimpleClass
+{
+    static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }
+    static string AnotherMethod()
+    {
+        return "Another Hello, World!";
+    }
+}""",
+            )
+        ]
+    )
 
     assert graph.get_number_of_nodes() == 3
     for method_dependency in [
@@ -222,6 +292,21 @@ def test_handle_multiple_files() -> None:
 
     assert graph.get_number_of_nodes() == 4
 
-    graph.update_graph_from_file_paths([get_fixture_path("subject_1.cs")])
+    graph.update_graph_from_edits(
+        [
+            BlockEdit(
+                block_id=1,
+                file_path=get_fixture_path("subject_1.cs"),
+                before="""static string SimpleMethod()
+        {
+            return "Hello, World!";
+        }""",
+                after="""static string SimpleMethod()
+        {
+            return "Hello, World!";
+        }""",
+            )
+        ]
+    )
 
     assert graph.get_number_of_nodes() == 4
