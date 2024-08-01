@@ -1,5 +1,5 @@
 from changing_dot.changing_graph.changing_graph import ChangingGraph
-from changing_dot.custom_types import InstructionBlock, edit_to_diff
+from changing_dot.custom_types import InstructionBlock
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_manager.block_instruction_manager.prompt import (
     prompt,
@@ -60,12 +60,12 @@ class IInstructionManagerBlock:
 
 
 def get_failed_attempts(G: ChangingGraph, node_index: int) -> str:
-    failed_attempt_nodes = G.get_failed_solution_to_problem(node_index)
+    failed_attempt_nodes = G.get_failed_solution_to_problem_block(node_index)
     if len(failed_attempt_nodes) == 0:
         return ""
 
     attempt_diffs = [
-        f"Attempt {i}\n{edit_to_diff(edit)}\n"
+        f"Attempt {i}\n{edit.after}\n"
         for i, node in enumerate(failed_attempt_nodes)
         for edit in node["edits"]
     ]
