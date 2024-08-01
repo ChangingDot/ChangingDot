@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Literal
 
 import networkx as nx
+from changing_dot.custom_types import BlockEdit
 from changing_dot.dependency_graph.node_type_to_terminal import (
     get_node_type_to_terminal_from_file_path,
     parser_from_file_path,
@@ -50,9 +51,9 @@ class DependencyGraph:
             self.create_graph_from_tree(tree, path)
             self.trees[path] = tree
 
-    def update_graph_from_file_paths(self, file_paths: list[str]) -> None:
+    def update_graph_from_edits(self, edits: list[BlockEdit]) -> None:
         self.next_index = 0
-        for path in file_paths:
+        for path in [edit.file_path for edit in edits]:
             parser = parser_from_file_path(path)
             if parser is None:
                 continue
