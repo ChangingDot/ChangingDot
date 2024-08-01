@@ -29,16 +29,66 @@ def base() -> Generator[None, None, str]:
 
 def test_empty_updates() -> None:
     graph = DependencyGraph([get_fixture_path("subject_1.cs")])
-    update_ranges = graph.update_graph_from_file_paths([])
-    assert update_ranges == []
+    graph.update_graph_from_file_paths([])
+    assert graph.get_node_by_type("Class") == [
+        DependencyGraphNode(
+            node_type="Class",
+            start_point=(0, 0),
+            end_point=(6, 1),
+            file_path=get_fixture_path("subject_1.cs"),
+            text="""class SimpleClass
+{
+    static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }
+}""",
+        ),
+    ]
+    assert (graph.get_node_by_type("Method")) == [
+        DependencyGraphNode(
+            node_type="Method",
+            start_point=(2, 4),
+            end_point=(5, 5),
+            file_path=get_fixture_path("subject_1.cs"),
+            text="""static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }""",
+        )
+    ]
 
 
 def test_no_updates() -> None:
     graph = DependencyGraph([get_fixture_path("subject_1.cs")])
-    update_ranges = graph.update_graph_from_file_paths(
-        [get_fixture_path("subject_1.cs")]
-    )
-    assert update_ranges == []
+    graph.update_graph_from_file_paths([get_fixture_path("subject_1.cs")])
+    assert graph.get_node_by_type("Class") == [
+        DependencyGraphNode(
+            node_type="Class",
+            start_point=(0, 0),
+            end_point=(6, 1),
+            file_path=get_fixture_path("subject_1.cs"),
+            text="""class SimpleClass
+{
+    static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }
+}""",
+        ),
+    ]
+    assert (graph.get_node_by_type("Method")) == [
+        DependencyGraphNode(
+            node_type="Method",
+            start_point=(2, 4),
+            end_point=(5, 5),
+            file_path=get_fixture_path("subject_1.cs"),
+            text="""static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }""",
+        )
+    ]
 
 
 def test_update_with_no_graph_impact() -> None:
@@ -46,11 +96,8 @@ def test_update_with_no_graph_impact() -> None:
 
     write_text(get_fixture_path("subject_1.cs"), get_fixture("update_1.cs"))
 
-    update_ranges = graph.update_graph_from_file_paths(
-        [get_fixture_path("subject_1.cs")]
-    )
+    graph.update_graph_from_file_paths([get_fixture_path("subject_1.cs")])
 
-    assert len(update_ranges) == 1
     assert graph.get_number_of_nodes() == 2
     assert graph.get_node_by_type("Class") == [
         DependencyGraphNode(
@@ -86,11 +133,8 @@ def test_update_with_no_graph_impact_keeps_same_indexes() -> None:
 
     write_text(get_fixture_path("subject_1.cs"), get_fixture("update_1.cs"))
 
-    update_ranges = graph.update_graph_from_file_paths(
-        [get_fixture_path("subject_1.cs")]
-    )
+    graph.update_graph_from_file_paths([get_fixture_path("subject_1.cs")])
 
-    assert len(update_ranges) == 1
     assert graph.get_number_of_nodes() == 2
     assert graph.get_nodes_with_index() == [
         DependencyGraphNodeWithIndex(
@@ -126,11 +170,8 @@ def test_update_that_adds_a_node() -> None:
 
     write_text(get_fixture_path("subject_1.cs"), get_fixture("update_2.cs"))
 
-    update_ranges = graph.update_graph_from_file_paths(
-        [get_fixture_path("subject_1.cs")]
-    )
+    graph.update_graph_from_file_paths([get_fixture_path("subject_1.cs")])
 
-    assert len(update_ranges) == 1
     assert graph.get_number_of_nodes() == 3
     for method_dependency in [
         DependencyGraphNode(

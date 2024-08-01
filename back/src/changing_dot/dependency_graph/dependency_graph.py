@@ -7,7 +7,7 @@ from changing_dot.dependency_graph.node_type_to_terminal import (
 )
 from changing_dot.utils.tree_sitter_utils import get_node_text_from_file_path
 from pydantic import BaseModel
-from tree_sitter import Node, Range, Tree
+from tree_sitter import Node, Tree
 
 if TYPE_CHECKING:
     from changing_dot.dependency_graph.node_type_to_terminal import (
@@ -50,9 +50,8 @@ class DependencyGraph:
             self.create_graph_from_tree(tree, path)
             self.trees[path] = tree
 
-    def update_graph_from_file_paths(self, file_paths: list[str]) -> list[Range]:
+    def update_graph_from_file_paths(self, file_paths: list[str]) -> None:
         self.next_index = 0
-        all_change_ranges = []
         for path in file_paths:
             parser = parser_from_file_path(path)
             if parser is None:
@@ -61,9 +60,6 @@ class DependencyGraph:
                 code: str = file.read()
             new_tree = parser.parse(bytes(code, "utf8"))
             if path in self.trees:
-                old_tree = self.trees[path]
-                changed_ranges = old_tree.changed_ranges(new_tree)
-                all_change_ranges += changed_ranges
                 nodes_to_remove = [
                     node
                     for node, data in self.G.nodes(data=True)
@@ -72,7 +68,7 @@ class DependencyGraph:
                 self.G.remove_nodes_from(nodes_to_remove)
                 self.create_graph_from_tree(new_tree, path)
             self.trees[path] = new_tree
-        return all_change_ranges
+        print("UPDATINGG END", self.G.number_of_nodes())
 
     def create_graph_from_tree(self, tree: Tree, file_path: str) -> None:
         def traverse_and_reduce(node: Node, parent_index: int | None = None) -> None:
