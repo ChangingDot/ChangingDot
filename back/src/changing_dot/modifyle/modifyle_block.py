@@ -7,7 +7,7 @@ from changing_dot.utils.text_functions import read_text, write_text
 
 
 class IModifyle:
-    def revert_change(self, edits: list[BlockEdit]) -> None:
+    def revert_change(self, DG: DependencyGraph, edits: list[BlockEdit]) -> None:
         pass
 
     def apply_change(self, DG: DependencyGraph, edits: list[BlockEdit]) -> None:
@@ -19,7 +19,7 @@ class IModifyle:
 
 
 class FakeModifyle(IModifyle):
-    def revert_change(self, edits: list[BlockEdit]) -> None:
+    def revert_change(self, DG: DependencyGraph, edits: list[BlockEdit]) -> None:
         pass
 
     def apply_change(self, DG: DependencyGraph, edits: list[BlockEdit]) -> None:
@@ -30,7 +30,7 @@ class FakeModifyle(IModifyle):
 
 
 class ManualModifyle(IModifyle):
-    def revert_change(self, edits: list[BlockEdit]) -> None:
+    def revert_change(self, DG: DependencyGraph, edits: list[BlockEdit]) -> None:
         input("Revert")
 
     def apply_change(self, DG: DependencyGraph, edits: list[BlockEdit]) -> None:
@@ -80,9 +80,10 @@ class IntegralModifyle(IModifyle):
 
         apply_edits(DG, edits)
 
-    def revert_change(self, edits: list[BlockEdit]) -> None:
+    def revert_change(self, DG: DependencyGraph, edits: list[BlockEdit]) -> None:
         for file_path in self.original_files_content:
             write_text(file_path, self.original_files_content[file_path])
+            DG.update_graph_from_file_paths([file_path])
         self.original_files_content = {}
 
     def can_revert(self) -> bool:
@@ -103,3 +104,4 @@ def applied_edits_context(
     finally:
         for file_path in original_files_content:
             write_text(file_path, original_files_content[file_path])
+            DG.update_graph_from_file_paths([file_path])
