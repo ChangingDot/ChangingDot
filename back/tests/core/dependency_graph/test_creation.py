@@ -36,6 +36,27 @@ def test_empty_class() -> None:
     assert graph.get_parent_child_relationships() == []
 
 
+def test_empty_class_multiple_times_same_file_path() -> None:
+    graph = DependencyGraph(
+        [
+            get_fixture_path("empty_class.cs"),
+            get_fixture_path("empty_class.cs"),
+            get_fixture_path("empty_class.cs"),
+        ]
+    )
+    assert graph.get_number_of_nodes() == 1
+    assert graph.get_node(0) == DependencyGraphNode(
+        node_type="Class",
+        start_point=(0, 0),
+        end_point=(2, 1),
+        file_path=get_fixture_path("empty_class.cs"),
+        text="""public class EmptyClass
+{
+}""",
+    )
+    assert graph.get_parent_child_relationships() == []
+
+
 def test_simple_method() -> None:
     graph = DependencyGraph([get_fixture_path("simple_method.cs")])
     assert graph.get_number_of_nodes() == 2
@@ -188,6 +209,43 @@ def test_imports() -> None:
         file_path=get_fixture_path("imports.cs"),
         text="using PostHog.Exceptions;",
     ) in graph.get_node_by_type("Import")
+
+
+def test_comments_are_added_to_block() -> None:
+    graph = DependencyGraph([get_fixture_path("comments.cs")])
+    assert DependencyGraphNode(
+        node_type="Import",
+        start_point=(0, 0),
+        end_point=(1, 33),
+        file_path=get_fixture_path("comments.cs"),
+        text="// comment added to import\nusing System.Collections.Generic;",
+    ) in graph.get_node_by_type("Import")
+    assert DependencyGraphNode(
+        node_type="Method",
+        start_point=(5, 4),
+        end_point=(9, 5),
+        file_path=get_fixture_path("comments.cs"),
+        text="""// Comment added to method
+static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }""",
+    ) in graph.get_node_by_type("Method")
+    assert DependencyGraphNode(
+        node_type="Class",
+        start_point=(2, 0),
+        end_point=(10, 1),
+        file_path=get_fixture_path("comments.cs"),
+        text="""// comment added to class
+class SimpleClass
+{
+    // Comment added to method
+    static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }
+}""",
+    ) in graph.get_node_by_type("Class")
 
 
 @pytest.mark.skip(reason="Waiting for tree-sitter-python pip fix")
@@ -361,3 +419,92 @@ def test_xml_csproj_files() -> None:
     )
     assert graph.get_number_of_nodes() == 0
     assert graph.get_parent_child_relationships() == []
+
+
+def test_relations_in_multiple_files() -> None:
+    graph = DependencyGraph(
+        [
+            get_fixture_path("simple_method.cs"),
+            get_fixture_path("simple_constructor.cs"),
+        ]
+    )
+
+    assert len(graph.get_parent_child_relationships()) == 3
+
+    for relation in [
+        (
+            DependencyGraphNode(
+                node_type="Class",
+                start_point=(0, 0),
+                end_point=(6, 1),
+                file_path=get_fixture_path("simple_method.cs"),
+                text="""class SimpleClass
+{
+    static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }
+}""",
+            ),
+            DependencyGraphNode(
+                node_type="Method",
+                start_point=(2, 4),
+                end_point=(5, 5),
+                file_path=get_fixture_path("simple_method.cs"),
+                text="""static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }""",
+            ),
+        ),
+        (
+            DependencyGraphNode(
+                node_type="Class",
+                start_point=(0, 0),
+                end_point=(7, 1),
+                file_path=get_fixture_path("simple_constructor.cs"),
+                text="""public class Person
+{
+    public string Name;
+    public Person(string name)
+    {
+        Name = name;
+    }
+}""",
+            ),
+            DependencyGraphNode(
+                node_type="Method",
+                start_point=(3, 4),
+                end_point=(6, 5),
+                file_path=get_fixture_path("simple_constructor.cs"),
+                text="""public Person(string name)
+    {
+        Name = name;
+    }""",
+            ),
+        ),
+        (
+            DependencyGraphNode(
+                node_type="Class",
+                start_point=(0, 0),
+                end_point=(7, 1),
+                file_path=get_fixture_path("simple_constructor.cs"),
+                text="""public class Person
+{
+    public string Name;
+    public Person(string name)
+    {
+        Name = name;
+    }
+}""",
+            ),
+            DependencyGraphNode(
+                node_type="Field",
+                start_point=(2, 4),
+                end_point=(2, 23),
+                file_path=get_fixture_path("simple_constructor.cs"),
+                text="""public string Name;""",
+            ),
+        ),
+    ]:
+        assert relation in graph.get_parent_child_relationships()
