@@ -150,6 +150,29 @@ def test_DG_is_updated_on_each_code_change(modifyle: IModifyle, base: str) -> No
     assert DG.get_node(7).text == "[JsonIgnore]\n        public int Size { get; set; }"
 
 
+def test_remove_line(
+    modifyle: IModifyle,
+    base: str,
+) -> None:
+    edits: list[BlockEdit] = [
+        BlockEdit(
+            file_path="./tests/core/fixtures/subject.cs",
+            block_id=4,
+            before="        [JsonIgnore]\n        public string? DistinctId { get; set; }\n",
+            after="        public string? DistinctId { get; set; }\n",
+        ),
+    ]
+    DG = DependencyGraph([edit.file_path for edit in edits])
+
+    modifyle.apply_change(DG, edits)
+
+    assert get_subject() == get_fixture("remove_line.cs")
+
+    modifyle.revert_change(DG)
+
+    assert get_subject() == get_fixture("base.cs")
+
+
 def test_multiple_changes_same_file(
     modifyle: IModifyle,
     base: str,
@@ -189,22 +212,26 @@ def test_multiple_changes_multiple_files(
     modifyle: IModifyle,
     base: str,
 ) -> None:
+    DG = DependencyGraph(
+        ["./tests/core/fixtures/subject2.cs", "./tests/core/fixtures/subject.cs"]
+    )
+
     edits: list[BlockEdit] = [
         BlockEdit(
             file_path="./tests/core/fixtures/subject2.cs",
-            block_id=7,
+            block_id=16,
             before="        [JsonIgnore]\n        public int Size { get; set; }\n",
             after="        [JsonDataIgnore]\n        public int Size { get; set; }\n",
         ),
         BlockEdit(
             file_path="./tests/core/fixtures/subject2.cs",
-            block_id=1,
+            block_id=10,
             before="using Newtonsoft.Json;\n",
             after="// New line yo !\nusing Newtonsoft.Json;\n",
         ),
         BlockEdit(
             file_path="./tests/core/fixtures/subject2.cs",
-            block_id=4,
+            block_id=13,
             before="        [JsonIgnore]\n        public string? DistinctId { get; set; }\n",
             after="        public string? DistinctId { get; set; }\n",
         ),
@@ -215,7 +242,6 @@ def test_multiple_changes_multiple_files(
             after="        [JsonIgnore]\n        public int ChangedSize { get; set; }\n",
         ),
     ]
-    DG = DependencyGraph([edit.file_path for edit in edits])
 
     modifyle.apply_change(DG, edits)
 
@@ -232,22 +258,26 @@ def test_applied_edits_context(
     modifyle: IModifyle,
     base: str,
 ) -> None:
+    DG = DependencyGraph(
+        ["./tests/core/fixtures/subject2.cs", "./tests/core/fixtures/subject.cs"]
+    )
+
     edits: list[BlockEdit] = [
         BlockEdit(
             file_path="./tests/core/fixtures/subject2.cs",
-            block_id=7,
+            block_id=16,
             before="        [JsonIgnore]\n        public int Size { get; set; }\n",
             after="        [JsonDataIgnore]\n        public int Size { get; set; }\n",
         ),
         BlockEdit(
             file_path="./tests/core/fixtures/subject2.cs",
-            block_id=1,
+            block_id=10,
             before="using Newtonsoft.Json;\n",
             after="// New line yo !\nusing Newtonsoft.Json;\n",
         ),
         BlockEdit(
             file_path="./tests/core/fixtures/subject2.cs",
-            block_id=4,
+            block_id=13,
             before="        [JsonIgnore]\n        public string? DistinctId { get; set; }\n",
             after="        public string? DistinctId { get; set; }\n",
         ),
@@ -258,7 +288,6 @@ def test_applied_edits_context(
             after="        [JsonIgnore]\n        public int ChangedSize { get; set; }\n",
         ),
     ]
-    DG = DependencyGraph([edit.file_path for edit in edits])
 
     with applied_edits_context(DG, edits):
         assert get_subject() == get_fixture("basic_change.cs")

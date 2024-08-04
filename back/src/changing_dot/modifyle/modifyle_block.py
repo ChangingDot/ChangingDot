@@ -3,7 +3,6 @@ from contextlib import contextmanager
 
 from changing_dot.custom_types import BlockEdit
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
-from changing_dot.utils.reverse_edits import reverse_edits
 from changing_dot.utils.text_functions import read_text, write_text
 
 
@@ -76,6 +75,8 @@ class IntegralModifyle(IModifyle):
         if len(edits) == 0:
             return
 
+        DG.save_state()
+
         for edit in edits:
             if self.original_files_content.get(edit.file_path) is None:
                 self.original_files_content[edit.file_path] = read_text(edit.file_path)
@@ -89,7 +90,7 @@ class IntegralModifyle(IModifyle):
     def revert_change(self, DG: DependencyGraph) -> None:
         for file_path in self.original_files_content:
             write_text(file_path, self.original_files_content[file_path])
-            DG.update_graph_from_edits(reverse_edits(self.files_to_edits[file_path]))
+        DG.revert()
         self.original_files_content = {}
         self.files_to_edits = {}
 
@@ -110,6 +111,7 @@ def applied_edits_context(
             files_to_edits[edit.file_path] = [edit]
         else:
             files_to_edits[edit.file_path].append(edit)
+    DG.save_state()
 
     try:
         apply_edits(DG, edits)
@@ -117,4 +119,5 @@ def applied_edits_context(
     finally:
         for file_path in original_files_content:
             write_text(file_path, original_files_content[file_path])
-            DG.update_graph_from_edits(reverse_edits(files_to_edits[file_path]))
+            # DG.update_graph_from_edits(reverse_edits(files_to_edits[file_path]))
+        DG.revert()
