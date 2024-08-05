@@ -69,7 +69,6 @@ def apply_edits(DG: DependencyGraph, edits: list[BlockEdit]) -> None:
 class IntegralModifyle(IModifyle):
     def __init__(self) -> None:
         self.original_files_content: dict[str, str] = {}
-        self.files_to_edits: dict[str, list[BlockEdit]] = {}
 
     def apply_change(self, DG: DependencyGraph, edits: list[BlockEdit]) -> None:
         if len(edits) == 0:
@@ -79,10 +78,6 @@ class IntegralModifyle(IModifyle):
 
         for edit in edits:
             self.original_files_content[edit.file_path] = read_text(edit.file_path)
-            if self.files_to_edits.get(edit.file_path) is None:
-                self.files_to_edits[edit.file_path] = [edit]
-            else:
-                self.files_to_edits[edit.file_path].append(edit)
 
         apply_edits(DG, edits)
 
@@ -91,7 +86,6 @@ class IntegralModifyle(IModifyle):
             write_text(file_path, self.original_files_content[file_path])
         DG.revert()
         self.original_files_content = {}
-        self.files_to_edits = {}
 
     def can_revert(self) -> bool:
         return len(self.original_files_content.keys()) != 0
@@ -102,14 +96,10 @@ def applied_edits_context(
     DG: DependencyGraph, edits: list[BlockEdit]
 ) -> Iterator[None]:
     original_files_content: dict[str, str] = {}
-    files_to_edits: dict[str, list[BlockEdit]] = {}
     for edit in edits:
         if original_files_content.get(edit.file_path) is None:
             original_files_content[edit.file_path] = read_text(edit.file_path)
-        if files_to_edits.get(edit.file_path) is None:
-            files_to_edits[edit.file_path] = [edit]
-        else:
-            files_to_edits[edit.file_path].append(edit)
+
     DG.save_state()
 
     try:
@@ -118,5 +108,4 @@ def applied_edits_context(
     finally:
         for file_path in original_files_content:
             write_text(file_path, original_files_content[file_path])
-            # DG.update_graph_from_edits(reverse_edits(files_to_edits[file_path]))
         DG.revert()
