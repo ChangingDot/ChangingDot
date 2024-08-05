@@ -78,8 +78,7 @@ class IntegralModifyle(IModifyle):
         DG.save_state()
 
         for edit in edits:
-            if self.original_files_content.get(edit.file_path) is None:
-                self.original_files_content[edit.file_path] = read_text(edit.file_path)
+            self.original_files_content[edit.file_path] = read_text(edit.file_path)
             if self.files_to_edits.get(edit.file_path) is None:
                 self.files_to_edits[edit.file_path] = [edit]
             else:
