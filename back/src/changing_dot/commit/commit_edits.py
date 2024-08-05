@@ -1,8 +1,9 @@
 import os
 
-from changing_dot.commit.conflict_handler import ConflictHandler
-from changing_dot.custom_types import Edits
-from changing_dot.modifyle.modifyle import IModifyle
+from changing_dot.commit.conflict_handler import IConflictHandler
+from changing_dot.custom_types import BlockEdit
+from changing_dot.dependency_graph.dependency_graph import DependencyGraph
+from changing_dot.modifyle.modifyle_block import IModifyle
 from changing_dot.utils.text_functions import read_text, write_text
 from changing_dot_visualize.observer import Observer
 from git import GitCommandError, Repo
@@ -25,10 +26,10 @@ def cherry_pick_continue(repo: Repo, observer: Observer | None) -> None:
 
 def commit_edits(
     repo: Repo,
-    edits_list: list[Edits],
+    edits_list: list[list[BlockEdit]],
     branch_name: str,
     file_modifier: IModifyle,
-    conflict_handler: ConflictHandler,
+    conflict_handler: IConflictHandler,
     observer: Observer | None = None,
 ) -> None:
     # setup commit
@@ -37,19 +38,14 @@ def commit_edits(
     os.environ["GIT_COMMITTER_NAME"] = "ChangingDot"
     os.environ["GIT_COMMITTER_EMAIL"] = "bot@ChangingDot.com"
 
-    initial_head = repo.head.commit
     repo.git.checkout("-b", branch_name)
     for edits in edits_list:
+        DG = DependencyGraph([edit.file_path for edit in edits])
         if observer:
             observer.log("handling edits")
-        # add edits to new temp branch to trigger conflicts
-        tmp_branch = "temp"
-        repo.create_head(tmp_branch, initial_head)
-        repo.git.checkout(tmp_branch)
-        if observer:
-            observer.log(f"applying edits on branch {tmp_branch}")
-        file_modifier.apply_change(edits)
-        changed_files = list({edit["file_path"] for edit in edits})
+        # We do not trigger conflicts here
+        file_modifier.apply_change(DG, edits)
+        changed_files = list({edit.file_path for edit in edits})
         repo.index.add(changed_files)
         commit = repo.index.commit("commit")
         ## doesn't work without, this clean the index (that should already be clean)
@@ -71,8 +67,6 @@ def commit_edits(
                     write_text(changed_file, fixed_file_content)
                     repo.git.add(changed_file)
             cherry_pick_continue(repo, observer)
-        finally:
-            repo.git.branch("-D", tmp_branch)
 
     del os.environ["GIT_AUTHOR_NAME"]
     del os.environ["GIT_AUTHOR_EMAIL"]

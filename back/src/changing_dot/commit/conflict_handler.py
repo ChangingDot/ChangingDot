@@ -24,7 +24,18 @@ system_prompt = """You are an expert software engineer. Your role is to help me 
 prompt = """Can you fix me the following conflict : {file_content}"""
 
 
-class ConflictHandler:
+class IConflictHandler:
+    def handle_conflict(self, file_content: str) -> str:
+        raise NotImplementedError()
+
+
+class ConflictHandlerThatThrowsSinceConflictShoundntExist(IConflictHandler):
+    def handle_conflict(self, file_content: str) -> str:
+        # This is a bug
+        raise NotImplementedError("Not implemented because conflicts shouldn't exist")
+
+
+class ConflictHandler(IConflictHandler):
     model: BaseChatModel
     observer: Observer | None
 

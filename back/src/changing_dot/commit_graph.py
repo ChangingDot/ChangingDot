@@ -7,17 +7,17 @@ from git import Repo
 from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.commit.commit_edits import commit_edits
 from changing_dot.commit.conflict_handler import (
-    ConflictHandler,
+    IConflictHandler,
     create_openai_conflict_handler,
 )
 from changing_dot.custom_types import Commit
-from changing_dot.modifyle.modifyle import IModifyle, Modifyle
+from changing_dot.modifyle.modifyle_block import IModifyle, IntegralModifyle
 from changing_dot.utils.process_pickle_files import process_pickle_files
 
 if TYPE_CHECKING:
     from changing_dot.custom_types import (
-        Edits,
-        SolutionNode,
+        BlockEdit,
+        SolutionNodeBlock,
     )
 
 
@@ -25,7 +25,7 @@ def commit_graph(
     G: ChangingGraph,
     file_modifier: IModifyle,
     observer: Observer,
-    conflict_handler: ConflictHandler,
+    conflict_handler: IConflictHandler,
     commit: Commit,
 ) -> None:
     ### Commit logic
@@ -36,14 +36,14 @@ def commit_graph(
 
     observer.log("Starting to commit")
 
-    list_of_solution_nodes: list[SolutionNode] = []
+    list_of_solution_nodes: list[SolutionNodeBlock] = []
 
     while len(leaves) > 0:
         leaf = leaves.pop()
 
         node = G.get_node(leaf)
 
-        if node["node_type"] == "solution":
+        if node["node_type"] == "solution_block":
             if node["status"] != "handled":
                 observer.log(
                     f"Removing node {node['index']} because of status {node['status']}"
@@ -63,7 +63,9 @@ def commit_graph(
     # there is part of the graph that we can't commit
     assert G.get_number_of_nodes() == 0
 
-    edits_list: list[Edits] = [node["edits"] for node in list_of_solution_nodes]
+    edits_list: list[list[BlockEdit]] = [
+        node["edits"] for node in list_of_solution_nodes
+    ]
 
     observer.log("Got list of all edits, committing the changes one by one")
 
@@ -85,7 +87,7 @@ def run_commit_graph(
 
     graphs = process_pickle_files(f"{base_path}/{iteration_name}/", is_local)
 
-    file_modifier: IModifyle = Modifyle()
+    file_modifier: IModifyle = IntegralModifyle()
 
     G = ChangingGraph(graphs[-1])
 
