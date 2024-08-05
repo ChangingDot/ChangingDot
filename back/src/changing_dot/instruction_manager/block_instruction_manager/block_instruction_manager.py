@@ -72,10 +72,13 @@ def get_failed_attempts(G: ChangingGraph, node_index: int) -> str:
     return f"We have already tried this, but it did not fix the error : {attempt_diffs}"
 
 
-def get_blocks_from_dependency_graph(dependency_graph: DependencyGraph) -> str:
+def get_blocks_from_dependency_graph(
+    dependency_graph: DependencyGraph, file_path: str
+) -> str:
     blocks = ""
     for node in dependency_graph.get_nodes_with_index():
-        blocks += f"\nBlock : {node}"
+        if node.file_path == file_path:
+            blocks += f"\nBlock : {node}"
 
     return blocks
 
@@ -114,7 +117,9 @@ class BlockInstructionManager(IInstructionManagerBlock):
 
         failed_attempts = get_failed_attempts(G, node_index)
 
-        blocks = get_blocks_from_dependency_graph(DG)
+        blocks = get_blocks_from_dependency_graph(
+            DG, problem_node["error"]["file_path"]
+        )
 
         task = {
             "goal": self.goal,
