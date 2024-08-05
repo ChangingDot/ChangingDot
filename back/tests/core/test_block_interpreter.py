@@ -75,11 +75,51 @@ random blabla
     {
         return "Hello, World!";
     }""",
-            after="""    static string SimpleMethod()
+            after="""static string SimpleMethod()
     {
         return "Welcome, World!";
+    }""",
+        )
+    ]
+
+    assert expected_edits == interpreter.get_edits_from_instruction(instruction, DG)
+
+
+def test_basic_change_but_LLM_returns_changes_not_full_block() -> None:
+    DG = DependencyGraph(["./tests/core/fixtures/block_interpreter/subject.cs"])
+    instruction: InstructionBlock = {
+        "file_path": "./tests/core/fixtures/block_interpreter/subject.cs",
+        "block_id": 1,
+        "solution": "Change Hello, World! to Welcome, World!",
     }
-""",
+
+    interpreter = make_instruction_interpreter(
+        """
+    random blabla
+```diff
+--- file.cs
++++ file.cs
+@@ ... @@
+-        return "Hello, World!";
++        return "Welcome, World!";
+```
+
+random blabla
+    """
+    )
+
+    expected_edits: list[BlockEdit] = [
+        BlockEdit(
+            file_path="./tests/core/fixtures/block_interpreter/subject.cs",
+            block_id=1,
+            before="""static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }""",
+            after="""static string SimpleMethod()
+    {
+        return "Welcome, World!";
+    }""",
         )
     ]
 
