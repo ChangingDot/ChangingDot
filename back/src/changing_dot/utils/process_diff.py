@@ -17,19 +17,28 @@ def extract_hunks(diff: str) -> list[str]:
     lines = diff.splitlines(keepends=True)
 
     hunk = ""
+    last_operator = ""
     for line in lines:
-        if (
-            line.strip().startswith("-")
-            and not line.strip().startswith("---")
-            or line.strip().startswith("+")
-            and not line.strip().startswith("+++")
-        ):
+        if line.strip().startswith("-") and not line.strip().startswith("---"):
+            # if last operator was a + then a - means we are in another hunk
+            if last_operator == "+":
+                # save current hunk
+                if len(hunk) > 0:
+                    hunks.append(hunk)
+                # reset hunk
+                hunk = ""
             hunk = hunk + line
+            last_operator = "-"
+        elif line.strip().startswith("+") and not line.strip().startswith("+++"):
+            hunk = hunk + line
+            last_operator = "+"
         else:
             # stop this hunk and start new one
             if len(hunk) > 0:
                 hunks.append(hunk)
             hunk = ""
+
+    print(hunks)
 
     return hunks
 
@@ -39,9 +48,9 @@ def process_hunk(hunk: str) -> ProcessedDiff:
     after = ""
     hunk_lines = hunk.splitlines(keepends=True)
     for hunk_line in hunk_lines:
-        if hunk_line[0] == "-":
-            before = before + hunk_line[1:]
-        elif hunk_line[0] == "+":
-            after = after + hunk_line[1:]
+        if hunk_line.strip()[0] == "-":
+            before = before + hunk_line.replace("-", "", 1)
+        elif hunk_line.strip()[0] == "+":
+            after = after + hunk_line.replace("+", "", 1)
     # [:-1] to remove last \n
     return ProcessedDiff(before=before[:-1], after=after[:-1])
