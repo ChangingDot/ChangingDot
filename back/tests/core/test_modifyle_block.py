@@ -208,6 +208,50 @@ def test_multiple_changes_same_file(
     assert get_subject() == get_fixture("base.cs")
 
 
+def test_multiple_applies_same_file(
+    modifyle: IModifyle,
+    base: str,
+) -> None:
+    DG = DependencyGraph(["./tests/core/fixtures/subject.cs"])
+
+    edits: list[BlockEdit] = [
+        BlockEdit(
+            file_path="./tests/core/fixtures/subject.cs",
+            block_id=7,
+            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
+            after="        [JsonDataIgnore]\n        public int Size { get; set; }\n",
+        ),
+    ]
+
+    edits_2 = [
+        BlockEdit(
+            file_path="./tests/core/fixtures/subject.cs",
+            block_id=1,
+            before="using Newtonsoft.Json;\n",
+            after="// New line yo !\nusing Newtonsoft.Json;\n",
+        ),
+        BlockEdit(
+            file_path="./tests/core/fixtures/subject.cs",
+            block_id=4,
+            before="        [JsonIgnore]\n        public string? DistinctId { get; set; }\n",
+            after="        public string? DistinctId { get; set; }\n",
+        ),
+    ]
+
+    modifyle.apply_change(DG, edits)
+
+    assert get_subject() == get_fixture("duplicate_change.cs")
+
+    modifyle.apply_change(DG, edits_2)
+
+    assert get_subject() == get_fixture("multiple_changes.cs")
+
+    ### Revert only reverts last change
+    modifyle.revert_change(DG)
+
+    assert get_subject() == get_fixture("duplicate_change.cs")
+
+
 def test_multiple_changes_multiple_files(
     modifyle: IModifyle,
     base: str,
