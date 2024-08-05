@@ -28,5 +28,4 @@ def get_csharp_files(dir_to_explore: str) -> list[str]:
         if not any(pattern in file for pattern in exclude_patterns):
             filtered_files.append(os.path.abspath(file))
 
-    print("filtered files", filtered_files)
     return filtered_files

@@ -38,8 +38,6 @@ def extract_hunks(diff: str) -> list[str]:
                 hunks.append(hunk)
             hunk = ""
 
-    print(hunks)
-
     return hunks
 
 
