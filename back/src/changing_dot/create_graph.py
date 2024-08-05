@@ -5,25 +5,30 @@ from changing_dot_visualize.observer import Observer
 
 from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.custom_types import InitialChange, Initialization, RestrictionOptions
+from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.error_manager.error_manager import (
     IErrorManager,
     RoslynErrorManager,
 )
 from changing_dot.handle_node import handle_node
-from changing_dot.instruction_interpreter.basic_instruction_interpreter import (
+from changing_dot.instruction_interpreter.block_instruction_interpreter import (
     create_openai_interpreter,
 )
 from changing_dot.instruction_interpreter.instruction_interpreter import (
-    IInstructionInterpreter,
+    IBlockInstructionInterpreter,
 )
-from changing_dot.instruction_manager.basic_instruction_manager.basic_instruction_manager import (
-    create_mistral_instruction_manager,
+from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
+    IInstructionManagerBlock,
+    create_openai_instruction_manager,
 )
-from changing_dot.instruction_manager.instruction_manager import IInstructionManager
-from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
+from changing_dot.modifyle.modifyle_block import IModifyle, IntegralModifyle
+from changing_dot.utils.file_utils import get_csharp_files
 
 if TYPE_CHECKING:
     from changing_dot.custom_types import ErrorInitialization
+    from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
+        BlockInstructionManager,
+    )
 
 
 def run_create_graph(
@@ -37,13 +42,17 @@ def run_create_graph(
 ) -> None:
     job_id = str(uuid.uuid4())
 
-    instruction_manager = create_mistral_instruction_manager(goal)
+    instruction_manager: BlockInstructionManager = create_openai_instruction_manager(
+        goal
+    )
 
     error_manager = RoslynErrorManager(solution_path, restriction_options)
 
     file_modifier: IModifyle = IntegralModifyle()
 
     G = ChangingGraph()
+
+    DG = DependencyGraph(get_csharp_files(solution_path))
 
     observer = Observer(
         G,
@@ -53,7 +62,7 @@ def run_create_graph(
         is_local=is_local,
     )
 
-    interpreter: IInstructionInterpreter = create_openai_interpreter(observer)
+    interpreter = create_openai_interpreter(observer)
 
     initialisation: ErrorInitialization = {
         "init_type": "error",
@@ -64,6 +73,7 @@ def run_create_graph(
 
     create_graph(
         G,
+        DG,
         initialisation,
         error_manager,
         instruction_manager,
@@ -76,10 +86,11 @@ def run_create_graph(
 
 def create_graph(
     G: ChangingGraph,
+    DG: DependencyGraph,
     initialization: Initialization,
     error_manager: IErrorManager,
-    instruction_manager: IInstructionManager,
-    interpreter: IInstructionInterpreter,
+    instruction_manager: IInstructionManagerBlock,
+    interpreter: IBlockInstructionInterpreter,
     file_modifier: IModifyle,
     observer: Observer,
     restriction_options: RestrictionOptions,
@@ -112,6 +123,7 @@ def create_graph(
 
         handle_node(
             G,
+            DG,
             node_index,
             G.get_shortest_distance(0, node_index),
             file_modifier,
@@ -124,6 +136,6 @@ def create_graph(
 
         pending_nodes = G.get_all_pending_nodes()
 
-    file_modifier.revert_change([])
+    file_modifier.revert_change(DG)
 
     observer.log("Finished")

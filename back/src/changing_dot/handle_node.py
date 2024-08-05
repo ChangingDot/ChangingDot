@@ -6,15 +6,18 @@ from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.checks.check_solution_syntax_correctness import (
     check_solution_syntax_correctness,
 )
-from changing_dot.checks.check_solution_validity import simple_check_solution_validity
+from changing_dot.checks.check_solution_validity import (
+    simple_check_solution_validity_block,
+)
 from changing_dot.custom_types import (
-    Edits,
+    BlockEdit,
     ErrorProblemNode,
-    Instruction,
+    InstructionBlock,
     ProblemNode,
     RestrictionOptions,
     SolutionNode,
 )
+from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.error_manager.error_manager import (
     IErrorManager,
 )
@@ -22,23 +25,23 @@ from changing_dot.instruction_interpreter.hard_coded_instruction_interpreter imp
     HardCodedInstructionInterpreter,
 )
 from changing_dot.instruction_interpreter.instruction_interpreter import (
-    IInstructionInterpreter,
+    IBlockInstructionInterpreter,
+)
+from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
+    IInstructionManagerBlock,
 )
 from changing_dot.instruction_manager.hard_coded_instruction_manager import (
     HardCodedInstructionManager,
 )
-from changing_dot.instruction_manager.instruction_manager import (
-    IInstructionManager,
-)
-from changing_dot.modifyle.modifyle import IModifyle
-from changing_dot.utils.index_manager import IndexManager
+from changing_dot.modifyle.modifyle_block import IModifyle
 
 
 def get_solution_node_from_problem(
     G: ChangingGraph,
+    DG: DependencyGraph,
     node_index: int,
-    instruction_manager: IInstructionManager,
-    interpreter: IInstructionInterpreter,
+    instruction_manager: IInstructionManagerBlock,
+    interpreter: IBlockInstructionInterpreter,
     observer: Observer,
 ) -> SolutionNode | ErrorProblemNode:
     # Initializing for exept block
@@ -49,11 +52,11 @@ def get_solution_node_from_problem(
     assert node["node_type"] == "problem"
 
     try:
-        instruction = instruction_manager.get_node_instruction(G, node_index)
+        instruction = instruction_manager.get_node_instruction(G, DG, node_index)
 
         observer.log_dict("used instruction : ", instruction)
 
-        edits = interpreter.get_edits_from_instruction(instruction)
+        edits = interpreter.get_edits_from_instruction(instruction, DG)
 
         for edit in edits:
             observer.log_dict("got edits :", edit)
@@ -81,15 +84,16 @@ def get_solution_node_from_problem(
 
 def handle_problem_node(
     G: ChangingGraph,
+    DG: DependencyGraph,
     problem_node_index: int,
-    instruction_manager: IInstructionManager,
-    interpreter: IInstructionInterpreter,
+    instruction_manager: IInstructionManagerBlock,
+    interpreter: IBlockInstructionInterpreter,
     file_modifier: IModifyle,
     error_manager: IErrorManager,
     observer: Observer,
 ) -> None:
     solution_node_or_error = get_solution_node_from_problem(
-        G, problem_node_index, instruction_manager, interpreter, observer
+        G, DG, problem_node_index, instruction_manager, interpreter, observer
     )
 
     if solution_node_or_error["node_type"] == "error_problem":
@@ -100,15 +104,15 @@ def handle_problem_node(
     solution_node = solution_node_or_error
 
     is_solution_syntactically_correct = check_solution_syntax_correctness(
-        solution_node["edits"], error_manager
+        DG, solution_node["edits"], error_manager
     )
 
     observer.log(
         f"Is solution syntactically valid : {is_solution_syntactically_correct}"
     )
 
-    does_solution_fix_problem = simple_check_solution_validity(
-        G, problem_node_index, solution_node["edits"], error_manager, observer
+    does_solution_fix_problem = simple_check_solution_validity_block(
+        G, DG, problem_node_index, solution_node["edits"], error_manager, observer
     )
 
     observer.log(f"Does solution fix problem : {does_solution_fix_problem}")
@@ -126,7 +130,7 @@ def handle_problem_node(
             f"Added failed node {failed_node_index}, trying to handle {problem_node_index} again"
         )
         new_solution_node_or_error = get_solution_node_from_problem(
-            G, problem_node_index, instruction_manager, interpreter, observer
+            G, DG, problem_node_index, instruction_manager, interpreter, observer
         )
         if new_solution_node_or_error["node_type"] == "error_problem":
             error = new_solution_node_or_error
@@ -135,43 +139,38 @@ def handle_problem_node(
 
         solution_node = new_solution_node_or_error
 
-        is_solution_valid = simple_check_solution_validity(
+        is_solution_valid = simple_check_solution_validity_block(
             G,
+            DG,
             problem_node_index,
             solution_node["edits"],
             error_manager,
             observer,
-        ) and check_solution_syntax_correctness(solution_node["edits"], error_manager)
+        ) and check_solution_syntax_correctness(
+            DG, solution_node["edits"], error_manager
+        )
 
     # Solution is now valid and can be added
 
     solution_node["status"] = "handled"
-    file_modifier.apply_change(solution_node["edits"])
+    file_modifier.apply_change(DG, solution_node["edits"])
 
     new_solution_index = G.add_solution_node(solution_node)
 
-    # # get shift caused by solution
-    index_manager = IndexManager()
-    # TODO -> we remove when add and add when remove because we want to
-    #  go from modified index to initial index and not the other way around
-    #  -> find a better, more intuitive solution
-    for edit in solution_node["edits"]:
-        if edit["edit_type"] == "add":
-            index_manager.remove_from_index(edit["line_number"] - 1)
-        if edit["edit_type"] == "remove":
-            index_manager.add_from_index(edit["line_number"] - 1)
+    DG.update_graph_from_edits(solution_node["edits"])
 
     pending_problem_nodes = G.get_all_pending_problem_nodes()
     # updating all pending problem indexes
-    for node in pending_problem_nodes:
-        if node["error"]["file_path"] == solution_node["edits"][0]["file_path"]:
-            observer.log(f"Updating node {node['index']} error indexes")
-            node["error"]["pos"] = (
-                index_manager.get_updated_index(node["error"]["pos"][0]),
-                node["error"]["pos"][1],
-                index_manager.get_updated_index(node["error"]["pos"][2]),
-                node["error"]["pos"][3],
-            )
+    # TODO or not, maybe change error
+    # for node in pending_problem_nodes:
+    #     if node["error"]["file_path"] == solution_node["edits"][0]["file_path"]:
+    #         observer.log(f"Updating node {node['index']} error indexes")
+    #         node["error"]["pos"] = (
+    #             index_manager.get_updated_index(node["error"]["pos"][0]),
+    #             node["error"]["pos"][1],
+    #             index_manager.get_updated_index(node["error"]["pos"][2]),
+    #             node["error"]["pos"][3],
+    #         )
 
     # connect all other problems that were solved
     current_compile_errors = error_manager.get_compile_errors([], observer)
@@ -206,13 +205,14 @@ def handle_problem_node(
 
 def handle_node(
     G: ChangingGraph,
+    DG: DependencyGraph,
     node_index: int,
     i: int,
     file_modifier: IModifyle,
     observer: Observer,
     error_manager: IErrorManager,
-    interpreter: IInstructionInterpreter,
-    instruction_manager: IInstructionManager,
+    interpreter: IBlockInstructionInterpreter,
+    instruction_manager: IInstructionManagerBlock,
     restriction_options: RestrictionOptions,
 ) -> None:
     node = G.get_node(node_index)
@@ -224,6 +224,7 @@ def handle_node(
         observer.log(f"Handling problem node {node_index}")
         handle_problem_node(
             G,
+            DG,
             node_index,
             instruction_manager,
             interpreter,
@@ -237,13 +238,14 @@ def handle_node(
 
 def resume_problem_node(
     G: ChangingGraph,
+    DG: DependencyGraph,
     node_index: int,
     new_node: ProblemNode,
-    new_instruction: Instruction | None,
-    new_edits: Edits | None,
+    new_instruction: InstructionBlock | None,
+    new_edits: list[BlockEdit] | None,
     error_manager: IErrorManager,
-    instruction_manager: IInstructionManager,
-    interpreter: IInstructionInterpreter,
+    instruction_manager: IInstructionManagerBlock,
+    interpreter: IBlockInstructionInterpreter,
     file_modifier: IModifyle,
     observer: Observer,
     restriction_options: RestrictionOptions,
@@ -268,6 +270,7 @@ def resume_problem_node(
         observer.log_dict("We have new edits", new_edits)
         handle_problem_node(
             G,
+            DG,
             node_index,
             HardCodedInstructionManager(new_instruction),
             HardCodedInstructionInterpreter(new_edits),
@@ -281,6 +284,7 @@ def resume_problem_node(
         observer.log_dict("We have new instruction", new_instruction)
         handle_problem_node(
             G,
+            DG,
             node_index,
             HardCodedInstructionManager(new_instruction),
             interpreter,
@@ -299,6 +303,7 @@ def resume_problem_node(
 
         handle_node(
             G,
+            DG,
             node_index,
             G.get_shortest_distance(0, node_index),
             file_modifier,
@@ -311,6 +316,6 @@ def resume_problem_node(
 
         pending_nodes = G.get_all_pending_nodes()
 
-    file_modifier.revert_change([])
+    file_modifier.revert_change(DG)
 
     observer.log("Finished modification")

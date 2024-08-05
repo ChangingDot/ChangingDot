@@ -112,8 +112,8 @@ class SolutionNode(TypedDict):
     index: int
     node_type: Literal["solution"]
     status: NodeStatus
-    instruction: Instruction
-    edits: Edits
+    instruction: InstructionBlock
+    edits: list[BlockEdit]
 
 
 class SolutionNodeBlock(TypedDict):
@@ -135,8 +135,8 @@ class ErrorSolutionNode(TypedDict):
     index: int
     node_type: Literal["error_solution"]
     status: NodeStatus
-    instruction: Instruction
-    edits: Edits
+    instruction: InstructionBlock
+    edits: list[BlockEdit]
     error_text: str
 
 
@@ -146,8 +146,8 @@ class ErrorProblemNode(TypedDict):
     status: NodeStatus
     error: CompileError
     error_text: str
-    suspected_instruction: Instruction | None
-    suspected_edits: Edits | None
+    suspected_instruction: InstructionBlock | None
+    suspected_edits: list[BlockEdit] | None
 
 
 NodeData = (
@@ -233,8 +233,8 @@ class ResumeInitialNode(BaseModel):
     index: int
     status: NodeStatus
     error: CompileError
-    new_instruction: Instruction | None = Field(default=None)
-    new_edits: Edits | None = Field(default=None)
+    new_instruction: InstructionBlock | None = Field(default=None)
+    new_edits: list[BlockEdit] | None = Field(default=None)
 
 
 class ResumeGraphInput(BaseModel):
@@ -257,8 +257,3 @@ class ResumeGraphInput(BaseModel):
     @field_validator("solution_path", "base_path")
     def validate_path(cls, value: str) -> str:
         return validate_and_convert_path(value)
-
-
-SupportedLanguages = Literal["python", "c_sharp", "xml"]
-
-DependencyGraphNodeType = Literal["Import", "Class", "Method", "Field"]

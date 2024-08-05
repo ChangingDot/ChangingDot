@@ -1,9 +1,12 @@
+from typing import Literal
+
 import tree_sitter_c_sharp as tscsharp
-from changing_dot.custom_types import SupportedLanguages
 from changing_dot.utils.file_utils import get_file_extension
 from tree_sitter import Language, Parser
 from tree_sitter_xml import language_xml
 from typing_extensions import TypedDict
+
+SupportedLanguages = Literal["python", "c_sharp", "xml"]
 
 
 class NodeTypeToTerminal(TypedDict):

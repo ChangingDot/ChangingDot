@@ -8,10 +8,12 @@ import pytest
 from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.create_graph import create_graph
 from changing_dot.custom_types import (
+    BlockEdit,
     InitialChange,
     RestrictionOptions,
     ResumeInitialNode,
 )
+from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.error_manager.error_manager import (
     HardCodedErrorManager,
 )
@@ -22,8 +24,9 @@ from changing_dot.instruction_interpreter.hard_coded_instruction_interpreter imp
 from changing_dot.instruction_manager.hard_coded_instruction_manager import (
     HardCodedInstructionManager,
 )
-from changing_dot.modifyle.modifyle import FakeModifyle
+from changing_dot.modifyle.modifyle_block import IntegralModifyle
 from changing_dot.optimize_graph import optimize_graph
+from changing_dot.utils.text_functions import read_text, write_text
 from changing_dot_visualize.observer import Observer
 
 if TYPE_CHECKING:
@@ -33,6 +36,12 @@ if TYPE_CHECKING:
 @pytest.fixture(autouse=True)
 def _reset_repo() -> Generator[None, None, None]:
     yield
+    write_text(
+        "./tests/core/fixtures/e2e/base.cs",
+        read_text(
+            "./tests/core/fixtures/base.cs",
+        ),
+    )
     if os.path.exists("./outputs/tmp") and os.path.isdir("./outputs/tmp"):
         shutil.rmtree("./outputs/tmp")
 
@@ -44,7 +53,7 @@ def test_e2e() -> None:
     is_local = True
     initial_change = InitialChange(
         error="Change DistincId to NewVariableName",
-        file_path="./tests/core/fixtures/base.cs",
+        file_path="./tests/core/fixtures/e2e/base.cs",
         error_position=(11, 0, 11, 0),
     )
     restriction_options = RestrictionOptions(
@@ -59,7 +68,7 @@ def test_e2e() -> None:
             [
                 {
                     "text": "DistincId does not exist",
-                    "file_path": "./tests/core/fixtures/base.cs",
+                    "file_path": "./tests/core/fixtures/e2e/base.cs",
                     "project_name": "test",
                     "pos": (17, 0, 17, 0),
                 }
@@ -67,7 +76,7 @@ def test_e2e() -> None:
             [
                 {
                     "text": "DistincId does not exist",
-                    "file_path": "./tests/core/fixtures/base.cs",
+                    "file_path": "./tests/core/fixtures/e2e/base.cs",
                     "project_name": "test",
                     "pos": (17, 0, 17, 0),
                 }
@@ -78,30 +87,28 @@ def test_e2e() -> None:
 
     instruction_manager = HardCodedInstructionManager(
         {
-            "edit_type": "replace",
-            "programming_language": "C#",
-            "file_path": "./tests/core/fixtures/base.cs",
-            "line_number": 17,
-            "error": "DistincId does not exist",
+            "block_id": 4,
+            "file_path": "./tests/core/fixtures/e2e/base.cs",
             "solution": "Change DistincId to NewVariableName",
         }
     )
 
     interpreter = HardCodedInstructionInterpreter(
         [
-            {
-                "edit_type": "replace",
-                "file_path": "./tests/core/fixtures/base.cs",
-                "line_number": 17,
-                "before": "        public string? DistinctId { get; set; }",
-                "after": "        public string? NewVariableName { get; set; }",
-            }
+            BlockEdit(
+                block_id=4,
+                file_path="./tests/core/fixtures/e2e/base.cs",
+                before="    [JsonIgnore]\n        public string? DistinctId { get; set; }",
+                after="    [JsonIgnore]\n        public string? NewVariableName { get; set; }",
+            )
         ]
     )
 
-    file_modifier = FakeModifyle()
+    file_modifier = IntegralModifyle()
 
     G = ChangingGraph()
+
+    DG = DependencyGraph(["./tests/core/fixtures/e2e/base.cs"])
 
     observer = Observer(
         G,
@@ -120,6 +127,7 @@ def test_e2e() -> None:
 
     create_graph(
         G,
+        DG,
         initialisation,
         error_manager,
         instruction_manager,
@@ -189,7 +197,7 @@ def test_e2e() -> None:
         status="handled",
         error={
             "text": "DistincId does not exist",
-            "file_path": "./tests/core/fixtures/base.cs",
+            "file_path": "./tests/core/fixtures/e2e/base.cs",
             "project_name": "test",
             "pos": (17, 0, 17, 0),
         },
@@ -197,6 +205,7 @@ def test_e2e() -> None:
 
     resume_problem_node(
         G,
+        DG,
         resume_initial_node.index,
         {
             "index": resume_initial_node.index,

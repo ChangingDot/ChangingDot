@@ -6,25 +6,24 @@ from changing_dot_visualize.observer import Observer
 from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.commit.reset_repo import set_repo
 from changing_dot.custom_types import Commit, RestrictionOptions, ResumeInitialNode
+from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.error_manager.error_manager import (
     RoslynErrorManager,
 )
 from changing_dot.handle_node import resume_problem_node
-from changing_dot.instruction_interpreter.basic_instruction_interpreter import (
+from changing_dot.instruction_interpreter.block_instruction_interpreter import (
     create_openai_interpreter,
 )
-from changing_dot.instruction_manager.basic_instruction_manager.basic_instruction_manager import (
+from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
     create_openai_instruction_manager,
 )
-from changing_dot.modifyle.modifyle import IntegralModifyle
+from changing_dot.modifyle.modifyle_block import IntegralModifyle
+from changing_dot.utils.file_utils import get_csharp_files
 from changing_dot.utils.process_pickle_files import process_pickle_files
 
 if TYPE_CHECKING:
     from changing_dot.custom_types import ProblemNode
-    from changing_dot.instruction_interpreter.instruction_interpreter import (
-        IInstructionInterpreter,
-    )
-    from changing_dot.modifyle.modifyle import IModifyle
+    from changing_dot.modifyle.modifyle_block import IModifyle
 
 
 def run_resume_graph(
@@ -52,6 +51,10 @@ def run_resume_graph(
 
     G = ChangingGraph(graphs[-1])
 
+    DG = DependencyGraph(
+        get_csharp_files(solution_path)
+    )  ## TODO figure out how to actually get the same back maybe so no index shenanigans
+
     observer = Observer(
         G,
         iteration_name,
@@ -61,7 +64,7 @@ def run_resume_graph(
         step=len(graphs),
     )
 
-    interpreter: IInstructionInterpreter = create_openai_interpreter(observer)
+    interpreter = create_openai_interpreter(observer)
 
     node: ProblemNode = {
         "index": resume_initial_node.index,
@@ -72,6 +75,7 @@ def run_resume_graph(
 
     resume_problem_node(
         G,
+        DG,
         node["index"],
         node,
         resume_initial_node.new_instruction,

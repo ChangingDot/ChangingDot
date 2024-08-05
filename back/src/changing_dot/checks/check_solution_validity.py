@@ -1,14 +1,10 @@
 from typing import TYPE_CHECKING
 
 from changing_dot.changing_graph.changing_graph import ChangingGraph
-from changing_dot.custom_types import BlockEdit, CompileError, Edits, SolutionNode
+from changing_dot.custom_types import BlockEdit, CompileError, SolutionNode
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.error_manager.error_manager import (
     IErrorManager,
-)
-from changing_dot.modifyle.modifyle import IModifyle as OldIModifyle
-from changing_dot.modifyle.modifyle import (
-    applied_edits_context as old_applied_edits_context,
 )
 from changing_dot.modifyle.modifyle_block import applied_edits_context
 from changing_dot_visualize.observer import Observer
@@ -78,65 +74,6 @@ def is_error_removed(
         return len(previous_consecutive_errors) == len(now_consecutive_errors) + 1
 
     return is_error_removed
-
-
-def check_solution_validity(
-    G: ChangingGraph,
-    solution_node: SolutionNode,
-    problem_node_index: int,
-    file_modifier: OldIModifyle,
-    error_manager: IErrorManager,
-    observer: Observer,
-) -> bool:
-    problem_node = G.get_node(problem_node_index)
-    assert problem_node["node_type"] == "problem"
-
-    solution_that_caused_error_list = G.get_parent_nodes(problem_node_index)
-
-    if len(solution_that_caused_error_list) == 0:
-        # TODO maybe still need to do a check
-        assert problem_node_index == 0
-        return True
-
-    result = True
-    for solution_that_caused_error_index in solution_that_caused_error_list:
-        # if result is false, then no need to continue
-        if result:
-            solution_that_caused_error = G.get_node(solution_that_caused_error_index)
-
-            assert solution_that_caused_error["node_type"] == "solution"
-
-            all_edits = [*solution_that_caused_error["edits"], *solution_node["edits"]]
-
-            file_modifier.apply_change(all_edits)
-
-            compile_errors = error_manager.get_compile_errors(
-                [edit["file_path"] for edit in all_edits], observer
-            )
-
-            file_modifier.revert_change(all_edits)
-
-            result = result and is_error_removed(
-                problem_node["error"], compile_errors, G, solution_that_caused_error
-            )
-
-    return result
-
-
-def simple_check_solution_validity(
-    G: ChangingGraph,
-    problem_node_index: int,
-    edits: Edits,
-    error_manager: IErrorManager,
-    observer: Observer,
-) -> bool:
-    problem_node = G.get_node(problem_node_index)
-    assert problem_node["node_type"] == "problem"
-    # TODO [] does not make it work with omnisharp errormanager
-    with old_applied_edits_context(edits):
-        compile_errors = error_manager.get_compile_errors([], observer)
-
-    return problem_node["error"] not in compile_errors
 
 
 def simple_check_solution_validity_block(
