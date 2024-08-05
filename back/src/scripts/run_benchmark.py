@@ -11,20 +11,22 @@ from changing_dot.commit.reset_repo import reset_repo, set_repo
 from changing_dot.commit_graph import commit_graph
 from changing_dot.create_graph import create_graph
 from changing_dot.custom_types import ErrorInitialization
+from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.error_manager.error_manager import (
     RoslynErrorManager,
 )
-from changing_dot.instruction_interpreter.basic_instruction_interpreter import (
+from changing_dot.instruction_interpreter.block_instruction_interpreter import (
     create_openai_interpreter,
 )
 from changing_dot.instruction_interpreter.instruction_interpreter import (
-    IInstructionInterpreter,
+    IBlockInstructionInterpreter,
 )
-from changing_dot.instruction_manager.basic_instruction_manager.basic_instruction_manager import (
-    create_mistral_instruction_manager,
+from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
+    create_openai_instruction_manager,
 )
 from changing_dot.modifyle.modifyle_block import IModifyle, IntegralModifyle
 from changing_dot.optimize_graph import optimize_graph
+from changing_dot.utils.file_utils import get_csharp_files
 from changing_dot_visualize.observer import Observer
 
 if __name__ == "__main__":
@@ -45,7 +47,7 @@ if __name__ == "__main__":
         with analytics.benchmark_item(benchmark_item) as current_benchmark_result:
             job_id = str(uuid.uuid4())
 
-            instruction_manager = create_mistral_instruction_manager(config["goal"])
+            instruction_manager = create_openai_instruction_manager(config["goal"])
 
             restriction_options = config.get(
                 "restriction_options",
@@ -64,9 +66,13 @@ if __name__ == "__main__":
 
             G = ChangingGraph()
 
+            DG = DependencyGraph(get_csharp_files(config["solution_path"]))
+
             observer = Observer(G, analytics.run.name, benchmark_item, job_id)
 
-            interpreter: IInstructionInterpreter = create_openai_interpreter(observer)
+            interpreter: IBlockInstructionInterpreter = create_openai_interpreter(
+                observer
+            )
 
             initialisation: ErrorInitialization = {
                 "init_type": "error",
@@ -83,6 +89,7 @@ if __name__ == "__main__":
 
                     create_graph(
                         G,
+                        DG,
                         initialisation,
                         error_manager,
                         instruction_manager,

@@ -15,29 +15,28 @@ from changing_dot.custom_types import (
     InitialChange,
     RestrictionOptions,
 )
+from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.error_manager.error_manager import (
     RoslynErrorManager,
 )
-from changing_dot.instruction_interpreter.basic_instruction_interpreter import (
+from changing_dot.instruction_interpreter.block_instruction_interpreter import (
     create_openai_interpreter,
 )
-from changing_dot.instruction_interpreter.instruction_interpreter import (
-    IInstructionInterpreter,
+from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
+    create_openai_instruction_manager,
 )
-from changing_dot.instruction_manager.basic_instruction_manager.basic_instruction_manager import (
-    create_mistral_instruction_manager,
-)
-from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
+from changing_dot.modifyle.modifyle_block import IModifyle, IntegralModifyle
 from changing_dot.optimize_graph import optimize_graph
+from changing_dot.utils.file_utils import get_csharp_files
 from changing_dot_visualize.observer import Observer
 from loguru import logger
 
 if TYPE_CHECKING:
     from changing_dot.custom_types import ErrorInitialization
     from changing_dot.instruction_interpreter.instruction_interpreter import (
-        IInstructionInterpreter,
+        IBlockInstructionInterpreter,
     )
-    from changing_dot.modifyle.modifyle import IModifyle
+    from changing_dot.modifyle.modifyle_block import IModifyle
 
 
 def benchmark_job(
@@ -63,7 +62,7 @@ def benchmark_job(
         )
     )
 
-    instruction_manager = create_mistral_instruction_manager(goal)
+    instruction_manager = create_openai_instruction_manager(goal)
 
     error_manager = RoslynErrorManager(solution_path, restriction_options)
 
@@ -71,6 +70,8 @@ def benchmark_job(
         file_modifier: IModifyle = IntegralModifyle()
 
         G = ChangingGraph()
+
+        DG = DependencyGraph(get_csharp_files(solution_path))
 
         benchmark_item = f"{project_name}_{i}"
 
@@ -81,7 +82,9 @@ def benchmark_job(
 
             observer = Observer(G, analytics.run.name, benchmark_item, job_id)
 
-            interpreter: IInstructionInterpreter = create_openai_interpreter(observer)
+            interpreter: IBlockInstructionInterpreter = create_openai_interpreter(
+                observer
+            )
 
             initialisation: ErrorInitialization = {
                 "init_type": "error",
@@ -98,6 +101,7 @@ def benchmark_job(
 
                     create_graph(
                         G,
+                        DG,
                         initialisation,
                         error_manager,
                         instruction_manager,

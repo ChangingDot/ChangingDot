@@ -1,6 +1,9 @@
-from changing_dot.custom_types import Edits, Instruction
+from changing_dot.custom_types import BlockEdit, InstructionBlock
+from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 
 
-class IInstructionInterpreter:
-    def get_edits_from_instruction(self, instruction: Instruction) -> Edits:
+class IBlockInstructionInterpreter:
+    def get_edits_from_instruction(
+        self, instruction: InstructionBlock, DG: DependencyGraph
+    ) -> list[BlockEdit]:
         raise NotImplementedError()

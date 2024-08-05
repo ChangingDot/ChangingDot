@@ -4,17 +4,22 @@ from changing_dot.instruction_interpreter.block_prompts import (
     edits_template,
     system_prompt,
 )
+from changing_dot.instruction_interpreter.instruction_interpreter import (
+    IBlockInstructionInterpreter,
+)
 from changing_dot.utils.process_diff import process_diff
 from changing_dot_visualize.observer import Observer
+from dotenv import load_dotenv
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import (
     RunnableSerializable,
 )
+from langchain_openai import ChatOpenAI
 
 
-class BlockInstructionInterpreter:
+class BlockInstructionInterpreter(IBlockInstructionInterpreter):
     def __init__(self, model: BaseChatModel, observer: Observer | None = None):
         self.model = model
         self.observer = observer
@@ -66,3 +71,10 @@ class BlockInstructionInterpreter:
                 after=after,
             )
         ]
+
+
+def create_openai_interpreter(observer: Observer) -> BlockInstructionInterpreter:
+    load_dotenv()
+    return BlockInstructionInterpreter(
+        ChatOpenAI(model="gpt-4o", temperature=0.0), observer
+    )

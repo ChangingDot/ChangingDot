@@ -1,7 +1,8 @@
 import json
 
 from changing_dot.changing_graph.changing_graph import ChangingGraph
-from changing_dot.instruction_manager.basic_instruction_manager.basic_instruction_manager import (
+from changing_dot.dependency_graph.dependency_graph import DependencyGraph
+from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
     create_openai_instruction_manager,
 )
 from loguru import logger
@@ -57,6 +58,8 @@ instruction_manager = create_openai_instruction_manager(
     "Remove Newtonsoft dependency to then change it to with System.Text.Json"
 )
 
-instruction = instruction_manager.get_node_instruction(G, 0)
+DG = DependencyGraph(["file"])
+
+instruction = instruction_manager.get_node_instruction(G, DG, 0)
 
 logger.info(instruction)
