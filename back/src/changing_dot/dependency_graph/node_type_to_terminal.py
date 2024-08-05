@@ -38,6 +38,13 @@ empty_node_type_to_terminal: NodeTypeToTerminal = {
     "Import": [],
 }
 
+xml_node_type_to_terminal: NodeTypeToTerminal = {
+    "Class": [],
+    "Method": ["element"],
+    "Field": [],
+    "Import": [],
+}
+
 
 extension_to_language: dict["str", SupportedLanguages] = {
     "py": "python",
@@ -80,4 +87,4 @@ def get_node_type_to_terminal_from_language(
     if language == "python":
         return python_node_type_to_terminal
     if language == "xml":
-        return empty_node_type_to_terminal
+        return xml_node_type_to_terminal

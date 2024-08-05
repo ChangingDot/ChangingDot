@@ -417,8 +417,9 @@ def test_xml_csproj_files() -> None:
     graph = DependencyGraph(
         [get_fixture_path("random.xml"), get_fixture_path("random.csproj")]
     )
-    assert graph.get_number_of_nodes() == 0
-    assert graph.get_parent_child_relationships() == []
+    # for now each element is a method
+    assert graph.get_number_of_nodes() == 38 + 16
+    assert len(graph.get_parent_child_relationships()) == 37 + 15
 
 
 def test_relations_in_multiple_files() -> None:
