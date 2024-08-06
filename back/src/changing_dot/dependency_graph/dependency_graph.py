@@ -119,6 +119,10 @@ class DependencyGraph:
             node = self.get_node(edit.block_id)
             assert node.file_path == edit.file_path, "This block is not in this file"
 
+            assert edit.before.replace(" ", "").replace("\n", "") in node.text.replace(
+                " ", ""
+            ).replace("\n", ""), "The before does not match the text in block"
+
             # Check that the files have actually been changed before updating graph
             assert edit.after.replace(" ", "").replace(
                 "\n", ""

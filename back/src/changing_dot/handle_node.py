@@ -157,8 +157,6 @@ def handle_problem_node(
 
     new_solution_index = G.add_solution_node(solution_node)
 
-    DG.update_graph_from_edits(solution_node["edits"])
-
     pending_problem_nodes = G.get_all_pending_problem_nodes()
     # updating all pending problem indexes
     # TODO or not, maybe change error

@@ -1,3 +1,4 @@
+import os
 from typing import TYPE_CHECKING
 
 from changing_dot.changing_graph.changing_graph import ChangingGraph
@@ -90,4 +91,16 @@ def simple_check_solution_validity_block(
         # TODO [] does not make it work with omnisharp errormanager
         compile_errors = error_manager.get_compile_errors([], observer)
 
-    return problem_node["error"] not in compile_errors
+    # Do not take project_name into account
+    return {
+        "file_path": os.path.abspath(problem_node["error"]["file_path"]),
+        "pos": problem_node["error"]["pos"],
+        "text": problem_node["error"]["text"],
+    } not in [
+        {
+            "file_path": os.path.abspath(error["file_path"]),
+            "pos": error["pos"],
+            "text": error["text"],
+        }
+        for error in compile_errors
+    ]
