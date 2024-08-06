@@ -14,6 +14,9 @@ def get_csharp_files(dir_to_explore: str) -> list[str]:
     dir_to_explore = os.path.dirname(dir_to_explore)
 
     csharp_files = glob.glob(os.path.join(dir_to_explore, "**", "*.cs"), recursive=True)
+    cs_proj_files = glob.glob(
+        os.path.join(dir_to_explore, "**", "*.csproj"), recursive=True
+    )
 
     exclude_patterns = [
         os.path.sep + "obj" + os.path.sep,
@@ -24,7 +27,7 @@ def get_csharp_files(dir_to_explore: str) -> list[str]:
     ]
 
     filtered_files = []
-    for file in csharp_files:
+    for file in csharp_files + cs_proj_files:
         if not any(pattern in file for pattern in exclude_patterns):
             filtered_files.append(os.path.abspath(file))
 
