@@ -228,7 +228,7 @@ def test_handling_empty_commits(repo: Repo, file_modifier: IModifyle) -> None:
                 block_id=2,
                 before="""    static string SimpleMethod()
     {
-        return "Hello, World!";
+        return "Welcome, World!";
     }
 """,
                 after="""    static string SimpleMethod()

@@ -12,6 +12,7 @@ Here are the possible blocks that you can use :
 {blocks}
 
 What is the easiest most straitforward way to fix this error.
+Please prefer "replace" changes rather than adds or removes
 Please add the line number to change in your response
 {failed_attempts}
 Please answer using the following format :

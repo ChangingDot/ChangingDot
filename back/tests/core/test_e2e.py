@@ -52,9 +52,9 @@ def test_e2e() -> None:
     project_name = "test"
     is_local = True
     initial_change = InitialChange(
-        error="Change DistincId to NewVariableName",
+        error="DistincId does not exist",
         file_path="./tests/core/fixtures/e2e/base.cs",
-        error_position=(11, 0, 11, 0),
+        error_position=(17, 0, 17, 0),
     )
     restriction_options = RestrictionOptions(
         project_blacklist=None,
@@ -73,14 +73,6 @@ def test_e2e() -> None:
                     "pos": (17, 0, 17, 0),
                 }
             ],  # does solution fix error -> No
-            [
-                {
-                    "text": "DistincId does not exist",
-                    "file_path": "./tests/core/fixtures/e2e/base.cs",
-                    "project_name": "test",
-                    "pos": (17, 0, 17, 0),
-                }
-            ],  # create problem nodes
             [],  # does solution fix error -> Yes
         ]
     )
@@ -147,16 +139,16 @@ def test_e2e() -> None:
         if os.path.isfile(os.path.join(expected_directory_path, f))
     ]
 
-    assert len(files) == 2
+    assert len(files) == 1
 
-    expected_file_path = "./outputs/tmp/1_test.pickle"
+    expected_file_path = "./outputs/tmp/0_test.pickle"
 
     with open(expected_file_path, "rb") as pickle_file:
         data = pickle.load(pickle_file)
         data_graph = ChangingGraph(data)
         assert (
-            data_graph.get_number_of_nodes() == 4
-        )  # 1 initial -> 1 solution -> 1 problem -> 1 solution
+            data_graph.get_number_of_nodes() == 3
+        )  # 1 initial -> 1 solution failed -> 1 solution ok
 
     ### Optimize Graph
 
@@ -172,15 +164,15 @@ def test_e2e() -> None:
         if os.path.isfile(os.path.join(expected_directory_path, f))
     ]
 
-    assert len(files) == 3  # add a new optimize step
+    assert len(files) == 2  # add a new optimize step
 
-    expected_file_path = "./outputs/tmp/2_test.pickle"
+    expected_file_path = "./outputs/tmp/1_test.pickle"
 
     with open(expected_file_path, "rb") as pickle_file:
         data = pickle.load(pickle_file)
         data_graph = ChangingGraph(data)
         assert (
-            data_graph.get_number_of_nodes() == 4
+            data_graph.get_number_of_nodes() == 3
         )  # Same as before since nothing is optimized
 
     # ### Resume graph
@@ -193,7 +185,7 @@ def test_e2e() -> None:
     )
 
     resume_initial_node = ResumeInitialNode(
-        index=2,
+        index=0,
         status="handled",
         error={
             "text": "DistincId does not exist",
@@ -233,11 +225,11 @@ def test_e2e() -> None:
         if os.path.isfile(os.path.join(expected_directory_path, f))
     ]
 
-    assert len(files) == 4  # add a new step
+    assert len(files) == 3  # add a new step
 
-    expected_file_path = "./outputs/tmp/3_test.pickle"
+    expected_file_path = "./outputs/tmp/2_test.pickle"
 
     with open(expected_file_path, "rb") as pickle_file:
         data = pickle.load(pickle_file)
         data_graph = ChangingGraph(data)
-        assert data_graph.get_number_of_nodes() == 5  # Add a new solution
+        assert data_graph.get_number_of_nodes() == 4  # Add a new solution

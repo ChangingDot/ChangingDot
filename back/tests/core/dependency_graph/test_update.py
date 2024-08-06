@@ -788,6 +788,29 @@ def test_block_id_in_wrong_file_raises_error() -> None:
         )
 
 
+def test_wrong_block_id_for_changes_raises_Error() -> None:
+    graph = DependencyGraph([get_fixture_path("subject_1.cs")])
+
+    write_text(get_fixture_path("subject_1.cs"), get_fixture("update_1.cs"))
+
+    with pytest.raises(
+        AssertionError, match="The before does not match the text in block"
+    ):
+        graph.update_graph_from_edits(
+            [
+                BlockEdit(
+                    file_path=get_fixture_path("subject_1.cs"),
+                    block_id=1,
+                    before="some random text",
+                    after="""static string SimpleMethod()
+    {
+        return "Updated Hello, World!";
+    }""",
+                ),
+            ]
+        )
+
+
 def test_handle_csproj_simple_update() -> None:
     graph = DependencyGraph([get_fixture_path("subject.csproj")])
 
