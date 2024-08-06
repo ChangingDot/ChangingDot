@@ -2,6 +2,7 @@ import pytest
 from changing_dot.dependency_graph.dependency_graph import (
     DependencyGraph,
     DependencyGraphNode,
+    DependencyGraphNodeWithIndex,
 )
 
 
@@ -420,6 +421,147 @@ def test_xml_csproj_files() -> None:
     # for now each element is a method
     assert graph.get_number_of_nodes() == 38 + 16
     assert len(graph.get_parent_child_relationships()) == 37 + 15
+
+
+def test_csproj_files() -> None:
+    graph = DependencyGraph([get_fixture_path("small.csproj")])
+    # for now each element is a method
+    assert graph.get_number_of_nodes() == 6
+    assert graph.get_nodes_with_index() == [
+        DependencyGraphNodeWithIndex(
+            index=0,
+            node_type="Method",
+            file_path=get_fixture_path("small.csproj"),
+            start_point=(0, 0),
+            end_point=(11, 10),
+            text='<Project Sdk="Microsoft.NET.Sdk">\n\n  <PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>net6.0</TargetFramework>\n  </PropertyGroup>\n\n  <ItemGroup>\n    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />\n  </ItemGroup>\n\n</Project>',
+        ),
+        DependencyGraphNodeWithIndex(
+            index=1,
+            node_type="Method",
+            file_path=get_fixture_path("small.csproj"),
+            start_point=(2, 2),
+            end_point=(5, 18),
+            text="<PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>net6.0</TargetFramework>\n  </PropertyGroup>",
+        ),
+        DependencyGraphNodeWithIndex(
+            index=2,
+            node_type="Method",
+            file_path=get_fixture_path("small.csproj"),
+            start_point=(3, 4),
+            end_point=(3, 32),
+            text="<OutputType>Exe</OutputType>",
+        ),
+        DependencyGraphNodeWithIndex(
+            index=3,
+            node_type="Method",
+            file_path=get_fixture_path("small.csproj"),
+            start_point=(4, 4),
+            end_point=(4, 45),
+            text="<TargetFramework>net6.0</TargetFramework>",
+        ),
+        DependencyGraphNodeWithIndex(
+            index=4,
+            node_type="Method",
+            file_path=get_fixture_path("small.csproj"),
+            start_point=(7, 2),
+            end_point=(9, 14),
+            text='<ItemGroup>\n    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />\n  </ItemGroup>',
+        ),
+        DependencyGraphNodeWithIndex(
+            index=5,
+            node_type="Method",
+            file_path=get_fixture_path("small.csproj"),
+            start_point=(8, 4),
+            end_point=(8, 67),
+            text='<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />',
+        ),
+    ]
+    assert len(graph.get_parent_child_relationships()) == 5
+
+    for relationship in [
+        (
+            DependencyGraphNode(
+                node_type="Method",
+                file_path=get_fixture_path("small.csproj"),
+                start_point=(0, 0),
+                end_point=(11, 10),
+                text='<Project Sdk="Microsoft.NET.Sdk">\n\n  <PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>net6.0</TargetFramework>\n  </PropertyGroup>\n\n  <ItemGroup>\n    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />\n  </ItemGroup>\n\n</Project>',
+            ),
+            DependencyGraphNode(
+                node_type="Method",
+                file_path=get_fixture_path("small.csproj"),
+                start_point=(2, 2),
+                end_point=(5, 18),
+                text="<PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>net6.0</TargetFramework>\n  </PropertyGroup>",
+            ),
+        ),
+        (
+            DependencyGraphNode(
+                node_type="Method",
+                file_path=get_fixture_path("small.csproj"),
+                start_point=(0, 0),
+                end_point=(11, 10),
+                text='<Project Sdk="Microsoft.NET.Sdk">\n\n  <PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>net6.0</TargetFramework>\n  </PropertyGroup>\n\n  <ItemGroup>\n    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />\n  </ItemGroup>\n\n</Project>',
+            ),
+            DependencyGraphNode(
+                node_type="Method",
+                file_path=get_fixture_path("small.csproj"),
+                start_point=(7, 2),
+                end_point=(9, 14),
+                text='<ItemGroup>\n    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />\n  </ItemGroup>',
+            ),
+        ),
+        (
+            DependencyGraphNode(
+                node_type="Method",
+                file_path=get_fixture_path("small.csproj"),
+                start_point=(2, 2),
+                end_point=(5, 18),
+                text="<PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>net6.0</TargetFramework>\n  </PropertyGroup>",
+            ),
+            DependencyGraphNode(
+                node_type="Method",
+                file_path=get_fixture_path("small.csproj"),
+                start_point=(3, 4),
+                end_point=(3, 32),
+                text="<OutputType>Exe</OutputType>",
+            ),
+        ),
+        (
+            DependencyGraphNode(
+                node_type="Method",
+                file_path=get_fixture_path("small.csproj"),
+                start_point=(2, 2),
+                end_point=(5, 18),
+                text="<PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>net6.0</TargetFramework>\n  </PropertyGroup>",
+            ),
+            DependencyGraphNode(
+                node_type="Method",
+                file_path=get_fixture_path("small.csproj"),
+                start_point=(4, 4),
+                end_point=(4, 45),
+                text="<TargetFramework>net6.0</TargetFramework>",
+            ),
+        ),
+        (
+            DependencyGraphNode(
+                node_type="Method",
+                file_path=get_fixture_path("small.csproj"),
+                start_point=(7, 2),
+                end_point=(9, 14),
+                text='<ItemGroup>\n    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />\n  </ItemGroup>',
+            ),
+            DependencyGraphNode(
+                node_type="Method",
+                file_path=get_fixture_path("small.csproj"),
+                start_point=(8, 4),
+                end_point=(8, 67),
+                text='<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />',
+            ),
+        ),
+    ]:
+        assert relationship in graph.get_parent_child_relationships()
 
 
 def test_relations_in_multiple_files() -> None:
