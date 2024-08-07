@@ -41,14 +41,23 @@ class PythonMatcher(ILanguageMatcher):
         return ast_node.type in python_node_type_to_terminal[node_type]
 
 
-xml_node_type_to_terminal: NodeTypeToTerminal = {
-    "Class": [],
-    "Method": ["element"],
-    "Field": [],
-    "Import": [],
-}
-
-
 class XmlMatcher(ILanguageMatcher):
     def match_class(self, node_type: DependencyGraphNodeType, ast_node: Node) -> bool:
-        return ast_node.type in xml_node_type_to_terminal[node_type]
+        if node_type != "Method":
+            return False
+        return ast_node.type == "element"
+
+
+class CsProjMatcher(ILanguageMatcher):
+    def match_class(self, node_type: DependencyGraphNodeType, ast_node: Node) -> bool:
+        if node_type != "Method":
+            return False
+        return ast_node.type == "element" and self.has_element_descendant(ast_node)
+
+    def has_element_descendant(self, node: Node) -> bool:
+        for child in node.children:
+            if child.type == "element":
+                return True
+            if self.has_element_descendant(child):
+                return True
+        return False

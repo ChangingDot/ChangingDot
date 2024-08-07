@@ -1,6 +1,7 @@
 import tree_sitter_c_sharp as tscsharp
 from changing_dot.dependency_graph.language_matchers import (
     CSharpMatcher,
+    CsProjMatcher,
     EmptyMatcher,
     ILanguageMatcher,
     PythonMatcher,
@@ -14,7 +15,7 @@ from tree_sitter_xml import language_xml
 extension_to_language: dict["str", SupportedLanguages] = {
     "py": "python",
     "cs": "c_sharp",
-    "csproj": "xml",
+    "csproj": "csproj",
     "xml": "xml",
 }
 
@@ -31,7 +32,7 @@ def parser_from_file_path(file_path: str) -> Parser | None:
         raise NotImplementedError("Python not implemented yet")
     if language == "c_sharp":
         return Parser(CS_LANGUAGE)
-    if language == "xml":
+    if language == "xml" or language == "csproj":
         return Parser(XML_LANGUAGE)
 
 
@@ -53,3 +54,5 @@ def get_matcher_from_language(
         return PythonMatcher()
     if language == "xml":
         return XmlMatcher()
+    if language == "csproj":
+        return CsProjMatcher()
