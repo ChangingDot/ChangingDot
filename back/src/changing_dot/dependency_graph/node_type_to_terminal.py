@@ -1,50 +1,15 @@
-from typing import Literal
-
 import tree_sitter_c_sharp as tscsharp
+from changing_dot.dependency_graph.language_matchers import (
+    CSharpMatcher,
+    EmptyMatcher,
+    ILanguageMatcher,
+    PythonMatcher,
+    XmlMatcher,
+)
+from changing_dot.dependency_graph.types import SupportedLanguages
 from changing_dot.utils.file_utils import get_file_extension
 from tree_sitter import Language, Parser
 from tree_sitter_xml import language_xml
-from typing_extensions import TypedDict
-
-SupportedLanguages = Literal["python", "c_sharp", "xml"]
-
-
-class NodeTypeToTerminal(TypedDict):
-    Import: list[str]
-    Class: list[str]
-    Method: list[str]
-    Field: list[str]
-
-
-c_sharp_node_type_to_terminal: NodeTypeToTerminal = {
-    "Class": ["class_declaration"],
-    "Method": ["method_declaration", "constructor_declaration"],
-    "Field": ["field_declaration", "property_declaration"],
-    "Import": ["using_directive"],
-}
-
-
-python_node_type_to_terminal: NodeTypeToTerminal = {
-    "Class": ["class_definition"],
-    "Method": ["function_definition"],
-    "Field": [],
-    "Import": ["import_statement"],
-}
-
-empty_node_type_to_terminal: NodeTypeToTerminal = {
-    "Class": [],
-    "Method": [],
-    "Field": [],
-    "Import": [],
-}
-
-xml_node_type_to_terminal: NodeTypeToTerminal = {
-    "Class": [],
-    "Method": ["element"],
-    "Field": [],
-    "Import": [],
-}
-
 
 extension_to_language: dict["str", SupportedLanguages] = {
     "py": "python",
@@ -70,21 +35,21 @@ def parser_from_file_path(file_path: str) -> Parser | None:
         return Parser(XML_LANGUAGE)
 
 
-def get_node_type_to_terminal_from_file_path(
+def get_matcher_from_file_path(
     file_path: str,
-) -> NodeTypeToTerminal:
+) -> ILanguageMatcher:
     language_or_none = extension_to_language.get(get_file_extension(file_path))
     if language_or_none is None:
-        return empty_node_type_to_terminal
-    return get_node_type_to_terminal_from_language(language_or_none)
+        return EmptyMatcher()
+    return get_matcher_from_language(language_or_none)
 
 
-def get_node_type_to_terminal_from_language(
+def get_matcher_from_language(
     language: SupportedLanguages,
-) -> NodeTypeToTerminal:
+) -> ILanguageMatcher:
     if language == "c_sharp":
-        return c_sharp_node_type_to_terminal
+        return CSharpMatcher()
     if language == "python":
-        return python_node_type_to_terminal
+        return PythonMatcher()
     if language == "xml":
-        return xml_node_type_to_terminal
+        return XmlMatcher()
