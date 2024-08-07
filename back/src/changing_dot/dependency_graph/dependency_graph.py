@@ -9,6 +9,7 @@ from changing_dot.dependency_graph.node_type_to_terminal import (
     get_node_type_to_terminal_from_file_path,
     parser_from_file_path,
 )
+from changing_dot.utils.text_functions import read_text
 from changing_dot.utils.tree_sitter_utils import get_node_text_from_file_path
 from pydantic import BaseModel
 from tree_sitter import Node, Tree
@@ -89,8 +90,7 @@ class DependencyGraph:
             parser = parser_from_file_path(path)
             if parser is None:
                 continue
-            with open(path) as file:
-                code = file.read()
+            code = read_text(path)
             tree = parser.parse(bytes(code, "utf8"))
             self.trees[path] = tree
         self.G = previous_state["G"]
@@ -104,16 +104,14 @@ class DependencyGraph:
             parser = parser_from_file_path(path)
             if parser is None:
                 continue
-            with open(path) as file:
-                code = file.read()
+            code = read_text(path)
             tree = parser.parse(bytes(code, "utf8"))
             self.create_graph_from_tree(tree, path)
             self.trees[path] = tree
 
     def update_graph_from_edits(self, edits: list[BlockEdit]) -> None:
         for edit in edits:
-            with open(edit.file_path) as file:
-                code_to_check: str = file.read()
+            code_to_check = read_text(edit.file_path)
 
             # Check that edit file_path and block ID are compatible
             node = self.get_node(edit.block_id)
@@ -131,11 +129,14 @@ class DependencyGraph:
             ), "The files have not been modified"
 
         for edit in edits:
+            original_start_point = self.get_node(edit.block_id).start_point[0]
+            parent_nodes = self.get_parent_nodes(edit.block_id)
+            children_nodes = self.get_children_nodes(edit.block_id)
+
             parser = parser_from_file_path(edit.file_path)
             if parser is None:
                 continue
-            with open(edit.file_path) as file:
-                code: str = file.read()
+            code = read_text(edit.file_path)
             new_tree = parser.parse(bytes(code, "utf8"))
             self.trees[edit.file_path] = new_tree
 
@@ -145,7 +146,7 @@ class DependencyGraph:
             )
 
             # update the parent nodes
-            for parent_node_index in self.get_parent_nodes(edit.block_id):
+            for parent_node_index in parent_nodes:
                 parent_node = self.get_node(parent_node_index)
 
                 new_parent_text = parent_node.text.replace(edit.before, edit.after)
@@ -156,10 +157,13 @@ class DependencyGraph:
                     new_parent_text,
                 )
             # remove all the children nodes and replace them
-            for child_node_index in self.get_children_nodes(edit.block_id):
+            for child_node_index in children_nodes:
                 self.remove_node(child_node_index)
-            for ast_child in ast_node.named_children:
-                self.traverse_and_reduce(ast_child, edit.file_path, edit.block_id)
+
+            # if ast node is none then there are no children
+            if ast_node is not None:
+                for ast_child in ast_node.named_children:
+                    self.traverse_and_reduce(ast_child, edit.file_path, edit.block_id)
 
             # update all nodes that are below the node ( that may shift )
             for other_node in self.get_nodes_with_index():
@@ -167,7 +171,7 @@ class DependencyGraph:
                 # point might be lower that old one
                 if (
                     other_node.file_path == edit.file_path
-                    and other_node.end_point[0] > ast_node.start_point[0]
+                    and other_node.end_point[0] > original_start_point
                 ):
                     self.update_node_given_tree_and_text(
                         new_tree,
@@ -258,7 +262,16 @@ class DependencyGraph:
         new_tree: Tree,
         node_index: int,
         text: str,
-    ) -> Node:
+    ) -> Node | None:
+        text_to_match = remove_comments(text).replace(" ", "").replace("\n", "")
+
+        # edge case where you remove a block
+        # In that case you can't find a node in tree-sitter, because it doen not
+        # exist anymore so we remove associated node
+        if text_to_match == "":
+            self.remove_node(node_index)
+            return None
+
         node = self.get_node(node_index)
 
         matched_nodes = [
