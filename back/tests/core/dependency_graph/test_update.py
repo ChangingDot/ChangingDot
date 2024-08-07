@@ -826,7 +826,7 @@ def test_handle_csproj_simple_update() -> None:
     graph.update_graph_from_edits(
         [
             BlockEdit(
-                block_id=4,
+                block_id=2,
                 file_path=get_fixture_path("subject.csproj"),
                 before="""<ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -840,7 +840,7 @@ def test_handle_csproj_simple_update() -> None:
         ]
     )
 
-    assert len(graph.get_node_by_type("Method")) == 7
+    assert len(graph.get_node_by_type("Method")) == 3
     assert (graph.get_nodes_with_index()) == [
         DependencyGraphNodeWithIndex(
             node_type="Method",
@@ -860,43 +860,10 @@ def test_handle_csproj_simple_update() -> None:
         ),
         DependencyGraphNodeWithIndex(
             node_type="Method",
-            start_point=(3, 4),
-            end_point=(3, 32),
-            file_path="./tests/core/dependency_graph/fixtures/updates/subject.csproj",
-            text="<OutputType>Exe</OutputType>",
-            index=2,
-        ),
-        DependencyGraphNodeWithIndex(
-            node_type="Method",
-            start_point=(4, 4),
-            end_point=(4, 45),
-            file_path="./tests/core/dependency_graph/fixtures/updates/subject.csproj",
-            text="<TargetFramework>net6.0</TargetFramework>",
-            index=3,
-        ),
-        DependencyGraphNodeWithIndex(
-            node_type="Method",
             start_point=(7, 2),
             end_point=(10, 14),
             file_path="./tests/core/dependency_graph/fixtures/updates/subject.csproj",
             text='<ItemGroup>\n    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />\n    <PackageReference Include="Serilog" Version="3.0.1" />\n  </ItemGroup>',
-            index=4,
-        ),
-        # Index 5 is removed
-        DependencyGraphNodeWithIndex(
-            node_type="Method",
-            start_point=(8, 4),
-            end_point=(8, 67),
-            file_path="./tests/core/dependency_graph/fixtures/updates/subject.csproj",
-            text='<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />',
-            index=6,
-        ),
-        DependencyGraphNodeWithIndex(
-            node_type="Method",
-            start_point=(9, 4),
-            end_point=(9, 58),
-            file_path="./tests/core/dependency_graph/fixtures/updates/subject.csproj",
-            text='<PackageReference Include="Serilog" Version="3.0.1" />',
-            index=7,
+            index=2,
         ),
     ]

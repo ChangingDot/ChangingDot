@@ -3,7 +3,7 @@ from typing import Literal
 from pydantic import BaseModel
 from typing_extensions import TypedDict
 
-SupportedLanguages = Literal["python", "c_sharp", "xml"]
+SupportedLanguages = Literal["python", "c_sharp", "xml", "csproj"]
 
 
 class NodeTypeToTerminal(TypedDict):
