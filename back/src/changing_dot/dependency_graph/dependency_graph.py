@@ -282,7 +282,9 @@ class DependencyGraph:
             )
             if ast_node.text is not None
             and isinstance(ast_node.text, bytes)
-            and ast_node.text.decode("utf-8").replace(" ", "").replace("\n", "")
+            and remove_comments(ast_node.text.decode("utf-8"))
+            .replace(" ", "")
+            .replace("\n", "")
             == remove_comments(text).replace(" ", "").replace("\n", "")
         ]
 
