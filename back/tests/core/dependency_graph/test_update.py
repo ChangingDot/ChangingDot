@@ -4,6 +4,8 @@ import pytest
 from changing_dot.custom_types import BlockEdit
 from changing_dot.dependency_graph.dependency_graph import (
     DependencyGraph,
+)
+from changing_dot.dependency_graph.types import (
     DependencyGraphNode,
     DependencyGraphNodeWithIndex,
 )

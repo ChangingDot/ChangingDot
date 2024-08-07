@@ -4,14 +4,18 @@ from typing import Any, Literal, TypedDict
 
 import networkx as nx
 from changing_dot.custom_types import BlockEdit
+from changing_dot.dependency_graph.language_matchers import ILanguageMatcher
 from changing_dot.dependency_graph.node_type_to_terminal import (
-    NodeTypeToTerminal,
-    get_node_type_to_terminal_from_file_path,
+    get_matcher_from_file_path,
     parser_from_file_path,
+)
+from changing_dot.dependency_graph.types import (
+    DependencyGraphNode,
+    DependencyGraphNodeType,
+    DependencyGraphNodeWithIndex,
 )
 from changing_dot.utils.text_functions import read_text
 from changing_dot.utils.tree_sitter_utils import get_node_text_from_file_path
-from pydantic import BaseModel
 from tree_sitter import Node, Tree
 
 
@@ -27,26 +31,11 @@ def remove_comments(text: str) -> str:
     )
 
 
-DependencyGraphNodeType = Literal["Import", "Class", "Method", "Field"]
-
-
-class DependencyGraphNode(BaseModel):
-    node_type: DependencyGraphNodeType
-    start_point: tuple[int, int]
-    end_point: tuple[int, int]
-    file_path: str
-    text: str
-
-
-class DependencyGraphNodeWithIndex(DependencyGraphNode):
-    index: int
-
-
 class MementoState(TypedDict):
     G: nx.DiGraph
     next_index: int
     trees: list[str]
-    file_path_to_node_type_to_terminal: dict[str, NodeTypeToTerminal]
+    file_path_to_language_matcher: dict[str, ILanguageMatcher]
 
 
 class Memento:
@@ -62,8 +51,8 @@ class DependencyGraph:
         self.G: nx.DiGraph = nx.DiGraph()
         self.next_index: int = 0
         self.trees: dict[str, Tree] = {}
-        self.file_path_to_node_type_to_terminal: dict[str, NodeTypeToTerminal] = {
-            path: get_node_type_to_terminal_from_file_path(path) for path in file_paths
+        self.file_path_to_language_matcher: dict[str, ILanguageMatcher] = {
+            path: get_matcher_from_file_path(path) for path in file_paths
         }
         self.create_graph_from_file_paths(sorted(set(file_paths)))
         self._saved_state: Memento
@@ -73,8 +62,8 @@ class DependencyGraph:
             "G": copy.deepcopy(self.G),
             "next_index": self.next_index,
             "trees": list(self.trees.keys()),
-            "file_path_to_node_type_to_terminal": copy.deepcopy(
-                self.file_path_to_node_type_to_terminal
+            "file_path_to_language_matcher": copy.deepcopy(
+                self.file_path_to_language_matcher
             ),
         }
         memento = Memento(state)
@@ -92,8 +81,8 @@ class DependencyGraph:
             self.trees[path] = tree
         self.G = previous_state["G"]
         self.next_index = previous_state["next_index"]
-        self.file_path_to_node_type_to_terminal = previous_state[
-            "file_path_to_node_type_to_terminal"
+        self.file_path_to_language_matcher = previous_state[
+            "file_path_to_language_matcher"
         ]
 
     def create_graph_from_file_paths(self, file_paths: list[str]) -> None:
@@ -271,14 +260,12 @@ class DependencyGraph:
 
         node = self.get_node(node_index)
 
-        node_types = self.file_path_to_node_type_to_terminal[node.file_path][
-            node.node_type
-        ]
+        language_matcher = self.file_path_to_language_matcher[node.file_path]
 
         matched_nodes = [
             ast_node
             for ast_node in iterate_nodes(new_tree.root_node)
-            if ast_node.type in node_types
+            if language_matcher.match_class(node.node_type, ast_node)
             and ast_node.text is not None
             and isinstance(ast_node.text, bytes)
             and remove_comments(ast_node.text.decode("utf-8"))
@@ -336,13 +323,13 @@ class DependencyGraph:
         )
 
         node_type: Literal["Import", "Class", "Method", "Field"] | None = None
-        if node.type in self.file_path_to_node_type_to_terminal[file_path]["Class"]:
+        if self.file_path_to_language_matcher[file_path].match_class("Class", node):
             node_type = "Class"
-        elif node.type in self.file_path_to_node_type_to_terminal[file_path]["Method"]:
+        elif self.file_path_to_language_matcher[file_path].match_class("Method", node):
             node_type = "Method"
-        elif node.type in self.file_path_to_node_type_to_terminal[file_path]["Field"]:
+        elif self.file_path_to_language_matcher[file_path].match_class("Field", node):
             node_type = "Field"
-        elif node.type in self.file_path_to_node_type_to_terminal[file_path]["Import"]:
+        elif self.file_path_to_language_matcher[file_path].match_class("Import", node):
             node_type = "Import"
 
         if node_type is None:
