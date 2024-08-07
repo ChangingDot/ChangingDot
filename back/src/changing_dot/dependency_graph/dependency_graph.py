@@ -15,13 +15,10 @@ from pydantic import BaseModel
 from tree_sitter import Node, Tree
 
 
-def iterate_nodes(
-    node: Node, node_types: list[str] | None
-) -> Generator[Node | Any, Any, None]:
-    if node_types is None or node.type in node_types:
-        yield node
+def iterate_nodes(node: Node) -> Generator[Node | Any, Any, None]:
+    yield node
     for child in node.children:
-        yield from iterate_nodes(child, node_types)
+        yield from iterate_nodes(child)
 
 
 def remove_comments(text: str) -> str:
@@ -274,13 +271,15 @@ class DependencyGraph:
 
         node = self.get_node(node_index)
 
+        node_types = self.file_path_to_node_type_to_terminal[node.file_path][
+            node.node_type
+        ]
+
         matched_nodes = [
             ast_node
-            for ast_node in iterate_nodes(
-                new_tree.root_node,
-                self.file_path_to_node_type_to_terminal[node.file_path][node.node_type],
-            )
-            if ast_node.text is not None
+            for ast_node in iterate_nodes(new_tree.root_node)
+            if ast_node.type in node_types
+            and ast_node.text is not None
             and isinstance(ast_node.text, bytes)
             and remove_comments(ast_node.text.decode("utf-8"))
             .replace(" ", "")
