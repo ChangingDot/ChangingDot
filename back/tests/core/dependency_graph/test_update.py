@@ -184,34 +184,39 @@ def test_update_with_no_graph_impact() -> None:
         ]
     )
 
-    assert graph.get_number_of_nodes() == 2
+
+def test_update_that_removes_block() -> None:
+    graph = DependencyGraph([get_fixture_path("subject_1.cs")])
+
+    write_text(get_fixture_path("subject_1.cs"), get_fixture("empty_class.cs"))
+
+    graph.update_graph_from_edits(
+        [
+            BlockEdit(
+                block_id=1,
+                file_path=get_fixture_path("subject_1.cs"),
+                before="""static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }""",
+                after="",
+            )
+        ]
+    )
+
+    assert graph.get_number_of_nodes() == 1
     assert graph.get_node_by_type("Class") == [
         DependencyGraphNode(
             node_type="Class",
             start_point=(0, 0),
-            end_point=(6, 1),
+            end_point=(2, 1),
             file_path=get_fixture_path("subject_1.cs"),
             text="""class SimpleClass
 {
-    static string SimpleMethod()
-    {
-        return "Updated Hello, World!";
-    }
 }""",
         ),
     ]
-    assert (graph.get_node_by_type("Method")) == [
-        DependencyGraphNode(
-            node_type="Method",
-            start_point=(2, 4),
-            end_point=(5, 5),
-            file_path=get_fixture_path("subject_1.cs"),
-            text="""static string SimpleMethod()
-    {
-        return "Updated Hello, World!";
-    }""",
-        )
-    ]
+    assert (graph.get_node_by_type("Method")) == []
 
 
 def test_update_graph_that_shifts_indexes_related_blocks() -> None:

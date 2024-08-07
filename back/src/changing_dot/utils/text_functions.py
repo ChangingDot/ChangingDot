@@ -2,7 +2,7 @@ import logging
 
 
 def read_text(filename: str) -> str:
-    encoding = "utf-8"
+    encoding = "utf-8-sig"
 
     try:
         with open(str(filename), encoding=encoding) as f:
