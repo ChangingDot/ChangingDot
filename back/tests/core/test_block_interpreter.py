@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+import pytest
 from changing_dot.custom_types import BlockEdit
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
@@ -171,3 +172,31 @@ random blabla
     ]
 
     assert expected_edits == interpreter.get_edits_from_instruction(instruction, DG)
+
+
+def test_that_no_context_add_fails() -> None:
+    DG = DependencyGraph(["./tests/core/fixtures/block_interpreter/subject.cs"])
+    instruction: InstructionBlock = {
+        "file_path": "./tests/core/fixtures/block_interpreter/subject.cs",
+        "block_id": 1,
+        "solution": "Change Hello, World! to Welcome, World!",
+    }
+
+    interpreter = make_instruction_interpreter(
+        """
+  There is no line number between @@
+```diff
+--- file.cs
++++ file.cs
+@@ ... @@ 
++        add a new line
+```
+
+random blabla
+    """
+    )
+
+    with pytest.raises(
+        ValueError, match="Code was added, but we do not know where to put it"
+    ):
+        interpreter.get_edits_from_instruction(instruction, DG)
