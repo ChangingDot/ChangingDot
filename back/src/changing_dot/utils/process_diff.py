@@ -18,18 +18,37 @@ def extract_hunks(diff: str) -> list[str]:
 
     hunk = ""
     last_operator = ""
+    number_of_operator_switchs = 0
     for line in lines:
-        if line.strip().startswith("-") and not line.strip().startswith("---"):
-            # if last operator was a + then a - means we are in another hunk
+        if line.strip().startswith("---") or line.strip().startswith("+++"):
+            continue
+
+        if line.strip().startswith("-"):
+            # if switch
             if last_operator == "+":
-                # save current hunk
-                if len(hunk) > 0:
-                    hunks.append(hunk)
-                # reset hunk
-                hunk = ""
+                number_of_operator_switchs += 1
+
+                if number_of_operator_switchs % 2 == 0:
+                    # save current hunk
+                    if len(hunk) > 0:
+                        hunks.append(hunk)
+                    # reset hunk
+                    hunk = ""
+
             hunk = hunk + line
             last_operator = "-"
-        elif line.strip().startswith("+") and not line.strip().startswith("+++"):
+
+        elif line.strip().startswith("+"):
+            if last_operator == "-":
+                number_of_operator_switchs += 1
+
+                if number_of_operator_switchs % 2 == 0:
+                    # save current hunk
+                    if len(hunk) > 0:
+                        hunks.append(hunk)
+                    # reset hunk
+                    hunk = ""
+
             hunk = hunk + line
             last_operator = "+"
         else:
@@ -50,5 +69,8 @@ def process_hunk(hunk: str) -> ProcessedDiff:
             before = before + hunk_line.replace("-", "", 1)
         elif hunk_line.strip()[0] == "+":
             after = after + hunk_line.replace("+", "", 1)
-    # [:-1] to remove last \n
-    return ProcessedDiff(before=before[:-1], after=after[:-1])
+    if before.endswith("\n"):
+        before = before[:-1]
+    if after.endswith("\n"):
+        after = after[:-1]
+    return ProcessedDiff(before=before, after=after)
