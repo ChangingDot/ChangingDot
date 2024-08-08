@@ -74,6 +74,39 @@ random blabla
     ]
 
 
+def test_processing_multiline_diff_returns_the_processed_diff_plus_first() -> None:
+    diff = """
+    random blabla
+```diff
+--- file.cs
++++ file.cs
+@@ ... @@
++    static string SimpleMethod()
++    {
++        return "Welcome, World!";
++    }
+-    static string SimpleMethod()
+-    {
+-        return "Hello, World!";
+-    }
+```
+
+random blabla
+    """
+    assert process_diff(diff) == [
+        ProcessedDiff(
+            before="""    static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }""",
+            after="""    static string SimpleMethod()
+    {
+        return "Welcome, World!";
+    }""",
+        )
+    ]
+
+
 def test_processing_multiple_diffs_in_single_block() -> None:
     diff = """
     random blabla
