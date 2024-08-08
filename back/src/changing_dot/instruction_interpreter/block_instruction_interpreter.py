@@ -55,6 +55,9 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
             processed_output.before = processed_output.before.lstrip()
             processed_output.after = processed_output.after.lstrip()
 
+            if processed_output.before.strip() == "":
+                raise ValueError("Code was added, but we do not know where to put it")
+
             if processed_output.before not in after:
                 if self.observer:
                     self.observer.log(
