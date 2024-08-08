@@ -54,6 +54,6 @@ Here are the diffs for those changes:
 
 edits_template = """
 Please follow the following instructions {solution}
-Here are the only lines that need to be modified :
+Here are the only lines that need to be modified, only modify lines from this block, changes outside of this block will not be taken into account, or will crash the algorithm :
 "{content}" :
 """
