@@ -160,30 +160,6 @@ random blabla
     ]
 
 
-def test_processing_diff_with_added_lines_only() -> None:
-    diff = """
-    random blabla
-    diffCopy--- file.cs
-    +++ file.cs
-    @@ ... @@
-public class Example
-{
-+    private string _name;
-    public void Method()
-    {
-        // Some comment
-    }
-}
-    random blabla
-    """
-    assert process_diff(diff) == [
-        ProcessedDiff(
-            before="",
-            after="    private string _name;",
-        )
-    ]
-
-
 def test_processing_diff_with_remove_lines_only() -> None:
     diff = """
     random blabla
@@ -208,34 +184,6 @@ public class Example
     ]
 
 
-def test_processing_diff_with_line_jumps() -> None:
-    diff = """
-    random blabla
-    diffCopy--- file.cs
-    +++ file.cs
-    @@ ... @@
-public class Example
-{
-+    private string _name;
-+
-+
-    public void Method()
-    {
-        // Some comment
-    }
-}
-    random blabla
-    """
-    assert process_diff(diff) == [
-        ProcessedDiff(
-            before="",
-            after="""    private string _name;
-
-""",
-        )
-    ]
-
-
 def test_processing_diff_when_operators_are_not_first_char() -> None:
     diff = """
     random blabla
@@ -254,4 +202,56 @@ public class Example
     """
     assert process_diff(diff) == [
         ProcessedDiff(before='    var a = "a";', after='    var b = "b";')
+    ]
+
+
+def test_processing_diff_with_line_jumps() -> None:
+    diff = """
+    random blabla
+    diffCopy--- file.cs
+    +++ file.cs
+    @@ ... @@
+public class Example
+{
+-    private string toto;
+-
++    private string _name;
++
++
+    public void Method()
+    {
+        // Some comment
+    }
+}
+    random blabla
+    """
+    assert process_diff(diff) == [
+        ProcessedDiff(
+            before="    private string toto;\n",
+            after="    private string _name;\n\n",
+        )
+    ]
+
+
+def test_processing_diff_with_added_lines_only() -> None:
+    diff = """
+    random blabla
+    diffCopy--- file.cs
+    +++ file.cs
+    @@ ... @@
+public class Example
+{
++    private string _name;
+    public void Method()
+    {
+        // Some comment
+    }
+}
+    random blabla
+    """
+    assert process_diff(diff) == [
+        ProcessedDiff(
+            before="",
+            after="    private string _name;",
+        )
     ]
