@@ -188,7 +188,7 @@ def test_that_no_context_add_fails() -> None:
 ```diff
 --- file.cs
 +++ file.cs
-@@ ... @@ 
+@@ ... @@
 +        add a new line
 ```
 
