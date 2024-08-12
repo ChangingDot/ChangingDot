@@ -86,14 +86,12 @@ def test_e2e() -> None:
     )
 
     interpreter = HardCodedInstructionInterpreter(
-        [
-            BlockEdit(
-                block_id=4,
-                file_path="./tests/core/fixtures/e2e/base.cs",
-                before="    [JsonIgnore]\n        public string? DistinctId { get; set; }",
-                after="    [JsonIgnore]\n        public string? NewVariableName { get; set; }",
-            )
-        ]
+        BlockEdit(
+            block_id=4,
+            file_path="./tests/core/fixtures/e2e/base.cs",
+            before="    [JsonIgnore]\n        public string? DistinctId { get; set; }",
+            after="    [JsonIgnore]\n        public string? NewVariableName { get; set; }",
+        )
     )
 
     file_modifier = IntegralModifyle()

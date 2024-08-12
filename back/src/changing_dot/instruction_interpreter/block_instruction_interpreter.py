@@ -33,9 +33,9 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
         )
         return prompt | self.model | StrOutputParser()
 
-    def get_edits_from_instruction(
+    def get_edit_from_instruction(
         self, instruction: InstructionBlock, DG: DependencyGraph
-    ) -> list[BlockEdit]:
+    ) -> BlockEdit:
         before = DG.get_node(instruction["block_id"]).text
 
         chain = self.make_chain()
@@ -48,7 +48,12 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
         processed_outputs = process_diff(output, before)
 
         if len(processed_outputs) == 0:
-            return []
+            return BlockEdit(
+                block_id=instruction["block_id"],
+                file_path=instruction["file_path"],
+                before="",
+                after="",
+            )
 
         after = before
         for processed_output in processed_outputs:
@@ -66,14 +71,12 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
 
             after = after.replace(processed_output.before, processed_output.after)
 
-        return [
-            BlockEdit(
-                block_id=instruction["block_id"],
-                file_path=instruction["file_path"],
-                before=before,
-                after=after,
-            )
-        ]
+        return BlockEdit(
+            block_id=instruction["block_id"],
+            file_path=instruction["file_path"],
+            before=before,
+            after=after,
+        )
 
 
 def create_openai_interpreter(observer: Observer) -> BlockInstructionInterpreter:

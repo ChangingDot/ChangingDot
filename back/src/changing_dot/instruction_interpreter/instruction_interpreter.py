@@ -3,7 +3,7 @@ from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 
 
 class IBlockInstructionInterpreter:
-    def get_edits_from_instruction(
+    def get_edit_from_instruction(
         self, instruction: InstructionBlock, DG: DependencyGraph
-    ) -> list[BlockEdit]:
+    ) -> BlockEdit:
         raise NotImplementedError()
