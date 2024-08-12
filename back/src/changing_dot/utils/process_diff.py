@@ -6,7 +6,7 @@ class ProcessedDiff(BaseModel):
     after: str
 
 
-def process_diff(diff: str) -> list[ProcessedDiff]:
+def process_diff(diff: str, block_text: str) -> list[ProcessedDiff]:
     hunks = extract_hunks(diff)
     return [process_hunk(hunk) for hunk in hunks]
 
