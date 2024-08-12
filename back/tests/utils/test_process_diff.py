@@ -268,13 +268,33 @@ def test_processing_diff_with_line_jumps(block_text: str) -> None:
     ]
 
 
+def test_minus_that_does_not_exist_in_block_fails(simple_block_text: str) -> None:
+    diff = """
+    random blabla
+```diff
+--- file.cs
++++ file.cs
+@@ ... @@
+-        return "Not in block";
++        return "Welcome, World!";
+```
+
+random blabla
+    """
+
+    with pytest.raises(
+        ValueError, match="You can't remove a line that does not exist in block"
+    ):
+        process_diff(diff, simple_block_text)
+
+
 def test_processing_diff_with_added_lines_only(simple_block_text: str) -> None:
     diff = """
     random blabla
     diffCopy--- file.cs
     +++ file.cs
     @@ ... @@
-static string SimpleMethod()
+    static string SimpleMethod()
     {
 +        // New comment
         return "Hello, World!";
