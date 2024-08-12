@@ -45,7 +45,7 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
         if self.observer:
             self.observer.log(f"Got from LLM the following response : {output}")
 
-        processed_outputs = process_diff(output)
+        processed_outputs = process_diff(output, before)
 
         if len(processed_outputs) == 0:
             return []

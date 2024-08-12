@@ -1,12 +1,42 @@
+import pytest
 from changing_dot.utils.process_diff import ProcessedDiff, process_diff
 
 
-def test_processing_empty_diff_returns_empty_list() -> None:
+@pytest.fixture()
+def simple_block_text() -> str:
+    return """static string SimpleMethod()
+    {
+        return "Hello, World!";
+    }"""
+
+
+@pytest.fixture()
+def block_text() -> str:
+    return """static string SimpleMethod()
+    {
+        var x = 5;
+        // This is a comment
+        Console.WriteLine("Hello");
+
+        if (x < 4)
+        {
+            Console.WriteLine("small");
+        }
+        else
+        {
+            Console.WriteLine("big");
+        }
+
+        return "Hello, World!";
+    }"""
+
+
+def test_processing_empty_diff_returns_empty_list(simple_block_text: str) -> None:
     diff = ""
-    assert process_diff(diff) == []
+    assert process_diff(diff, simple_block_text) == []
 
 
-def test_processing_no_diff_returns_empty_list() -> None:
+def test_processing_no_diff_returns_empty_list(simple_block_text: str) -> None:
     diff = """
     random blabla
 ```diff
@@ -17,10 +47,12 @@ def test_processing_no_diff_returns_empty_list() -> None:
 
 random blabla
     """
-    assert process_diff(diff) == []
+    assert process_diff(diff, simple_block_text) == []
 
 
-def test_processing_simple_diff_returns_the_processed_diff() -> None:
+def test_processing_simple_diff_returns_the_processed_diff(
+    simple_block_text: str,
+) -> None:
     diff = """
     random blabla
 ```diff
@@ -33,7 +65,7 @@ def test_processing_simple_diff_returns_the_processed_diff() -> None:
 
 random blabla
     """
-    assert process_diff(diff) == [
+    assert process_diff(diff, simple_block_text) == [
         ProcessedDiff(
             before="""        return "Hello, World!";""",
             after="""        return "Welcome, World!";""",
@@ -41,7 +73,9 @@ random blabla
     ]
 
 
-def test_processing_multiline_diff_returns_the_processed_diff() -> None:
+def test_processing_multiline_diff_returns_the_processed_diff(
+    simple_block_text: str,
+) -> None:
     diff = """
     random blabla
 ```diff
@@ -60,7 +94,7 @@ def test_processing_multiline_diff_returns_the_processed_diff() -> None:
 
 random blabla
     """
-    assert process_diff(diff) == [
+    assert process_diff(diff, simple_block_text) == [
         ProcessedDiff(
             before="""    static string SimpleMethod()
     {
@@ -74,7 +108,9 @@ random blabla
     ]
 
 
-def test_processing_multiline_diff_returns_the_processed_diff_plus_first() -> None:
+def test_processing_multiline_diff_returns_the_processed_diff_plus_first(
+    simple_block_text: str,
+) -> None:
     diff = """
     random blabla
 ```diff
@@ -93,7 +129,7 @@ def test_processing_multiline_diff_returns_the_processed_diff_plus_first() -> No
 
 random blabla
     """
-    assert process_diff(diff) == [
+    assert process_diff(diff, simple_block_text) == [
         ProcessedDiff(
             before="""    static string SimpleMethod()
     {
@@ -107,7 +143,7 @@ random blabla
     ]
 
 
-def test_processing_multiple_diffs_in_single_block() -> None:
+def test_processing_multiple_diffs_in_single_block(block_text: str) -> None:
     diff = """
     random blabla
 ```diff
@@ -122,7 +158,7 @@ something
 random blabla
 """
 
-    assert process_diff(diff) == [
+    assert process_diff(diff, block_text) == [
         ProcessedDiff(
             before="        var x = 5;",
             after="        var x = 10;",
@@ -134,7 +170,7 @@ random blabla
     ]
 
 
-def test_processing_multiple_diffs_in_single_block_no_divider() -> None:
+def test_processing_multiple_diffs_in_single_block_no_divider(block_text: str) -> None:
     diff = """
     random blabla
 ```diff
@@ -148,7 +184,7 @@ def test_processing_multiple_diffs_in_single_block_no_divider() -> None:
 random blabla
 """
 
-    assert process_diff(diff) == [
+    assert process_diff(diff, block_text) == [
         ProcessedDiff(
             before="        var x = 5;",
             after="        var x = 10;",
@@ -160,98 +196,94 @@ random blabla
     ]
 
 
-def test_processing_diff_with_remove_lines_only() -> None:
+def test_processing_diff_with_remove_lines_only(block_text: str) -> None:
     diff = """
     random blabla
     diffCopy--- file.cs
     +++ file.cs
     @@ ... @@
-public class Example
-{
--    private string _name;
-    public void Method()
+    var x = 5;
+    // This is a comment
+-    Console.WriteLine("Hello");
+
+    if (x < 4)
     {
-        // Some comment
+        Console.WriteLine("small");
     }
-}
+    else
+    {
+        Console.WriteLine("big");
+    }
     random blabla
     """
-    assert process_diff(diff) == [
+    assert process_diff(diff, block_text) == [
         ProcessedDiff(
-            before="    private string _name;",
+            before='    Console.WriteLine("Hello");',
             after="",
         )
     ]
 
 
-def test_processing_diff_when_operators_are_not_first_char() -> None:
+def test_processing_diff_when_operators_are_not_first_char(
+    simple_block_text: str,
+) -> None:
     diff = """
     random blabla
     diffCopy--- file.cs
     +++ file.cs
     @@ ... @@
-public class Example
-{
-    public void Method()
-    {
-    -var a = "a";
-    +var b = "b";
-    }
-}
+        -return "Hello, World!";
+        +return "Welcome, World!";
     random blabla
     """
-    assert process_diff(diff) == [
-        ProcessedDiff(before='    var a = "a";', after='    var b = "b";')
-    ]
-
-
-def test_processing_diff_with_line_jumps() -> None:
-    diff = """
-    random blabla
-    diffCopy--- file.cs
-    +++ file.cs
-    @@ ... @@
-public class Example
-{
--    private string toto;
--
-+    private string _name;
-+
-+
-    public void Method()
-    {
-        // Some comment
-    }
-}
-    random blabla
-    """
-    assert process_diff(diff) == [
+    assert process_diff(diff, simple_block_text) == [
         ProcessedDiff(
-            before="    private string toto;\n",
-            after="    private string _name;\n\n",
+            before='        return "Hello, World!";',
+            after='        return "Welcome, World!";',
         )
     ]
 
 
-def test_processing_diff_with_added_lines_only() -> None:
+def test_processing_diff_with_line_jumps(block_text: str) -> None:
     diff = """
     random blabla
     diffCopy--- file.cs
     +++ file.cs
     @@ ... @@
-public class Example
-{
-+    private string _name;
-    public void Method()
-    {
-        // Some comment
-    }
-}
+        var x = 5;
+        // This is a comment
+-        Console.WriteLine("Hello");
+-
++        Console.WriteLine("Welcome");
++
++
+        if (x < 4)
     random blabla
     """
-    assert process_diff(diff) == [
+    assert process_diff(diff, block_text) == [
+        ProcessedDiff(
+            before='        Console.WriteLine("Hello");\n',
+            after='        Console.WriteLine("Welcome");\n\n',
+        )
+    ]
+
+
+def test_processing_diff_with_added_lines_only(simple_block_text: str) -> None:
+    diff = """
+    random blabla
+    diffCopy--- file.cs
+    +++ file.cs
+    @@ ... @@
+static string SimpleMethod()
+    {
++        // New comment
+        return "Hello, World!";
+    }
+    random blabla
+    """
+    assert process_diff(diff, simple_block_text) == [
         ProcessedDiff(
             before="",
-            after="    private string _name;",
+            after="        // New comment",
         )
     ]
