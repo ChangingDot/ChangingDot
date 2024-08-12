@@ -7,11 +7,11 @@ class ProcessedDiff(BaseModel):
 
 
 def process_diff(diff: str, block_text: str) -> list[ProcessedDiff]:
-    hunks = extract_hunks(diff)
+    hunks = extract_hunks(diff, block_text)
     return [process_hunk(hunk) for hunk in hunks]
 
 
-def extract_hunks(diff: str) -> list[str]:
+def extract_hunks(diff: str, block_text: str) -> list[str]:
     hunks = []
 
     lines = diff.splitlines(keepends=True)
@@ -24,6 +24,8 @@ def extract_hunks(diff: str) -> list[str]:
             continue
 
         if line.strip().startswith("-"):
+            if line.replace("-", "", 1).strip() not in block_text:
+                raise ValueError("You can't remove a line that does not exist in block")
             # if switch
             if last_operator == "+":
                 number_of_operator_switchs += 1
