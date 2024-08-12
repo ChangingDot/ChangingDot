@@ -27,6 +27,13 @@ class BlockEdit(BaseModel):
     after: str
 
 
+class EmptyEdit(BlockEdit):
+    file_path: str
+    block_id: int
+    before: str = ""
+    after: str = ""
+
+
 class ErrorInitialization(TypedDict):
     init_type: Literal["error"]
     initial_error: str

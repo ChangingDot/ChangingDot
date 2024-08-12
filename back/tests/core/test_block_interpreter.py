@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 import pytest
-from changing_dot.custom_types import BlockEdit
+from changing_dot.custom_types import BlockEdit, EmptyEdit
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
     BlockInstructionInterpreter,
@@ -34,11 +34,9 @@ def test_empty_instruction() -> None:
     """
     )
 
-    expected_edit: BlockEdit = BlockEdit(
+    expected_edit: BlockEdit = EmptyEdit(
         block_id=1,
         file_path="./tests/core/fixtures/block_interpreter/subject.cs",
-        before="",
-        after="",
     )
 
     assert expected_edit == interpreter.get_edit_from_instruction(instruction, DG)

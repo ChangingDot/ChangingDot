@@ -1,4 +1,4 @@
-from changing_dot.custom_types import BlockEdit, InstructionBlock
+from changing_dot.custom_types import BlockEdit, EmptyEdit, InstructionBlock
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_interpreter.block_prompts import (
     edits_template,
@@ -48,11 +48,9 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
         processed_outputs = process_diff(output, before)
 
         if len(processed_outputs) == 0:
-            return BlockEdit(
+            return EmptyEdit(
                 block_id=instruction["block_id"],
                 file_path=instruction["file_path"],
-                before="",
-                after="",
             )
 
         after = before
