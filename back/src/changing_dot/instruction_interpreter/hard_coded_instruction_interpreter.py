@@ -6,12 +6,12 @@ from changing_dot.instruction_interpreter.instruction_interpreter import (
 
 
 class HardCodedInstructionInterpreter(IBlockInstructionInterpreter):
-    hardcoded_edits: list[BlockEdit]
+    hardcoded_edit: BlockEdit
 
-    def __init__(self, edits: list[BlockEdit]):
-        self.hardcoded_edits = edits
+    def __init__(self, edit: BlockEdit):
+        self.hardcoded_edit = edit
 
-    def get_edits_from_instruction(
+    def get_edit_from_instruction(
         self, instruction: InstructionBlock, DG: DependencyGraph
-    ) -> list[BlockEdit]:
-        return self.hardcoded_edits
+    ) -> BlockEdit:
+        return self.hardcoded_edit

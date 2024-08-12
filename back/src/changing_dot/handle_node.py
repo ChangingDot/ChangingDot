@@ -56,17 +56,16 @@ def get_solution_node_from_problem(
 
         observer.log_dict("used instruction : ", instruction)
 
-        edits = interpreter.get_edits_from_instruction(instruction, DG)
+        edit = interpreter.get_edit_from_instruction(instruction, DG)
 
-        for edit in edits:
-            observer.log_dict("got edits :", edit)
+        observer.log_dict("got edit :", edit)
 
         return {
             "index": -1,
             "node_type": "solution",
             "status": "pending",
             "instruction": instruction,
-            "edits": edits,
+            "edits": [edit],
         }
 
     except Exception as e:
@@ -271,7 +270,8 @@ def resume_problem_node(
             DG,
             node_index,
             HardCodedInstructionManager(new_instruction),
-            HardCodedInstructionInterpreter(new_edits),
+            # TODO we do not yet handle multiple edits
+            HardCodedInstructionInterpreter(new_edits[0]),
             file_modifier,
             error_manager,
             observer,

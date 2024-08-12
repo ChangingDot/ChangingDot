@@ -34,9 +34,14 @@ def test_empty_instruction() -> None:
     """
     )
 
-    expected_edits: list[BlockEdit] = []
+    expected_edit: BlockEdit = BlockEdit(
+        block_id=1,
+        file_path="./tests/core/fixtures/block_interpreter/subject.cs",
+        before="",
+        after="",
+    )
 
-    assert expected_edits == interpreter.get_edits_from_instruction(instruction, DG)
+    assert expected_edit == interpreter.get_edit_from_instruction(instruction, DG)
 
 
 def test_basic_change() -> None:
@@ -68,22 +73,20 @@ random blabla
     """
     )
 
-    expected_edits: list[BlockEdit] = [
-        BlockEdit(
-            file_path="./tests/core/fixtures/block_interpreter/subject.cs",
-            block_id=1,
-            before="""static string SimpleMethod()
+    expected_edit: BlockEdit = BlockEdit(
+        file_path="./tests/core/fixtures/block_interpreter/subject.cs",
+        block_id=1,
+        before="""static string SimpleMethod()
     {
         return "Hello, World!";
     }""",
-            after="""static string SimpleMethod()
+        after="""static string SimpleMethod()
     {
         return "Welcome, World!";
     }""",
-        )
-    ]
+    )
 
-    assert expected_edits == interpreter.get_edits_from_instruction(instruction, DG)
+    assert expected_edit == interpreter.get_edit_from_instruction(instruction, DG)
 
 
 def test_basic_change_with_plus_before_minus() -> None:
@@ -115,22 +118,20 @@ random blabla
     """
     )
 
-    expected_edits: list[BlockEdit] = [
-        BlockEdit(
-            file_path="./tests/core/fixtures/block_interpreter/subject.cs",
-            block_id=1,
-            before="""static string SimpleMethod()
+    expected_edit: BlockEdit = BlockEdit(
+        file_path="./tests/core/fixtures/block_interpreter/subject.cs",
+        block_id=1,
+        before="""static string SimpleMethod()
     {
         return "Hello, World!";
     }""",
-            after="""static string SimpleMethod()
+        after="""static string SimpleMethod()
     {
         return "Welcome, World!";
     }""",
-        )
-    ]
+    )
 
-    assert expected_edits == interpreter.get_edits_from_instruction(instruction, DG)
+    assert expected_edit == interpreter.get_edit_from_instruction(instruction, DG)
 
 
 def test_basic_change_but_LLM_returns_changes_not_full_block() -> None:
@@ -156,22 +157,20 @@ random blabla
     """
     )
 
-    expected_edits: list[BlockEdit] = [
-        BlockEdit(
-            file_path="./tests/core/fixtures/block_interpreter/subject.cs",
-            block_id=1,
-            before="""static string SimpleMethod()
+    expected_edit: BlockEdit = BlockEdit(
+        file_path="./tests/core/fixtures/block_interpreter/subject.cs",
+        block_id=1,
+        before="""static string SimpleMethod()
     {
         return "Hello, World!";
     }""",
-            after="""static string SimpleMethod()
+        after="""static string SimpleMethod()
     {
         return "Welcome, World!";
     }""",
-        )
-    ]
+    )
 
-    assert expected_edits == interpreter.get_edits_from_instruction(instruction, DG)
+    assert expected_edit == interpreter.get_edit_from_instruction(instruction, DG)
 
 
 def test_that_no_context_add_fails() -> None:
@@ -199,4 +198,4 @@ random blabla
     with pytest.raises(
         ValueError, match="Code was added, but we do not know where to put it"
     ):
-        interpreter.get_edits_from_instruction(instruction, DG)
+        interpreter.get_edit_from_instruction(instruction, DG)
