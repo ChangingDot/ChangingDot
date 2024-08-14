@@ -123,7 +123,7 @@ def test_revert(modifyle: IModifyle, base: str) -> None:
 
     assert get_subject() == get_fixture("basic_remove.cs")
 
-    modifyle.revert_change(DG)
+    modifyle.revert_changes(DG)
 
     assert get_subject() == get_fixture("base.cs")
 
@@ -144,10 +144,12 @@ def test_DG_is_updated_on_each_code_change(modifyle: IModifyle, base: str) -> No
     assert get_subject() == get_fixture("basic_remove.cs")
     assert DG.get_node(7).text == "public int Size { get; set; }"
 
-    modifyle.revert_change(DG)
+    modifyle.revert_changes(DG)
 
     assert get_subject() == get_fixture("base.cs")
-    assert DG.get_node(7).text == "[JsonIgnore]\n        public int Size { get; set; }"
+
+    # Do not change DG on a revert changes
+    assert DG.get_node(7).text == "public int Size { get; set; }"
 
 
 def test_remove_line(
@@ -168,7 +170,7 @@ def test_remove_line(
 
     assert get_subject() == get_fixture("remove_line.cs")
 
-    modifyle.revert_change(DG)
+    modifyle.revert_changes(DG)
 
     assert get_subject() == get_fixture("base.cs")
 
@@ -203,7 +205,7 @@ def test_multiple_changes_same_file(
 
     assert get_subject() == get_fixture("multiple_changes.cs")
 
-    modifyle.revert_change(DG)
+    modifyle.revert_changes(DG)
 
     assert get_subject() == get_fixture("base.cs")
 
@@ -246,10 +248,9 @@ def test_multiple_applies_same_file(
 
     assert get_subject() == get_fixture("multiple_changes.cs")
 
-    ### Revert only reverts last change
-    modifyle.revert_change(DG)
+    modifyle.revert_changes(DG)
 
-    assert get_subject() == get_fixture("duplicate_change.cs")
+    assert get_subject() == get_fixture("base.cs")
 
 
 def test_multiple_changes_multiple_files(
@@ -292,7 +293,7 @@ def test_multiple_changes_multiple_files(
     assert get_subject() == get_fixture("basic_change.cs")
     assert get_fixture("subject2.cs") == get_fixture("multiple_changes.cs")
 
-    modifyle.revert_change(DG)
+    modifyle.revert_changes(DG)
 
     assert get_subject() == get_fixture("base.cs")
     assert get_fixture("subject2.cs") == get_fixture("base.cs")

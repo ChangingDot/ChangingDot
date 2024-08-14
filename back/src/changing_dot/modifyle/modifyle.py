@@ -7,7 +7,7 @@ from changing_dot.utils.text_functions import read_text, write_text
 
 
 class IModifyle:
-    def revert_change(self, DG: DependencyGraph) -> None:
+    def revert_changes(self, DG: DependencyGraph) -> None:
         pass
 
     def apply_change(self, DG: DependencyGraph, edits: list[BlockEdit]) -> None:
@@ -15,7 +15,7 @@ class IModifyle:
 
 
 class FakeModifyle(IModifyle):
-    def revert_change(self, DG: DependencyGraph) -> None:
+    def revert_changes(self, DG: DependencyGraph) -> None:
         pass
 
     def apply_change(self, DG: DependencyGraph, edits: list[BlockEdit]) -> None:
@@ -23,7 +23,7 @@ class FakeModifyle(IModifyle):
 
 
 class ManualModifyle(IModifyle):
-    def revert_change(self, DG: DependencyGraph) -> None:
+    def revert_changes(self, DG: DependencyGraph) -> None:
         input("Revert")
 
     def apply_change(self, DG: DependencyGraph, edits: list[BlockEdit]) -> None:
@@ -56,6 +56,7 @@ def apply_edits(DG: DependencyGraph, edits: list[BlockEdit]) -> None:
         DG.update_graph_from_edits([edit])
 
 
+# Use when you need to stack multiple changes and then revert
 class IntegralModifyle(IModifyle):
     def __init__(self) -> None:
         self.original_files_content: dict[str, str] = {}
@@ -67,17 +68,18 @@ class IntegralModifyle(IModifyle):
         DG.save_state()
 
         for edit in edits:
-            self.original_files_content[edit.file_path] = read_text(edit.file_path)
+            if self.original_files_content.get(edit.file_path) is None:
+                self.original_files_content[edit.file_path] = read_text(edit.file_path)
 
         apply_edits(DG, edits)
 
-    def revert_change(self, DG: DependencyGraph) -> None:
+    def revert_changes(self, DG: DependencyGraph) -> None:
         for file_path in self.original_files_content:
             write_text(file_path, self.original_files_content[file_path])
-        DG.revert()
         self.original_files_content = {}
 
 
+# Use for 1 time changes that you need to revert just after
 @contextmanager
 def applied_edits_context(
     DG: DependencyGraph, edits: list[BlockEdit]
