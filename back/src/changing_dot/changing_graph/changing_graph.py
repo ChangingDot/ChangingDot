@@ -131,6 +131,13 @@ class ChangingGraph:
             and (node["node_type"] == "problem" or node["node_type"] == "solution")
         ]
 
+    def get_all_handled_solution_nodes(self) -> list[int]:
+        return [
+            node["index"]
+            for index, node in self.G.nodes(data=True)
+            if node["status"] == "handled" and node["node_type"] == "solution"
+        ]
+
     def get_all_pending_problem_nodes(self) -> list[ProblemNode]:
         return [
             node

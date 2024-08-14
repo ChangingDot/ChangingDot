@@ -5,6 +5,7 @@ from collections.abc import Generator
 from typing import TYPE_CHECKING
 
 import pytest
+from changing_dot.apply_graph_changes import apply_graph_changes
 from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.create_graph import create_graph
 from changing_dot.custom_types import (
@@ -49,6 +50,7 @@ def _reset_repo() -> Generator[None, None, None]:
 def test_e2e() -> None:
     ### setup
     initial_file_content = read_text("./tests/core/fixtures/e2e/base.cs")
+    changed_file_content = read_text("./tests/core/fixtures/e2e_results/base.cs")
 
     job_id = "job_id"
     iteration_name = "tmp"
@@ -92,8 +94,8 @@ def test_e2e() -> None:
         BlockEdit(
             block_id=4,
             file_path="./tests/core/fixtures/e2e/base.cs",
-            before="    [JsonIgnore]\n        public string? DistinctId { get; set; }",
-            after="    [JsonIgnore]\n        public string? NewVariableName { get; set; }",
+            before="        [JsonIgnore]\n        public string? DistinctId { get; set; }\n",
+            after="        [JsonIgnore]\n        public string? NewVariableName { get; set; }\n",
         )
     )
 
@@ -152,6 +154,24 @@ def test_e2e() -> None:
         )  # 1 initial -> 1 solution failed -> 1 solution ok
 
     assert read_text("./tests/core/fixtures/e2e/base.cs") == initial_file_content
+
+    ### Apply changes
+
+    new_DG = DependencyGraph(["./tests/core/fixtures/e2e/base.cs"])
+
+    apply_graph_changes(G, new_DG, file_modifier, observer)
+
+    assert read_text("./tests/core/fixtures/e2e/base.cs") == changed_file_content
+
+    # remove applied changes
+    write_text(
+        "./tests/core/fixtures/e2e/base.cs",
+        read_text(
+            "./tests/core/fixtures/base.cs",
+        ),
+    )
+
+    ### assert
 
     ### Optimize Graph
 
