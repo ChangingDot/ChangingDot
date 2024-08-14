@@ -5,9 +5,11 @@ from urllib.parse import urlparse
 import click
 import requests
 import yaml
+from changing_dot.apply_graph_changes import run_apply_graph_changes
 from changing_dot.commit_graph import run_commit_graph_from_config
 from changing_dot.create_graph import run_create_graph
 from changing_dot.custom_types import (
+    ApplyGraphChangesInput,
     CreateGraphInput,
     OptimizeGraphInput,
     ResumeGraphInput,
@@ -117,6 +119,26 @@ def optimize(config: str, local: bool) -> None:
         optimize_graph_input.iteration_name,
         optimize_graph_input.project_name,
         optimize_graph_input.base_path,
+        local,
+    )
+
+
+@cdot.command()
+@click.option(
+    "--config",
+    "-c",
+    prompt="Path to yaml config file",
+    help="Path to yaml config file.",
+)
+@click.option("--local/--remote", default=True)
+def apply_changes(config: str, local: bool) -> None:
+    config_dict = get_config_dict(config)
+    apply_graph_changes_input = ApplyGraphChangesInput(**config_dict, is_local=local)
+    run_apply_graph_changes(
+        apply_graph_changes_input.iteration_name,
+        apply_graph_changes_input.project_name,
+        apply_graph_changes_input.solution_path,
+        apply_graph_changes_input.base_path,
         local,
     )
 
