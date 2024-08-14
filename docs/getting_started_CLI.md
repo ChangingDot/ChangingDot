@@ -47,3 +47,9 @@ A longer term goal of ChangingDot is to automate actual refactorings and therefo
 ```bash
 cdot run commit https://rawcdn.githack.com/ChangingDot/ChangingBack/main/examples/example.yaml
 ```
+
+If you do not want to automatically commit the changes, you can apply them to your local git repo to review and changes them later on
+
+```bash
+cdot apply-changes -c https://rawcdn.githack.com/ChangingDot/ChangingBack/main/examples/example.yaml
+```
