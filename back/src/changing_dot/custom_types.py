@@ -123,14 +123,6 @@ class SolutionNode(TypedDict):
     edits: list[BlockEdit]
 
 
-class SolutionNodeBlock(TypedDict):
-    index: int
-    node_type: Literal["solution_block"]
-    status: NodeStatus
-    instruction: InstructionBlock
-    edits: list[BlockEdit]
-
-
 class ProblemNode(TypedDict):
     index: int
     node_type: Literal["problem"]
@@ -157,13 +149,7 @@ class ErrorProblemNode(TypedDict):
     suspected_edits: list[BlockEdit] | None
 
 
-NodeData = (
-    SolutionNode
-    | ProblemNode
-    | ErrorSolutionNode
-    | ErrorProblemNode
-    | SolutionNodeBlock
-)
+NodeData = SolutionNode | ProblemNode | ErrorSolutionNode | ErrorProblemNode
 
 
 class InitialChange(BaseModel):

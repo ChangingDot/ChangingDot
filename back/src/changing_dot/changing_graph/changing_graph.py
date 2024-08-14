@@ -8,7 +8,6 @@ from changing_dot.custom_types import (
     NodeStatus,
     ProblemNode,
     SolutionNode,
-    SolutionNodeBlock,
 )
 
 
@@ -26,19 +25,6 @@ class ChangingGraph:
         self.next_index = next_index
 
     def add_solution_node(self, node_data: SolutionNode) -> int:
-        index = self.next_index
-        self.G.add_node(
-            index,
-            index=index,
-            node_type=node_data["node_type"],
-            status=node_data["status"],
-            instruction=node_data["instruction"],
-            edits=node_data["edits"],
-        )
-        self.next_index += 1
-        return index
-
-    def add_solution_node_block(self, node_data: SolutionNodeBlock) -> int:
         index = self.next_index
         self.G.add_node(
             index,
@@ -77,7 +63,7 @@ class ChangingGraph:
 
     def get_node(self, index: int) -> NodeData:
         node = self.G.nodes()[index]
-        if node["node_type"] == "solution" or node["node_type"] == "solution_block":
+        if node["node_type"] == "solution":
             return {
                 "index": node["index"],
                 "node_type": node["node_type"],
@@ -156,19 +142,6 @@ class ChangingGraph:
             for node_index in self.G.successors(node_index)
             if self.G.nodes[node_index]["status"] == "failed"
             and self.G.nodes[node_index]["node_type"] == "solution"
-        ]
-        return failed_successors
-
-    def get_failed_solution_to_problem_block(
-        self, node_index: int
-    ) -> list[SolutionNodeBlock]:
-        problem_node = self.get_node(node_index)
-        assert problem_node["node_type"] == "problem"
-        failed_successors: list[SolutionNodeBlock] = [
-            self.get_node(node_index)  # type: ignore
-            for node_index in self.G.successors(node_index)
-            if self.G.nodes[node_index]["status"] == "failed"
-            and self.G.nodes[node_index]["node_type"] == "solution_block"
         ]
         return failed_successors
 
