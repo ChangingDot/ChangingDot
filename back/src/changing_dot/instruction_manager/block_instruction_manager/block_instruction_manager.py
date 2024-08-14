@@ -59,7 +59,7 @@ class IInstructionManagerBlock:
 
 
 def get_failed_attempts(G: ChangingGraph, node_index: int) -> str:
-    failed_attempt_nodes = G.get_failed_solution_to_problem_block(node_index)
+    failed_attempt_nodes = G.get_failed_solution_to_problem(node_index)
     if len(failed_attempt_nodes) == 0:
         return ""
 

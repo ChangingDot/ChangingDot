@@ -7,7 +7,7 @@ from changing_dot.checks.check_if_duplicate_solution import (
 from changing_dot.custom_types import BlockEdit, InstructionBlock
 
 if TYPE_CHECKING:
-    from changing_dot.custom_types import SolutionNodeBlock
+    from changing_dot.custom_types import SolutionNode
 
 
 def test_no_duplicates_find_no_duplicates() -> None:
@@ -26,9 +26,9 @@ def test_no_duplicates_find_no_duplicates() -> None:
         }
     )
 
-    solution_node: SolutionNodeBlock = {
+    solution_node: SolutionNode = {
         "index": 1,
-        "node_type": "solution_block",
+        "node_type": "solution",
         "status": "pending",
         "instruction": InstructionBlock(
             block_id=1,
@@ -70,9 +70,9 @@ def test_duplicates_find_no_duplicates() -> None:
         }
     )
 
-    existing_solution_node: SolutionNodeBlock = {
+    existing_solution_node: SolutionNode = {
         "index": 1,
-        "node_type": "solution_block",
+        "node_type": "solution",
         "status": "pending",
         "instruction": InstructionBlock(
             block_id=1,
@@ -95,11 +95,11 @@ def test_duplicates_find_no_duplicates() -> None:
         ],
     }
 
-    G.add_solution_node_block(existing_solution_node)
+    G.add_solution_node(existing_solution_node)
 
-    new_solution_node: SolutionNodeBlock = {
+    new_solution_node: SolutionNode = {
         "index": 12,
-        "node_type": "solution_block",
+        "node_type": "solution",
         "status": "pending",
         "instruction": InstructionBlock(
             block_id=1,

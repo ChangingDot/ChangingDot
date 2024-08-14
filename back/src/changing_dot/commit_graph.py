@@ -17,7 +17,7 @@ from changing_dot.utils.process_pickle_files import process_pickle_files
 if TYPE_CHECKING:
     from changing_dot.custom_types import (
         BlockEdit,
-        SolutionNodeBlock,
+        SolutionNode,
     )
 
 
@@ -36,14 +36,14 @@ def commit_graph(
 
     observer.log("Starting to commit")
 
-    list_of_solution_nodes: list[SolutionNodeBlock] = []
+    list_of_solution_nodes: list[SolutionNode] = []
 
     while len(leaves) > 0:
         leaf = leaves.pop()
 
         node = G.get_node(leaf)
 
-        if node["node_type"] == "solution_block":
+        if node["node_type"] == "solution":
             if node["status"] != "handled":
                 observer.log(
                     f"Removing node {node['index']} because of status {node['status']}"

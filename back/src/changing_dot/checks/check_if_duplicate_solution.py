@@ -2,7 +2,7 @@ from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.custom_types import (
     BlockEdit,
     InstructionBlock,
-    SolutionNodeBlock,
+    SolutionNode,
 )
 from changing_dot_visualize.observer import Observer
 
@@ -14,7 +14,7 @@ def find_same_solution_block(
 ) -> list[int]:
     matching_nodes = []
     for node, attrs in G.G.nodes(data=True):
-        if attrs.get("node_type") != "solution_block":
+        if attrs.get("node_type") != "solution":
             continue
 
         if attrs.get("status") == "failed":
@@ -43,9 +43,9 @@ def find_same_solution_block(
 
 def check_if_duplicate_solution_block(
     G: ChangingGraph,
-    solution_node: SolutionNodeBlock,
+    solution_node: SolutionNode,
     observer: Observer | None = None,
-) -> SolutionNodeBlock | None:
+) -> SolutionNode | None:
     if observer:
         observer.log("Checking if solution already exists")
 
@@ -56,6 +56,6 @@ def check_if_duplicate_solution_block(
     assert len(matched_nodes) == 0 or len(matched_nodes) == 1
     if len(matched_nodes) == 1:
         existing_solution = G.get_node(matched_nodes[0])
-        assert existing_solution["node_type"] == "solution_block"
+        assert existing_solution["node_type"] == "solution"
         return existing_solution
     return None
