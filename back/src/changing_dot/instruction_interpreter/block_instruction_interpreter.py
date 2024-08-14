@@ -10,7 +10,7 @@ from changing_dot.instruction_interpreter.instruction_interpreter import (
     IBlockInstructionInterpreter,
 )
 from changing_dot.utils.llm_model_utils import get_mistral_api_key
-from changing_dot.utils.process_diff import process_diff
+from changing_dot.utils.text_functions import extract_code_blocks
 from changing_dot_visualize.observer import Observer
 from dotenv import load_dotenv
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -49,35 +49,26 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
         if self.observer:
             self.observer.log(f"Got from LLM the following response : {output}")
 
-        processed_outputs = process_diff(output, before)
+        code_blocks = extract_code_blocks(output)
 
-        if len(processed_outputs) == 0:
+        if len(code_blocks) == 0:
             return EmptyEdit(
                 block_id=instruction["block_id"],
                 file_path=instruction["file_path"],
             )
 
-        after = before
-        for processed_output in processed_outputs:
-            processed_output.before = processed_output.before.lstrip()
-            processed_output.after = processed_output.after.lstrip()
+        code_block = code_blocks[-1]
 
-            if processed_output.before.strip() == "":
-                raise ValueError("Code was added, but we do not know where to put it")
+        code_block = code_block.lstrip()
 
-            if processed_output.before not in after:
-                if self.observer:
-                    self.observer.log(
-                        f"Error : Could not replace {processed_output.before} in {after}"
-                    )
-
-            after = after.replace(processed_output.before, processed_output.after)
+        if code_block.endswith("\n"):
+            code_block = code_block[:-1]
 
         return BlockEdit(
             block_id=instruction["block_id"],
             file_path=instruction["file_path"],
             before=before,
-            after=after,
+            after=code_block,
         )
 
 

@@ -1,4 +1,5 @@
 import logging
+import re
 
 
 def read_text(filename: str) -> str:
@@ -22,3 +23,8 @@ def write_text(filename: str, content: str) -> None:
     encoding = "utf-8"
     with open(str(filename), "w", encoding=encoding) as f:
         f.write(content)
+
+
+def extract_code_blocks(text: str) -> list[str]:
+    pattern = r"```(?:\w+)?\n([\s\S]*?)\n```"
+    return re.findall(pattern, text)
