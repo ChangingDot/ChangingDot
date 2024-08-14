@@ -47,6 +47,9 @@ def _reset_repo() -> Generator[None, None, None]:
 
 
 def test_e2e() -> None:
+    ### setup
+    initial_file_content = read_text("./tests/core/fixtures/e2e/base.cs")
+
     job_id = "job_id"
     iteration_name = "tmp"
     project_name = "test"
@@ -147,6 +150,8 @@ def test_e2e() -> None:
         assert (
             data_graph.get_number_of_nodes() == 3
         )  # 1 initial -> 1 solution failed -> 1 solution ok
+
+    assert read_text("./tests/core/fixtures/e2e/base.cs") == initial_file_content
 
     ### Optimize Graph
 
