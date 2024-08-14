@@ -2,6 +2,7 @@ import traceback
 
 from changing_dot_visualize.observer import Observer
 
+from changing_dot.apply_graph_changes import apply_graph_changes
 from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.checks.check_solution_syntax_correctness import (
     check_solution_syntax_correctness,
@@ -257,7 +258,11 @@ def resume_problem_node(
     assert len(compile_errors) == 0
 
     G.update_problem_node(new_node)
-    ### TODO we should then remove all children nodes
+
+    for child_index in G.get_children(new_node["index"]):
+        G.remove_node(child_index)
+
+    apply_graph_changes(G, DG, file_modifier, observer)
 
     observer.log_dict(
         f"Starting modification : Changing Node {node_index} to", new_node
@@ -314,6 +319,6 @@ def resume_problem_node(
 
         pending_nodes = G.get_all_pending_nodes()
 
-    file_modifier.revert_change(DG)
+    file_modifier.revert_changes(DG)
 
     observer.log("Finished modification")

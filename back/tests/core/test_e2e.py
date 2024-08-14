@@ -159,7 +159,11 @@ def test_e2e() -> None:
 
     new_DG = DependencyGraph(["./tests/core/fixtures/e2e/base.cs"])
 
-    apply_graph_changes(G, new_DG, file_modifier, observer)
+    new_file_modifier = IntegralModifyle()
+
+    apply_graph_changes(G, new_DG, new_file_modifier, observer)
+
+    ### assert
 
     assert read_text("./tests/core/fixtures/e2e/base.cs") == changed_file_content
 
@@ -170,8 +174,6 @@ def test_e2e() -> None:
             "./tests/core/fixtures/base.cs",
         ),
     )
-
-    ### assert
 
     ### Optimize Graph
 
@@ -218,9 +220,13 @@ def test_e2e() -> None:
         },
     )
 
+    resume_DG = DependencyGraph(["./tests/core/fixtures/e2e/base.cs"])
+
+    resume_file_modifier = IntegralModifyle()
+
     resume_problem_node(
         G,
-        DG,
+        resume_DG,
         resume_initial_node.index,
         {
             "index": resume_initial_node.index,
@@ -233,7 +239,7 @@ def test_e2e() -> None:
         resume_error_manager,
         instruction_manager,
         interpreter,
-        file_modifier,
+        resume_file_modifier,
         observer,
         restriction_options,
     )
@@ -255,4 +261,6 @@ def test_e2e() -> None:
     with open(expected_file_path, "rb") as pickle_file:
         data = pickle.load(pickle_file)
         data_graph = ChangingGraph(data)
-        assert data_graph.get_number_of_nodes() == 4  # Add a new solution
+        assert (
+            data_graph.get_number_of_nodes() == 2
+        )  # Removes failed and correct solution then adds a new solution

@@ -136,6 +136,6 @@ def create_graph(
 
         pending_nodes = G.get_all_pending_nodes()
 
-    file_modifier.revert_change(DG)
+    file_modifier.revert_changes(DG)
 
     observer.log("Finished")

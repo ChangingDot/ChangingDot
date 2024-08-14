@@ -51,9 +51,7 @@ def run_resume_graph(
 
     G = ChangingGraph(graphs[-1])
 
-    DG = DependencyGraph(
-        get_csharp_files(solution_path)
-    )  ## TODO figure out how to actually get the same back maybe so no index shenanigans
+    DG = DependencyGraph(get_csharp_files(solution_path))
 
     observer = Observer(
         G,
