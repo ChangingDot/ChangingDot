@@ -21,7 +21,7 @@ from changing_dot.instruction_manager.block_instruction_manager.block_instructio
     IInstructionManagerBlock,
     create_openai_instruction_manager,
 )
-from changing_dot.modifyle.modifyle_block import IModifyle, IntegralModifyle
+from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
 from changing_dot.utils.file_utils import get_csharp_files
 
 if TYPE_CHECKING:

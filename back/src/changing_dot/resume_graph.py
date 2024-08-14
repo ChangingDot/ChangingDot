@@ -17,13 +17,13 @@ from changing_dot.instruction_interpreter.block_instruction_interpreter import (
 from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
     create_openai_instruction_manager,
 )
-from changing_dot.modifyle.modifyle_block import IntegralModifyle
+from changing_dot.modifyle.modifyle import IntegralModifyle
 from changing_dot.utils.file_utils import get_csharp_files
 from changing_dot.utils.process_pickle_files import process_pickle_files
 
 if TYPE_CHECKING:
     from changing_dot.custom_types import ProblemNode
-    from changing_dot.modifyle.modifyle_block import IModifyle
+    from changing_dot.modifyle.modifyle import IModifyle
 
 
 def run_resume_graph(
