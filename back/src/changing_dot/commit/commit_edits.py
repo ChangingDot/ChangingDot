@@ -3,7 +3,7 @@ import os
 from changing_dot.commit.conflict_handler import IConflictHandler
 from changing_dot.custom_types import BlockEdit
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
-from changing_dot.modifyle.modifyle_block import IModifyle
+from changing_dot.modifyle.modifyle import IModifyle
 from changing_dot.utils.text_functions import read_text, write_text
 from changing_dot_visualize.observer import Observer
 from git import GitCommandError, Repo

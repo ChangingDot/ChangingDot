@@ -8,7 +8,7 @@ from changing_dot.commit.conflict_handler import (
     ConflictHandlerThatThrowsSinceConflictShoundntExist,
 )
 from changing_dot.custom_types import BlockEdit
-from changing_dot.modifyle.modifyle_block import IModifyle, IntegralModifyle
+from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
 from changing_dot.utils.text_functions import write_text
 from git import Repo
 from loguru import logger

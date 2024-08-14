@@ -4,7 +4,7 @@ from changing_dot_visualize.observer import Observer
 
 from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
-from changing_dot.modifyle.modifyle_block import IModifyle, IntegralModifyle
+from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
 from changing_dot.utils.file_utils import get_csharp_files
 from changing_dot.utils.process_pickle_files import process_pickle_files
 

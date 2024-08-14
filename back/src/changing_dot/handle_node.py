@@ -33,7 +33,7 @@ from changing_dot.instruction_manager.block_instruction_manager.block_instructio
 from changing_dot.instruction_manager.hard_coded_instruction_manager import (
     HardCodedInstructionManager,
 )
-from changing_dot.modifyle.modifyle_block import IModifyle
+from changing_dot.modifyle.modifyle import IModifyle
 
 
 def get_solution_node_from_problem(

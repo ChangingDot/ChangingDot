@@ -25,7 +25,7 @@ from changing_dot.instruction_interpreter.hard_coded_instruction_interpreter imp
 from changing_dot.instruction_manager.hard_coded_instruction_manager import (
     HardCodedInstructionManager,
 )
-from changing_dot.modifyle.modifyle_block import IntegralModifyle
+from changing_dot.modifyle.modifyle import IntegralModifyle
 from changing_dot.optimize_graph import optimize_graph
 from changing_dot.utils.text_functions import read_text, write_text
 from changing_dot_visualize.observer import Observer

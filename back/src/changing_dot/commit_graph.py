@@ -11,7 +11,7 @@ from changing_dot.commit.conflict_handler import (
     create_openai_conflict_handler,
 )
 from changing_dot.custom_types import Commit
-from changing_dot.modifyle.modifyle_block import IModifyle, IntegralModifyle
+from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
 from changing_dot.utils.process_pickle_files import process_pickle_files
 
 if TYPE_CHECKING:

@@ -25,7 +25,7 @@ from changing_dot.instruction_interpreter.block_instruction_interpreter import (
 from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
     create_openai_instruction_manager,
 )
-from changing_dot.modifyle.modifyle_block import IModifyle, IntegralModifyle
+from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
 from changing_dot.optimize_graph import optimize_graph
 from changing_dot.utils.file_utils import get_csharp_files
 from changing_dot_visualize.observer import Observer
@@ -36,7 +36,7 @@ if TYPE_CHECKING:
     from changing_dot.instruction_interpreter.instruction_interpreter import (
         IBlockInstructionInterpreter,
     )
-    from changing_dot.modifyle.modifyle_block import IModifyle
+    from changing_dot.modifyle.modifyle import IModifyle
 
 
 def benchmark_job(
