@@ -13,10 +13,6 @@ class IModifyle:
     def apply_change(self, DG: DependencyGraph, edits: list[BlockEdit]) -> None:
         pass
 
-    def can_revert(self) -> bool:
-        pass
-        return True
-
 
 class FakeModifyle(IModifyle):
     def revert_change(self, DG: DependencyGraph) -> None:
@@ -24,9 +20,6 @@ class FakeModifyle(IModifyle):
 
     def apply_change(self, DG: DependencyGraph, edits: list[BlockEdit]) -> None:
         pass
-
-    def can_revert(self) -> bool:
-        return True
 
 
 class ManualModifyle(IModifyle):
@@ -36,9 +29,6 @@ class ManualModifyle(IModifyle):
     def apply_change(self, DG: DependencyGraph, edits: list[BlockEdit]) -> None:
         for edit in edits:
             input(f"Replace {edit.before} by {edit.after} in {edit.file_path}")
-
-    def can_revert(self) -> bool:
-        return True
 
 
 def apply_edits(DG: DependencyGraph, edits: list[BlockEdit]) -> None:
@@ -86,9 +76,6 @@ class IntegralModifyle(IModifyle):
             write_text(file_path, self.original_files_content[file_path])
         DG.revert()
         self.original_files_content = {}
-
-    def can_revert(self) -> bool:
-        return len(self.original_files_content.keys()) != 0
 
 
 @contextmanager
