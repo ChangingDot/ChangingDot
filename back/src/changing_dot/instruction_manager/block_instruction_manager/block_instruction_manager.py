@@ -1,3 +1,5 @@
+from typing import Literal
+
 from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.custom_types import InstructionBlock
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
@@ -5,6 +7,7 @@ from changing_dot.instruction_manager.block_instruction_manager.prompt import (
     prompt,
     system_prompt,
 )
+from changing_dot.utils.llm_model_utils import get_mistral_api_key
 from dotenv import load_dotenv
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.output_parsers import (
@@ -14,6 +17,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import (
     RunnableSerializable,
 )
+from langchain_mistralai import ChatMistralAI
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, ValidationError
 
@@ -150,7 +154,18 @@ class BlockInstructionManager(IInstructionManagerBlock):
         return instruction_chain
 
 
-def create_openai_instruction_manager(goal: str) -> BlockInstructionManager:
+def create_instruction_manager(
+    goal: str, llm_provider: Literal["OPENAI", "MISTRAL"]
+) -> BlockInstructionManager:
     load_dotenv()
-    chat = ChatOpenAI(model="gpt-4o", temperature=0.0)
+    chat: BaseChatModel | None = None
+    if llm_provider == "OPENAI":
+        chat = ChatOpenAI(model="gpt-4o", temperature=0.0)
+    elif llm_provider == "MISTRAL":
+        mistral_api_key = get_mistral_api_key()
+        chat = ChatMistralAI(
+            mistral_api_key=mistral_api_key,
+            model="mistral-large-latest",
+            temperature=0.0,
+        )
     return BlockInstructionManager(model=chat, goal=goal)

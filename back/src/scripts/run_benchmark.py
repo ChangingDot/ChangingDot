@@ -16,13 +16,13 @@ from changing_dot.error_manager.error_manager import (
     RoslynErrorManager,
 )
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
-    create_openai_interpreter,
+    create_interpreter,
 )
 from changing_dot.instruction_interpreter.instruction_interpreter import (
     IBlockInstructionInterpreter,
 )
 from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
-    create_openai_instruction_manager,
+    create_instruction_manager,
 )
 from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
 from changing_dot.optimize_graph import optimize_graph
@@ -47,7 +47,9 @@ if __name__ == "__main__":
         with analytics.benchmark_item(benchmark_item) as current_benchmark_result:
             job_id = str(uuid.uuid4())
 
-            instruction_manager = create_openai_instruction_manager(config["goal"])
+            instruction_manager = create_instruction_manager(
+                config["goal"], config["llm_provider"]
+            )
 
             restriction_options = config.get(
                 "restriction_options",
@@ -70,8 +72,8 @@ if __name__ == "__main__":
 
             observer = Observer(G, analytics.run.name, benchmark_item, job_id)
 
-            interpreter: IBlockInstructionInterpreter = create_openai_interpreter(
-                observer
+            interpreter: IBlockInstructionInterpreter = create_interpreter(
+                observer, config["llm_provider"]
             )
 
             initialisation: ErrorInitialization = {

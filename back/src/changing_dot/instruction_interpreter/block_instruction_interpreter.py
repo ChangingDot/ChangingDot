@@ -1,3 +1,5 @@
+from typing import Literal
+
 from changing_dot.custom_types import BlockEdit, EmptyEdit, InstructionBlock
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_interpreter.block_prompts import (
@@ -7,6 +9,7 @@ from changing_dot.instruction_interpreter.block_prompts import (
 from changing_dot.instruction_interpreter.instruction_interpreter import (
     IBlockInstructionInterpreter,
 )
+from changing_dot.utils.llm_model_utils import get_mistral_api_key
 from changing_dot.utils.process_diff import process_diff
 from changing_dot_visualize.observer import Observer
 from dotenv import load_dotenv
@@ -16,6 +19,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import (
     RunnableSerializable,
 )
+from langchain_mistralai import ChatMistralAI
 from langchain_openai import ChatOpenAI
 
 
@@ -77,8 +81,19 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
         )
 
 
-def create_openai_interpreter(observer: Observer) -> BlockInstructionInterpreter:
+def create_interpreter(
+    observer: Observer,
+    llm_provider: Literal["OPENAI", "MISTRAL"],
+) -> BlockInstructionInterpreter:
     load_dotenv()
-    return BlockInstructionInterpreter(
-        ChatOpenAI(model="gpt-4o", temperature=0.0), observer
-    )
+    chat: BaseChatModel | None = None
+    if llm_provider == "OPENAI":
+        chat = ChatOpenAI(model="gpt-4o", temperature=0.0)
+    elif llm_provider == "MISTRAL":
+        mistral_api_key = get_mistral_api_key()
+        chat = ChatMistralAI(
+            mistral_api_key=mistral_api_key,
+            model="mistral-large-latest",
+            temperature=0.0,
+        )
+    return BlockInstructionInterpreter(model=chat, observer=observer)

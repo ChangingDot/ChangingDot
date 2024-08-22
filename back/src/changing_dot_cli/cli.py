@@ -76,6 +76,7 @@ def create(config: str, local: bool, dev: bool) -> None:
             create_graph_input.restriction_options,
             create_graph_input.initial_change,
             create_graph_input.is_local,
+            create_graph_input.llm_provider,
         )
         return
 
@@ -88,6 +89,7 @@ def create(config: str, local: bool, dev: bool) -> None:
             create_graph_input.restriction_options,
             create_graph_input.initial_change,
             create_graph_input.is_local,
+            create_graph_input.llm_provider,
         )
 
 
@@ -175,6 +177,7 @@ def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
             resume_graph_input.restriction_options,
             resume_graph_input.resume_initial_node,
             resume_graph_input.is_local,
+            resume_graph_input.llm_provider,
         )
         return
 
@@ -189,6 +192,7 @@ def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
             resume_graph_input.restriction_options,
             resume_graph_input.resume_initial_node,
             resume_graph_input.is_local,
+            resume_graph_input.llm_provider,
         )
 
 
