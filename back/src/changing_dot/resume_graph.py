@@ -12,7 +12,7 @@ from changing_dot.error_manager.error_manager import (
 )
 from changing_dot.handle_node import resume_problem_node
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
-    create_interpreter,
+    create_instruction_interpreter,
 )
 from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
     create_instruction_manager,
@@ -63,7 +63,7 @@ def run_resume_graph(
         step=len(graphs),
     )
 
-    interpreter = create_interpreter(observer, llm_provider)
+    interpreter = create_instruction_interpreter(observer, llm_provider)
 
     node: ProblemNode = {
         "index": resume_initial_node.index,

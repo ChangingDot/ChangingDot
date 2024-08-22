@@ -20,7 +20,7 @@ from changing_dot.error_manager.error_manager import (
     RoslynErrorManager,
 )
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
-    create_interpreter,
+    create_instruction_interpreter,
 )
 from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
     create_instruction_manager,
@@ -83,7 +83,7 @@ def benchmark_job(
 
             observer = Observer(G, analytics.run.name, benchmark_item, job_id)
 
-            interpreter: IBlockInstructionInterpreter = create_interpreter(
+            interpreter: IBlockInstructionInterpreter = create_instruction_interpreter(
                 observer, llm_provider
             )
 

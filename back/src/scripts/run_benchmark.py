@@ -16,7 +16,7 @@ from changing_dot.error_manager.error_manager import (
     RoslynErrorManager,
 )
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
-    create_interpreter,
+    create_instruction_interpreter,
 )
 from changing_dot.instruction_interpreter.instruction_interpreter import (
     IBlockInstructionInterpreter,
@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
             observer = Observer(G, analytics.run.name, benchmark_item, job_id)
 
-            interpreter: IBlockInstructionInterpreter = create_interpreter(
+            interpreter: IBlockInstructionInterpreter = create_instruction_interpreter(
                 observer, config["llm_provider"]
             )
 
