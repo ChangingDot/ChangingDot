@@ -3,17 +3,17 @@ project_name: Level1
 
 goal: We want to simulate a private attribute changing name - change Length to Size
 
-solution_path: ./ChangingLevels/CustomChanges1.sln
+solution_path: ./CustomChanges1.sln
 
 base_path: ./outputs
 
 initial_change:
   error: We want to simulate a private attribute changing name - change Length to Size
-  file_path: ./ChangingLevels/Level1/Item.cs
+  file_path: ./Level1/Item.cs
   error_position: [8, 0, 8, 0]
 
 commit:
   branch_name: changing_branch
-  git_path: ./ChangingLevels/
+  git_path: ./
 
 llm_provider: MISTRAL
