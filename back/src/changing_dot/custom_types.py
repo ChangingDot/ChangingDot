@@ -193,6 +193,7 @@ class CreateGraphInput(BaseModel):
     )
     initial_change: InitialChange
     is_local: bool
+    llm_provider: Literal["OPENAI", "MISTRAL"]
 
     @field_validator("solution_path")
     def validate_path(cls, value: str) -> str:
@@ -258,6 +259,7 @@ class ResumeGraphInput(BaseModel):
     )
     resume_initial_node: ResumeInitialNode
     is_local: bool
+    llm_provider: Literal["OPENAI", "MISTRAL"]
 
     @field_validator("solution_path", "base_path")
     def validate_path(cls, value: str) -> str:

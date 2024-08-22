@@ -1,5 +1,5 @@
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from changing_dot_visualize.observer import Observer
 
@@ -12,14 +12,14 @@ from changing_dot.error_manager.error_manager import (
 )
 from changing_dot.handle_node import handle_node
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
-    create_openai_interpreter,
+    create_interpreter,
 )
 from changing_dot.instruction_interpreter.instruction_interpreter import (
     IBlockInstructionInterpreter,
 )
 from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
     IInstructionManagerBlock,
-    create_openai_instruction_manager,
+    create_instruction_manager,
 )
 from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
 from changing_dot.utils.file_utils import get_csharp_files
@@ -39,11 +39,13 @@ def run_create_graph(
     restriction_options: RestrictionOptions,
     initial_change: InitialChange,
     is_local: bool,
+    llm_provider: Literal["OPENAI", "MISTRAL"],
 ) -> None:
     job_id = str(uuid.uuid4())
 
-    instruction_manager: BlockInstructionManager = create_openai_instruction_manager(
-        goal
+    # TODO rajouter llm provider in parent
+    instruction_manager: BlockInstructionManager = create_instruction_manager(
+        goal, llm_provider
     )
 
     error_manager = RoslynErrorManager(solution_path, restriction_options)
@@ -62,7 +64,7 @@ def run_create_graph(
         is_local=is_local,
     )
 
-    interpreter = create_openai_interpreter(observer)
+    interpreter = create_interpreter(observer, llm_provider)
 
     initialisation: ErrorInitialization = {
         "init_type": "error",

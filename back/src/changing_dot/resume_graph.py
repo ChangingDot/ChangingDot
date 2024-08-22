@@ -1,5 +1,5 @@
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from changing_dot_visualize.observer import Observer
 
@@ -12,10 +12,10 @@ from changing_dot.error_manager.error_manager import (
 )
 from changing_dot.handle_node import resume_problem_node
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
-    create_openai_interpreter,
+    create_interpreter,
 )
 from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
-    create_openai_instruction_manager,
+    create_instruction_manager,
 )
 from changing_dot.modifyle.modifyle import IntegralModifyle
 from changing_dot.utils.file_utils import get_csharp_files
@@ -35,13 +35,14 @@ def run_resume_graph(
     commit: Commit,
     restriction_options: RestrictionOptions,
     resume_initial_node: ResumeInitialNode,
+    llm_provider: Literal["OPENAI", "MISTRAL"],
     is_local: bool = True,
 ) -> None:
     set_repo(commit)
 
     job_id = str(uuid.uuid4())
 
-    instruction_manager = create_openai_instruction_manager(goal)
+    instruction_manager = create_instruction_manager(goal, llm_provider)
 
     graphs = process_pickle_files(f"{base_path}/{iteration_name}/", is_local)
 
@@ -62,7 +63,7 @@ def run_resume_graph(
         step=len(graphs),
     )
 
-    interpreter = create_openai_interpreter(observer)
+    interpreter = create_interpreter(observer, llm_provider)
 
     node: ProblemNode = {
         "index": resume_initial_node.index,

@@ -1,5 +1,5 @@
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from analytics.wandb_analytics import WandbAnalytics
 from changing_dot.changing_graph.changing_graph import ChangingGraph
@@ -20,10 +20,10 @@ from changing_dot.error_manager.error_manager import (
     RoslynErrorManager,
 )
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
-    create_openai_interpreter,
+    create_interpreter,
 )
 from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
-    create_openai_instruction_manager,
+    create_instruction_manager,
 )
 from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
 from changing_dot.optimize_graph import optimize_graph
@@ -46,6 +46,7 @@ def benchmark_job(
     goal: str,
     initial_change: InitialChange,
     commit: Commit,
+    llm_provider: Literal["OPENAI", "MISTRAL"],
     restriction_options: RestrictionOptions | None = None,
 ) -> None:
     analytics = WandbAnalytics()
@@ -62,7 +63,7 @@ def benchmark_job(
         )
     )
 
-    instruction_manager = create_openai_instruction_manager(goal)
+    instruction_manager = create_instruction_manager(goal, llm_provider)
 
     error_manager = RoslynErrorManager(solution_path, restriction_options)
 
@@ -82,8 +83,8 @@ def benchmark_job(
 
             observer = Observer(G, analytics.run.name, benchmark_item, job_id)
 
-            interpreter: IBlockInstructionInterpreter = create_openai_interpreter(
-                observer
+            interpreter: IBlockInstructionInterpreter = create_interpreter(
+                observer, llm_provider
             )
 
             initialisation: ErrorInitialization = {

@@ -1,6 +1,6 @@
-import os
 import re
 
+from changing_dot.utils.llm_model_utils import get_mistral_api_key
 from changing_dot_visualize.observer import Observer
 from dotenv import load_dotenv
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -8,7 +8,6 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_mistralai import ChatMistralAI
 from langchain_openai import ChatOpenAI
-from pydantic.v1.types import SecretStr
 
 
 def extract_code_blocks(text: str) -> str:
@@ -73,6 +72,6 @@ def create_openai_conflict_handler() -> ConflictHandler:
 
 def create_mistral_conflict_handler() -> ConflictHandler:
     load_dotenv()
-    mistral_api_key = SecretStr(os.getenv("MISTRAL_API_KEY") or "")
+    mistral_api_key = get_mistral_api_key()
     chat = ChatMistralAI(mistral_api_key=mistral_api_key, model="mistral-large-latest")
     return ConflictHandler(model=chat)
