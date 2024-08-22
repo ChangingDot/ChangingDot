@@ -12,7 +12,7 @@ from changing_dot.error_manager.error_manager import (
 )
 from changing_dot.handle_node import handle_node
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
-    create_interpreter,
+    create_instruction_interpreter,
 )
 from changing_dot.instruction_interpreter.instruction_interpreter import (
     IBlockInstructionInterpreter,
@@ -64,7 +64,7 @@ def run_create_graph(
         is_local=is_local,
     )
 
-    interpreter = create_interpreter(observer, llm_provider)
+    interpreter = create_instruction_interpreter(observer, llm_provider)
 
     initialisation: ErrorInitialization = {
         "init_type": "error",

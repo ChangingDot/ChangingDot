@@ -81,7 +81,7 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
         )
 
 
-def create_interpreter(
+def create_instruction_interpreter(
     observer: Observer,
     llm_provider: Literal["OPENAI", "MISTRAL"],
 ) -> BlockInstructionInterpreter:
