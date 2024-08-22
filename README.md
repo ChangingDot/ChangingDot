@@ -50,7 +50,7 @@ Our CLI takes as input a path to a configuration file. In this readme we use a v
 Make sure you are in the ChangingLevels repo and run :
 
 ```bash
-cdot create -c https://rawcdn.githack.com/ChangingDot/ChangingDot/main/examples/example.yaml
+cdot create -c https://rawcdn.githack.com/ChangingDot/ChangingDot/8f88a91b7954613cef2e5b5fcc4e1a647c81cd28/examples/example.yaml
 ```
 
 ### Visualizing your graph
@@ -58,7 +58,7 @@ cdot create -c https://rawcdn.githack.com/ChangingDot/ChangingDot/main/examples/
 You can then visualize the created graph by running this command : 
 
 ```bash
-cdot visualize -c https://rawcdn.githack.com/ChangingDot/ChangingDot/main/examples/example.yaml
+cdot visualize -c https://rawcdn.githack.com/ChangingDot/ChangingDot/8f88a91b7954613cef2e5b5fcc4e1a647c81cd28/examples/example.yaml
 ```
 
 ### Running analyses on the graph
@@ -77,11 +77,11 @@ If you have any ideas for other analyses or uses for the graph, to not hesitate 
 A longer term goal of ChangingDot is to automate actual refactorings and therefore actually change the code. You can actually test this out using the following command.
 
 ```bash
-cdot commit -c https://rawcdn.githack.com/ChangingDot/ChangingDot/main/examples/example.yaml
+cdot commit -c https://rawcdn.githack.com/ChangingDot/ChangingDot/8f88a91b7954613cef2e5b5fcc4e1a647c81cd28/examples/example.yaml
 ```
 
 If you do not want to automatically commit the changes, you can apply them to your local git repo to review and changes them later on
 
 ```bash
-cdot apply-changes -c https://rawcdn.githack.com/ChangingDot/ChangingDot/main/examples/example.yaml
+cdot apply-changes -c https://rawcdn.githack.com/ChangingDot/ChangingDot/8f88a91b7954613cef2e5b5fcc4e1a647c81cd28/examples/example.yaml
 ```
