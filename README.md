@@ -77,11 +77,11 @@ If you have any ideas for other analyses or uses for the graph, to not hesitate 
 A longer term goal of ChangingDot is to automate actual refactorings and therefore actually change the code. You can actually test this out using the following command.
 
 ```bash
-cdot commit -c https://rawcdn.githack.com/ChangingDot/ChangingBack/main/examples/example.yaml
+cdot commit -c https://rawcdn.githack.com/ChangingDot/ChangingDot/main/examples/example.yaml
 ```
 
 If you do not want to automatically commit the changes, you can apply them to your local git repo to review and changes them later on
 
 ```bash
-cdot apply-changes -c https://rawcdn.githack.com/ChangingDot/ChangingBack/main/examples/example.yaml
+cdot apply-changes -c https://rawcdn.githack.com/ChangingDot/ChangingDot/main/examples/example.yaml
 ```
