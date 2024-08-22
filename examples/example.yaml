@@ -15,3 +15,5 @@ initial_change:
 commit:
   branch_name: changing_branch
   git_path: ./ChangingLevels/
+
+llm_provider: MISTRAL
