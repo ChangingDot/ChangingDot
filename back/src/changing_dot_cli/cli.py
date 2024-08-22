@@ -176,8 +176,8 @@ def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
             resume_graph_input.commit,
             resume_graph_input.restriction_options,
             resume_graph_input.resume_initial_node,
-            resume_graph_input.is_local,
             resume_graph_input.llm_provider,
+            resume_graph_input.is_local,
         )
         return
 
@@ -191,8 +191,8 @@ def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
             resume_graph_input.commit,
             resume_graph_input.restriction_options,
             resume_graph_input.resume_initial_node,
-            resume_graph_input.is_local,
             resume_graph_input.llm_provider,
+            resume_graph_input.is_local,
         )
 
 
