@@ -86,14 +86,14 @@ def create_interpreter(
     llm_provider: Literal["OPENAI", "MISTRAL"],
 ) -> BlockInstructionInterpreter:
     load_dotenv()
-    chat: BaseChatModel | None = None
     if llm_provider == "OPENAI":
-        chat = ChatOpenAI(model="gpt-4o", temperature=0.0)
+        openai_chat: BaseChatModel = ChatOpenAI(model="gpt-4o", temperature=0.0)
+        return BlockInstructionInterpreter(model=openai_chat, observer=observer)
     elif llm_provider == "MISTRAL":
         mistral_api_key = get_mistral_api_key()
-        chat = ChatMistralAI(
+        mistral_chat: BaseChatModel = ChatMistralAI(
             mistral_api_key=mistral_api_key,
             model="mistral-large-latest",
             temperature=0.0,
         )
-    return BlockInstructionInterpreter(model=chat, observer=observer)
+        return BlockInstructionInterpreter(model=mistral_chat, observer=observer)

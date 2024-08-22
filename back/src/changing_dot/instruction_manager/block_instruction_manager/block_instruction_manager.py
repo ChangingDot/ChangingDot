@@ -158,14 +158,14 @@ def create_instruction_manager(
     goal: str, llm_provider: Literal["OPENAI", "MISTRAL"]
 ) -> BlockInstructionManager:
     load_dotenv()
-    chat: BaseChatModel | None = None
     if llm_provider == "OPENAI":
-        chat = ChatOpenAI(model="gpt-4o", temperature=0.0)
+        openai_chat: BaseChatModel = ChatOpenAI(model="gpt-4o", temperature=0.0)
+        return BlockInstructionManager(model=openai_chat, goal=goal)
     elif llm_provider == "MISTRAL":
         mistral_api_key = get_mistral_api_key()
-        chat = ChatMistralAI(
+        mistral_chat: BaseChatModel = ChatMistralAI(
             mistral_api_key=mistral_api_key,
             model="mistral-large-latest",
             temperature=0.0,
         )
-    return BlockInstructionManager(model=chat, goal=goal)
+        return BlockInstructionManager(model=mistral_chat, goal=goal)
