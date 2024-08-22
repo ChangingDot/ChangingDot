@@ -55,7 +55,7 @@ G.add_solution_node(failed_solution)
 G.add_edge(0, 1)
 
 instruction_manager = create_instruction_manager(
-    "Remove Newtonsoft dependency to then change it to with System.Text.Json"
+    "Remove Newtonsoft dependency to then change it to with System.Text.Json", "MISTRAL"
 )
 
 DG = DependencyGraph(["file"])
