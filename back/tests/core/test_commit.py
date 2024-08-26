@@ -90,11 +90,11 @@ def test_one_edit_commit(repo: Repo, file_modifier: IModifyle) -> None:
             BlockEdit(
                 file_path=f"{repo_dir}/file1.cs",
                 block_id=2,
-                before="""    static string SimpleMethod()
+                before="""static string SimpleMethod()
     {
         return "Hello, World!";
     }""",
-                after="""    static string SimpleMethod()
+                after="""static string SimpleMethod()
     {
         return "Welcome, World!";
     }""",
@@ -126,11 +126,11 @@ def test_2_replace_commits_in_different_files(
             BlockEdit(
                 file_path=f"{repo_dir}/file1.cs",
                 block_id=2,
-                before="""    static string SimpleMethod()
+                before="""static string SimpleMethod()
     {
         return "Hello, World!";
     }""",
-                after="""    static string SimpleMethod()
+                after="""static string SimpleMethod()
     {
         return "Welcome, World!";
     }""",
@@ -140,9 +140,9 @@ def test_2_replace_commits_in_different_files(
             BlockEdit(
                 file_path=f"{repo_dir}/file2.cs",
                 block_id=7,
-                before="""       [JsonIgnore]
+                before="""[JsonIgnore]
         public int Size { get; set; }""",
-                after="""        [JsonIgnore]
+                after="""[JsonIgnore]
         public int NewSize { get; set; }""",
             )
         ],
@@ -165,11 +165,11 @@ def test_2_replace_commits_in_same_file(repo: Repo, file_modifier: IModifyle) ->
             BlockEdit(
                 file_path=f"{repo_dir}/file1.cs",
                 block_id=2,
-                before="""    static string SimpleMethod()
+                before="""static string SimpleMethod()
     {
         return "Hello, World!";
     }""",
-                after="""    static string SimpleMethod()
+                after="""static string SimpleMethod()
     {
         return "Welcome, World!";
     }""",
@@ -202,11 +202,11 @@ def test_handling_empty_commits(repo: Repo, file_modifier: IModifyle) -> None:
             BlockEdit(
                 file_path=f"{repo_dir}/file1.cs",
                 block_id=2,
-                before="""    static string SimpleMethod()
+                before="""static string SimpleMethod()
     {
         return "Hello, World!";
     }""",
-                after="""    static string SimpleMethod()
+                after="""static string SimpleMethod()
     {
         return "Welcome, World!";
     }""",
@@ -216,11 +216,11 @@ def test_handling_empty_commits(repo: Repo, file_modifier: IModifyle) -> None:
             BlockEdit(
                 file_path=f"{repo_dir}/file1.cs",
                 block_id=2,
-                before="""    static string SimpleMethod()
+                before="""static string SimpleMethod()
     {
         return "Welcome, World!";
     }""",
-                after="""    static string SimpleMethod()
+                after="""static string SimpleMethod()
     {
         return "Welcome, World!";
     }""",

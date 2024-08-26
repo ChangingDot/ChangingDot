@@ -28,6 +28,8 @@ class BlockEdit(BaseModel):
 
     @field_validator("before", "after")
     def check_no_trailing_newline(cls, v: str) -> str:
+        if v.startswith((" ", "\t", "\n", "\r")):
+            raise ValueError("Field must not start with a whitespace")
         if v.endswith("\n"):
             raise ValueError("Field must not end with a newline character")
         return v
