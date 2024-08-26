@@ -82,31 +82,6 @@ class RemoveEdit(TypedDict):
     line_to_remove: str
 
 
-# TODO: add to class if edits ever become a class
-def edit_to_diff(edit: ReplaceEdit | AddEdit | RemoveEdit) -> str:
-    if edit["edit_type"] == "replace":
-        return f"""
-        ```diff
-        - {edit['before']}
-        + {edit['after']}
-        ```
-        """
-
-    if edit["edit_type"] == "add":
-        return f"""
-        ```diff
-        + {edit['line_to_add']}
-        ```
-        """
-
-    if edit["edit_type"] == "remove":
-        return f"""
-        ```diff
-        - {edit['line_to_remove']}
-        ```
-        """
-
-
 Edit = ReplaceEdit | AddEdit | RemoveEdit
 
 Edits = list[Edit]

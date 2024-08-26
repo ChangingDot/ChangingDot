@@ -88,7 +88,6 @@ def simple_check_solution_validity_block(
     problem_node = G.get_node(problem_node_index)
     assert problem_node["node_type"] == "problem"
     with applied_edits_context(DG, edits):
-        # TODO [] does not make it work with omnisharp errormanager
         compile_errors = error_manager.get_compile_errors([], observer)
 
     # Do not take project_name into account
