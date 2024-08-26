@@ -44,6 +44,9 @@ def apply_edits(DG: DependencyGraph, edits: list[BlockEdit]) -> None:
         start_index = node.start_point[0]
         end_index = node.end_point[0] + 1
 
+        # add back indentation to first line
+        after_lines[0] = " " * node.start_point[1] + after_lines[0]
+
         changed_file = "\n".join(
             file_lines[:start_index] + after_lines + file_lines[end_index:]
         )

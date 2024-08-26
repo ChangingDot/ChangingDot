@@ -123,11 +123,11 @@ def test_insensitive_to_spacing_and_line_skips() -> None:
             BlockEdit(
                 block_id=1,
                 file_path=get_fixture_path("subject_1.cs"),
-                before=""" static string SimpleMethod()
+                before="""static string SimpleMethod()
     {
         return "Hello, World!";
     }""",
-                after="""   static string SimpleMethod()
+                after="""static string SimpleMethod()
         {
             return "Hello, World!";
         }
@@ -743,8 +743,8 @@ def test_no_class_duplication() -> None:
             BlockEdit(
                 file_path=get_fixture_path("subject_full.cs"),
                 block_id=3,
-                before="        [JsonIgnore]\n        public int Size { get; set; }",
-                after="        [JsonDataIgnore]\n        public int Size { get; set; }",
+                before="[JsonIgnore]\n        public int Size { get; set; }",
+                after="[JsonDataIgnore]\n        public int Size { get; set; }",
             ),
         ]
     )
@@ -766,8 +766,8 @@ def test_that_if_edits_are_not_in_files_then_raise_assertion_error() -> None:
                 BlockEdit(
                     file_path=get_fixture_path("subject_full.cs"),
                     block_id=3,
-                    before="        [JsonIgnore]\n        public int Size { get; set; }",
-                    after="        [JsonDataIgnore]\n        public int Size { get; set; }",
+                    before="[JsonIgnore]\n        public int Size { get; set; }",
+                    after="[JsonDataIgnore]\n        public int Size { get; set; }",
                 ),
             ]
         )
