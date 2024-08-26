@@ -1,4 +1,3 @@
-import pytest
 from changing_dot.dependency_graph.dependency_graph import (
     DependencyGraph,
 )
@@ -251,7 +250,6 @@ class SimpleClass
     ) in graph.get_node_by_type("Class")
 
 
-@pytest.mark.skip(reason="Waiting for tree-sitter-python pip fix")
 def test_full_python() -> None:
     graph_py = DependencyGraph([get_fixture_path("full.py")])
     assert len(graph_py.get_node_by_type("Import")) == 2
@@ -353,7 +351,6 @@ def test_class_parent_of_method() -> None:
     ]
 
 
-@pytest.mark.skip(reason="Waiting for tree-sitter-python pip fix")
 def test_full_python_relationships() -> None:
     graph_py = DependencyGraph([get_fixture_path("full.py")])
     parent_child_relationships = graph_py.get_parent_child_relationships()
@@ -396,8 +393,7 @@ def test_full_python_relationships() -> None:
             return None
         except Exception as e:
             logging.error(f"Failed to load object from file: {e}")
-            return None
-""",
+            return None""",
         ),
         DependencyGraphNode(
             node_type="Method",

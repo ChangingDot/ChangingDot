@@ -1,4 +1,3 @@
-import pytest
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 
 
@@ -21,7 +20,6 @@ def test_syntax_error() -> None:
     assert graph.has_syntax_errors()
 
 
-@pytest.mark.skip(reason="Waiting for tree-sitter-python pip fix")
 def test_syntax_error_python() -> None:
     graph = DependencyGraph([get_fixture_path("has_syntax_error.py")])
     assert graph.has_syntax_errors()

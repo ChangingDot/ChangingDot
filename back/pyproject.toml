@@ -28,6 +28,7 @@ click = "^8.1.7"
 tree-sitter = "^0.22.3"
 tree-sitter-c-sharp = "^0.21.3"
 tree-sitter-xml = "^0.6.4"
+cdot-tree-sitter-python = "^0.21.0"
 
 
 
