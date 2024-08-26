@@ -147,3 +147,37 @@ random blabla
     )
 
     assert expected_edit == interpreter.get_edit_from_instruction(instruction, DG)
+
+
+def test_handles_empty_lines() -> None:
+    DG = DependencyGraph(["./tests/core/python_fixtures/subject.py"])
+    instruction: InstructionBlock = {
+        "file_path": "./tests/core/python_fixtures/subject.py",
+        "block_id": 2,
+        "solution": "Change result to 'The value of attribute is: {self.attribute}' and add an empty line",
+    }
+
+    interpreter = make_instruction_interpreter(
+        """
+Here is the new block
+```csharp
+def method(self) -> str:
+
+    return f"New string: {self.attribute}"
+```
+
+random blabla
+    """
+    )
+
+    expected_edit: BlockEdit = BlockEdit(
+        file_path="./tests/core/python_fixtures/subject.py",
+        block_id=2,
+        before='''def method(self) -> str:
+        return f"The value of attribute is: {self.attribute}"''',
+        after='''def method(self) -> str:
+
+        return f"New string: {self.attribute}"''',
+    )
+
+    assert expected_edit == interpreter.get_edit_from_instruction(instruction, DG)
