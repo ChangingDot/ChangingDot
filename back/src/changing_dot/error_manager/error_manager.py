@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
-from time import sleep
 
 import grpc
-import requests
 from changing_dot.config.environment import ANAYLZER_URL
 from changing_dot.custom_types import CompileError, RestrictionOptions
 from changing_dot.generated_grpc.feedback_server_pb2 import (
@@ -110,94 +108,6 @@ class RoslynErrorManager(IErrorManager):
             )
             has_syntax_errors: bool = has_syntax_error_response.HasSyntaxErrors
             return has_syntax_errors
-
-
-class OmnisharpErrorManager(IErrorManager):
-    def files_changed(self, filePaths: list[str]) -> None:
-        # Prepare the payload as a list of dictionaries
-        payload = [{"FileName": filePath, "ChangeType": "0"} for filePath in filePaths]
-        files_changed_response = requests.post(
-            "http://localhost:2000/filesChanged", json=payload
-        )
-
-        # Check if filesChanged was successful
-        if files_changed_response.status_code != 200:
-            raise Exception(
-                f"Failed to notify file changes, status code: {files_changed_response.status_code}"
-            )
-
-        reanalyze_response = requests.get("http://localhost:2000/reanalyze")
-
-        # Check if reanalyze was successful
-        if reanalyze_response.status_code != 200:
-            raise Exception(
-                f"Failed to notify file changes, status code: {files_changed_response.status_code}"
-            )
-
-    def get_errors_from_api(self) -> list[CompileError]:
-        response = requests.get("http://localhost:2000/codecheck")
-        if response.status_code == 200:
-            data = response.json()
-            quick_fixes = data.get("QuickFixes", [])
-
-            # Filter out entries
-            errors = [
-                {
-                    "Text": fix["Text"],
-                    "File": fix["FileName"],
-                    "Line": fix["Line"],
-                    "Column": fix["Column"],
-                    "EndLine": fix["EndLine"],
-                    "EndColumn": fix["EndColumn"],
-                    "Projects": fix["Projects"],
-                }
-                for fix in quick_fixes
-                if fix["LogLevel"] == "Error"
-            ]
-
-            unique_line_pos_tuples = set()
-            result: list[CompileError] = []
-
-            # Remove when 2 errors are on the same line for now
-            for error in errors:
-                new_line_pos_tuple = (error["File"], error["Line"])
-                if new_line_pos_tuple not in unique_line_pos_tuples:
-                    unique_line_pos_tuples.add(new_line_pos_tuple)
-                    result.append(
-                        {
-                            "text": error["Text"],
-                            "file_path": error["File"],
-                            "project_name": error["Projects"][0],
-                            "pos": (
-                                error["Line"],
-                                error["Column"],
-                                error["EndLine"],
-                                error["EndColumn"],
-                            ),
-                        }
-                    )
-
-            return result
-
-        else:
-            raise Exception(
-                f"Failed to get data from API, status code: {response.status_code}"
-            )
-
-    def get_compile_errors(
-        self, files: list[str], observer: Observer
-    ) -> list[CompileError]:
-        if len(files) != 0:
-            sleep(10)
-            self.files_changed(files)
-            sleep(20)
-        # Wait for compiler to catch up
-        compile_errors = self.get_errors_from_api()
-        observer.log(f"found {len(compile_errors)} compile_errors")
-        return compile_errors
-
-    def has_syntax_errors(self) -> bool:
-        return False
 
 
 def filter_restricted_errors(
