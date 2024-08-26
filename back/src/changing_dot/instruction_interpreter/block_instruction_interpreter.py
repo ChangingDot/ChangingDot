@@ -72,7 +72,8 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
                 indented_lines = []
                 # add existing indentation to all lines but first
                 for line in non_indented_lines:
-                    line = " " * existing_indentation + line
+                    if line != "":
+                        line = " " * existing_indentation + line
                     indented_lines.append(line)
 
                 code_block = "\n".join(indented_lines)
