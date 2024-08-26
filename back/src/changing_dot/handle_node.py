@@ -158,17 +158,6 @@ def handle_problem_node(
     new_solution_index = G.add_solution_node(solution_node)
 
     pending_problem_nodes = G.get_all_pending_problem_nodes()
-    # updating all pending problem indexes
-    # TODO or not, maybe change error
-    # for node in pending_problem_nodes:
-    #     if node["error"]["file_path"] == solution_node["edits"][0]["file_path"]:
-    #         observer.log(f"Updating node {node['index']} error indexes")
-    #         node["error"]["pos"] = (
-    #             index_manager.get_updated_index(node["error"]["pos"][0]),
-    #             node["error"]["pos"][1],
-    #             index_manager.get_updated_index(node["error"]["pos"][2]),
-    #             node["error"]["pos"][3],
-    #         )
 
     # connect all other problems that were solved
     current_compile_errors = error_manager.get_compile_errors([], observer)
