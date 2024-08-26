@@ -12,9 +12,7 @@ from changing_dot.commit_graph import commit_graph
 from changing_dot.create_graph import create_graph
 from changing_dot.custom_types import ErrorInitialization
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
-from changing_dot.error_manager.error_manager import (
-    RoslynErrorManager,
-)
+from changing_dot.error_manager.roslyn_error_manager import RoslynErrorManager
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
     create_instruction_interpreter,
 )
