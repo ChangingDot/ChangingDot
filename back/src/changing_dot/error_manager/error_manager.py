@@ -6,9 +6,7 @@ from changing_dot_visualize.observer import Observer
 
 class IErrorManager(ABC):
     @abstractmethod
-    def get_compile_errors(
-        self, files: list[str], observer: Observer
-    ) -> list[CompileError]:
+    def get_compile_errors(self, observer: Observer) -> list[CompileError]:
         pass
 
     @abstractmethod
@@ -26,9 +24,7 @@ class HardCodedErrorManager(IErrorManager):
             list_of_hardcoded_errors + list_of_hardcoded_errors
         )
 
-    def get_compile_errors(
-        self, files: list[str], observer: Observer
-    ) -> list[CompileError]:
+    def get_compile_errors(self, observer: Observer) -> list[CompileError]:
         hardcoded_errors = self.list_of_hardcoded_errors[self.i]
         self.i += 1
         return hardcoded_errors
