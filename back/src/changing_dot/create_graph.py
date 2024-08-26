@@ -6,10 +6,8 @@ from changing_dot_visualize.observer import Observer
 from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.custom_types import InitialChange, Initialization, RestrictionOptions
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
-from changing_dot.error_manager.error_manager import (
-    IErrorManager,
-    RoslynErrorManager,
-)
+from changing_dot.error_manager.error_manager import IErrorManager
+from changing_dot.error_manager.roslyn_error_manager import RoslynErrorManager
 from changing_dot.handle_node import handle_node
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
     create_instruction_interpreter,

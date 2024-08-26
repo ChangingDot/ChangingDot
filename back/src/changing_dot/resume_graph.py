@@ -7,7 +7,7 @@ from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.commit.reset_repo import set_repo
 from changing_dot.custom_types import Commit, RestrictionOptions, ResumeInitialNode
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
-from changing_dot.error_manager.error_manager import (
+from changing_dot.error_manager.roslyn_error_manager import (
     RoslynErrorManager,
 )
 from changing_dot.handle_node import resume_problem_node

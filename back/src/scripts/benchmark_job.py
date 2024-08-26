@@ -16,9 +16,7 @@ from changing_dot.custom_types import (
     RestrictionOptions,
 )
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
-from changing_dot.error_manager.error_manager import (
-    RoslynErrorManager,
-)
+from changing_dot.error_manager.roslyn_error_manager import RoslynErrorManager
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
     create_instruction_interpreter,
 )
