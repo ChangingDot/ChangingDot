@@ -40,7 +40,8 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
     def get_edit_from_instruction(
         self, instruction: InstructionBlock, DG: DependencyGraph
     ) -> BlockEdit:
-        before = DG.get_node(instruction["block_id"]).text
+        before_node = DG.get_node(instruction["block_id"])
+        before = before_node.text
 
         chain = self.make_chain()
 
@@ -58,6 +59,23 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
             )
 
         code_block = code_blocks[-1]
+
+        # Check indentation
+        if len(before.splitlines()) > 1:
+            existing_indentation = before_node.start_point[1]
+            generated_indentation = len(code_block.splitlines()[0]) - len(
+                code_block.splitlines()[0].lstrip()
+            )
+
+            if generated_indentation != existing_indentation:
+                non_indented_lines = code_block.splitlines()
+                indented_lines = []
+                # add existing indentation to all lines but first
+                for line in non_indented_lines:
+                    line = " " * existing_indentation + line
+                    indented_lines.append(line)
+
+                code_block = "\n".join(indented_lines)
 
         code_block = code_block.lstrip()
 
