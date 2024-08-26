@@ -49,8 +49,8 @@ def test_basic_change(modifyle: IModifyle, base: str) -> None:
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=7,
-            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
-            after="        [JsonIgnore]\n        public int ChangedSize { get; set; }\n",
+            before="        [JsonIgnore]\n        public int Size { get; set; }",
+            after="        [JsonIgnore]\n        public int ChangedSize { get; set; }",
         )
     ]
     DG = DependencyGraph([edit.file_path for edit in edits])
@@ -65,8 +65,8 @@ def test_duplicate_change(modifyle: IModifyle, base: str) -> None:
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=7,
-            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
-            after="        [JsonDataIgnore]\n        public int Size { get; set; }\n",
+            before="        [JsonIgnore]\n        public int Size { get; set; }",
+            after="        [JsonDataIgnore]\n        public int Size { get; set; }",
         )
     ]
     DG = DependencyGraph([edit.file_path for edit in edits])
@@ -81,8 +81,8 @@ def test_basic_add(modifyle: IModifyle, base: str) -> None:
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=1,
-            before="using Newtonsoft.Json;\n",
-            after="// New line yo !\nusing Newtonsoft.Json;\n",
+            before="using Newtonsoft.Json;",
+            after="// New line yo !\nusing Newtonsoft.Json;",
         )
     ]
     DG = DependencyGraph([edit.file_path for edit in edits])
@@ -97,8 +97,8 @@ def test_basic_remove(modifyle: IModifyle, base: str) -> None:
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=7,
-            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
-            after="        public int Size { get; set; }\n",
+            before="        [JsonIgnore]\n        public int Size { get; set; }",
+            after="        public int Size { get; set; }",
         )
     ]
     DG = DependencyGraph([edit.file_path for edit in edits])
@@ -113,8 +113,8 @@ def test_revert(modifyle: IModifyle, base: str) -> None:
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=7,
-            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
-            after="        public int Size { get; set; }\n",
+            before="        [JsonIgnore]\n        public int Size { get; set; }",
+            after="        public int Size { get; set; }",
         )
     ]
     DG = DependencyGraph([edit.file_path for edit in edits])
@@ -133,8 +133,8 @@ def test_DG_is_updated_on_each_code_change(modifyle: IModifyle, base: str) -> No
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=7,
-            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
-            after="        public int Size { get; set; }\n",
+            before="        [JsonIgnore]\n        public int Size { get; set; }",
+            after="        public int Size { get; set; }",
         )
     ]
     DG = DependencyGraph([edit.file_path for edit in edits])
@@ -160,8 +160,8 @@ def test_remove_line(
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=4,
-            before="        [JsonIgnore]\n        public string? DistinctId { get; set; }\n",
-            after="        public string? DistinctId { get; set; }\n",
+            before="        [JsonIgnore]\n        public string? DistinctId { get; set; }",
+            after="        public string? DistinctId { get; set; }",
         ),
     ]
     DG = DependencyGraph([edit.file_path for edit in edits])
@@ -183,20 +183,20 @@ def test_multiple_changes_same_file(
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=7,
-            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
-            after="        [JsonDataIgnore]\n        public int Size { get; set; }\n",
+            before="        [JsonIgnore]\n        public int Size { get; set; }",
+            after="        [JsonDataIgnore]\n        public int Size { get; set; }",
         ),
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=1,
-            before="using Newtonsoft.Json;\n",
-            after="// New line yo !\nusing Newtonsoft.Json;\n",
+            before="using Newtonsoft.Json;",
+            after="// New line yo !\nusing Newtonsoft.Json;",
         ),
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=4,
-            before="        [JsonIgnore]\n        public string? DistinctId { get; set; }\n",
-            after="        public string? DistinctId { get; set; }\n",
+            before="        [JsonIgnore]\n        public string? DistinctId { get; set; }",
+            after="        public string? DistinctId { get; set; }",
         ),
     ]
     DG = DependencyGraph([edit.file_path for edit in edits])
@@ -220,8 +220,8 @@ def test_multiple_applies_same_file(
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=7,
-            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
-            after="        [JsonDataIgnore]\n        public int Size { get; set; }\n",
+            before="        [JsonIgnore]\n        public int Size { get; set; }",
+            after="        [JsonDataIgnore]\n        public int Size { get; set; }",
         ),
     ]
 
@@ -229,14 +229,14 @@ def test_multiple_applies_same_file(
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=1,
-            before="using Newtonsoft.Json;\n",
-            after="// New line yo !\nusing Newtonsoft.Json;\n",
+            before="using Newtonsoft.Json;",
+            after="// New line yo !\nusing Newtonsoft.Json;",
         ),
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=4,
-            before="        [JsonIgnore]\n        public string? DistinctId { get; set; }\n",
-            after="        public string? DistinctId { get; set; }\n",
+            before="        [JsonIgnore]\n        public string? DistinctId { get; set; }",
+            after="        public string? DistinctId { get; set; }",
         ),
     ]
 
@@ -265,26 +265,26 @@ def test_multiple_changes_multiple_files(
         BlockEdit(
             file_path="./tests/core/fixtures/subject2.cs",
             block_id=16,
-            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
-            after="        [JsonDataIgnore]\n        public int Size { get; set; }\n",
+            before="        [JsonIgnore]\n        public int Size { get; set; }",
+            after="        [JsonDataIgnore]\n        public int Size { get; set; }",
         ),
         BlockEdit(
             file_path="./tests/core/fixtures/subject2.cs",
             block_id=10,
-            before="using Newtonsoft.Json;\n",
-            after="// New line yo !\nusing Newtonsoft.Json;\n",
+            before="using Newtonsoft.Json;",
+            after="// New line yo !\nusing Newtonsoft.Json;",
         ),
         BlockEdit(
             file_path="./tests/core/fixtures/subject2.cs",
             block_id=13,
-            before="        [JsonIgnore]\n        public string? DistinctId { get; set; }\n",
-            after="        public string? DistinctId { get; set; }\n",
+            before="        [JsonIgnore]\n        public string? DistinctId { get; set; }",
+            after="        public string? DistinctId { get; set; }",
         ),
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=7,
-            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
-            after="        [JsonIgnore]\n        public int ChangedSize { get; set; }\n",
+            before="        [JsonIgnore]\n        public int Size { get; set; }",
+            after="        [JsonIgnore]\n        public int ChangedSize { get; set; }",
         ),
     ]
 
@@ -311,26 +311,26 @@ def test_applied_edits_context(
         BlockEdit(
             file_path="./tests/core/fixtures/subject2.cs",
             block_id=16,
-            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
-            after="        [JsonDataIgnore]\n        public int Size { get; set; }\n",
+            before="        [JsonIgnore]\n        public int Size { get; set; }",
+            after="        [JsonDataIgnore]\n        public int Size { get; set; }",
         ),
         BlockEdit(
             file_path="./tests/core/fixtures/subject2.cs",
             block_id=10,
-            before="using Newtonsoft.Json;\n",
-            after="// New line yo !\nusing Newtonsoft.Json;\n",
+            before="using Newtonsoft.Json;",
+            after="// New line yo !\nusing Newtonsoft.Json;",
         ),
         BlockEdit(
             file_path="./tests/core/fixtures/subject2.cs",
             block_id=13,
-            before="        [JsonIgnore]\n        public string? DistinctId { get; set; }\n",
-            after="        public string? DistinctId { get; set; }\n",
+            before="        [JsonIgnore]\n        public string? DistinctId { get; set; }",
+            after="        public string? DistinctId { get; set; }",
         ),
         BlockEdit(
             file_path="./tests/core/fixtures/subject.cs",
             block_id=7,
-            before="        [JsonIgnore]\n        public int Size { get; set; }\n",
-            after="        [JsonIgnore]\n        public int ChangedSize { get; set; }\n",
+            before="        [JsonIgnore]\n        public int Size { get; set; }",
+            after="        [JsonIgnore]\n        public int ChangedSize { get; set; }",
         ),
     ]
 

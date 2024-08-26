@@ -35,19 +35,16 @@ def apply_edits(DG: DependencyGraph, edits: list[BlockEdit]) -> None:
     for edit in edits:
         file_content = read_text(edit.file_path)
 
-        if not file_content.endswith("\n"):
-            file_content = file_content + "\n"
+        file_lines = file_content.splitlines()
 
-        file_lines = file_content.splitlines(keepends=True)
-
-        after_lines = edit.after.splitlines(keepends=True)
+        after_lines = edit.after.splitlines()
 
         node = DG.get_node(edit.block_id)
 
         start_index = node.start_point[0]
         end_index = node.end_point[0] + 1
 
-        changed_file = "".join(
+        changed_file = "\n".join(
             file_lines[:start_index] + after_lines + file_lines[end_index:]
         )
 
