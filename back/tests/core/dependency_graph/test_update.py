@@ -743,8 +743,8 @@ def test_no_class_duplication() -> None:
             BlockEdit(
                 file_path=get_fixture_path("subject_full.cs"),
                 block_id=3,
-                before="        [JsonIgnore]\n        public int Size { get; set; }\n",
-                after="        [JsonDataIgnore]\n        public int Size { get; set; }\n",
+                before="        [JsonIgnore]\n        public int Size { get; set; }",
+                after="        [JsonDataIgnore]\n        public int Size { get; set; }",
             ),
         ]
     )
@@ -766,8 +766,8 @@ def test_that_if_edits_are_not_in_files_then_raise_assertion_error() -> None:
                 BlockEdit(
                     file_path=get_fixture_path("subject_full.cs"),
                     block_id=3,
-                    before="        [JsonIgnore]\n        public int Size { get; set; }\n",
-                    after="        [JsonDataIgnore]\n        public int Size { get; set; }\n",
+                    before="        [JsonIgnore]\n        public int Size { get; set; }",
+                    after="        [JsonDataIgnore]\n        public int Size { get; set; }",
                 ),
             ]
         )
@@ -834,8 +834,7 @@ def test_handle_csproj_simple_update() -> None:
                 after="""<ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Serilog" Version="3.0.1" />
-  </ItemGroup>
-""",
+  </ItemGroup>""",
             )
         ]
     )

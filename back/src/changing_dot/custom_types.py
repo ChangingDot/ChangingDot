@@ -26,6 +26,12 @@ class BlockEdit(BaseModel):
     before: str
     after: str
 
+    @field_validator("before", "after")
+    def check_no_trailing_newline(cls, v: str) -> str:
+        if v.endswith("\n"):
+            raise ValueError("Field must not end with a newline character")
+        return v
+
 
 class EmptyEdit(BlockEdit):
     file_path: str
