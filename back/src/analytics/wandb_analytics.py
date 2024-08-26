@@ -112,7 +112,7 @@ class WandbAnalytics:
         start_time = datetime.now()
         yield
         end_time = datetime.now()
-        errors = error_manager.get_compile_errors([], observer)
+        errors = error_manager.get_compile_errors(observer)
         self.current_item_result["is_build_fixed"] = len(errors) == 0
         self.current_item_result["step_commit"] = True
         self.current_item_result["step_commit_duration"] = (

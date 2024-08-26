@@ -33,9 +33,7 @@ class RoslynErrorManager(IErrorManager):
         assert ANAYLZER_URL is not None
         self.analyzer_url = ANAYLZER_URL
 
-    def get_compile_errors(
-        self, files: list[str], observer: Observer
-    ) -> list[CompileError]:
+    def get_compile_errors(self, observer: Observer) -> list[CompileError]:
         with grpc.insecure_channel(self.analyzer_url, options=grpc_options) as channel:
             stub = FeedbackServerStub(channel)
             error_response = stub.GetCompileErrors(

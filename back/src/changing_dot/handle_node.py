@@ -160,7 +160,7 @@ def handle_problem_node(
     pending_problem_nodes = G.get_all_pending_problem_nodes()
 
     # connect all other problems that were solved
-    current_compile_errors = error_manager.get_compile_errors([], observer)
+    current_compile_errors = error_manager.get_compile_errors(observer)
 
     existing_compile_errors = [node["error"] for node in pending_problem_nodes]
 
@@ -243,7 +243,7 @@ def resume_problem_node(
     )
 
     # Check we are in a correct state
-    compile_errors = error_manager.get_compile_errors([], observer)
+    compile_errors = error_manager.get_compile_errors(observer)
     assert len(compile_errors) == 0
 
     G.update_problem_node(new_node)

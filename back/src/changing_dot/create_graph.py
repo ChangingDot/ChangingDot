@@ -97,7 +97,7 @@ def create_graph(
 ) -> None:
     if initialization["init_type"] == "error":
         # Check we are in a correct state
-        compile_errors = error_manager.get_compile_errors([], observer)
+        compile_errors = error_manager.get_compile_errors(observer)
         assert len(compile_errors) == 0
 
         G.add_problem_node(
