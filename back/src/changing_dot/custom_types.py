@@ -211,6 +211,7 @@ class ApplyGraphChangesInput(BaseModel):
     project_name: str
     solution_path: str
     base_path: str
+    initial_change: InitialChange
     is_local: bool
 
     @field_validator("base_path")
@@ -233,6 +234,7 @@ class ResumeGraphInput(BaseModel):
     solution_path: str
     base_path: str
     commit: Commit
+    initial_change: InitialChange
     restriction_options: RestrictionOptions = Field(
         default=RestrictionOptions(
             project_blacklist=None,

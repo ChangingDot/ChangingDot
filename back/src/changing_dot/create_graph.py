@@ -1,3 +1,4 @@
+import os
 import uuid
 from typing import TYPE_CHECKING, Literal
 
@@ -10,8 +11,12 @@ from changing_dot.custom_types import (
     Initialization,
     RestrictionOptions,
 )
-from changing_dot.dependency_graph.dependency_graph import DependencyGraph
+from changing_dot.dependency_graph.dependency_graph import (
+    DependencyGraph,
+    create_dependency_graph_from_folder,
+)
 from changing_dot.error_manager.error_manager import IErrorManager
+from changing_dot.error_manager.mypy_error_manager import MypyErrorManager
 from changing_dot.error_manager.roslyn_error_manager import RoslynErrorManager
 from changing_dot.handle_node import handle_node
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
@@ -25,7 +30,7 @@ from changing_dot.instruction_manager.block_instruction_manager.block_instructio
     create_instruction_manager,
 )
 from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
-from changing_dot.utils.file_utils import get_csharp_files
+from changing_dot.utils.get_algorithm_language import get_language
 
 if TYPE_CHECKING:
     from changing_dot.custom_types import ErrorInitialization
@@ -50,13 +55,19 @@ def run_create_graph(
         goal, llm_provider
     )
 
-    error_manager = RoslynErrorManager(solution_path, restriction_options)
+    language = get_language(initial_change.file_path)
+
+    error_manager: IErrorManager
+    if language == "python":
+        error_manager = MypyErrorManager(solution_path, restriction_options)
+    elif language == "c_sharp":
+        error_manager = RoslynErrorManager(solution_path, restriction_options)
 
     file_modifier: IModifyle = IntegralModifyle()
 
     G = ChangingGraph()
 
-    DG = DependencyGraph(get_csharp_files(solution_path))
+    DG = create_dependency_graph_from_folder(os.path.dirname(solution_path), language)
 
     observer = Observer(
         G,

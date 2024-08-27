@@ -141,6 +141,7 @@ def apply_changes(config: str, local: bool) -> None:
         apply_graph_changes_input.project_name,
         apply_graph_changes_input.solution_path,
         apply_graph_changes_input.base_path,
+        apply_graph_changes_input.initial_change.file_path,
         local,
     )
 
@@ -176,6 +177,7 @@ def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
             resume_graph_input.commit,
             resume_graph_input.restriction_options,
             resume_graph_input.resume_initial_node,
+            resume_graph_input.initial_change.file_path,
             resume_graph_input.llm_provider,
             resume_graph_input.is_local,
         )
@@ -191,6 +193,7 @@ def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
             resume_graph_input.commit,
             resume_graph_input.restriction_options,
             resume_graph_input.resume_initial_node,
+            resume_graph_input.initial_change.file_path,
             resume_graph_input.llm_provider,
             resume_graph_input.is_local,
         )

@@ -7,6 +7,7 @@ from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.commit.reset_repo import set_repo
 from changing_dot.custom_types import Commit, RestrictionOptions, ResumeInitialNode
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
+from changing_dot.error_manager.mypy_error_manager import MypyErrorManager
 from changing_dot.error_manager.roslyn_error_manager import (
     RoslynErrorManager,
 )
@@ -19,10 +20,12 @@ from changing_dot.instruction_manager.block_instruction_manager.block_instructio
 )
 from changing_dot.modifyle.modifyle import IntegralModifyle
 from changing_dot.utils.file_utils import get_csharp_files
+from changing_dot.utils.get_algorithm_language import get_language
 from changing_dot.utils.process_pickle_files import process_pickle_files
 
 if TYPE_CHECKING:
     from changing_dot.custom_types import ProblemNode
+    from changing_dot.error_manager.error_manager import IErrorManager
     from changing_dot.modifyle.modifyle import IModifyle
 
 
@@ -35,6 +38,7 @@ def run_resume_graph(
     commit: Commit,
     restriction_options: RestrictionOptions,
     resume_initial_node: ResumeInitialNode,
+    initial_change_file: str,
     llm_provider: Literal["OPENAI", "MISTRAL"],
     is_local: bool = True,
 ) -> None:
@@ -46,7 +50,13 @@ def run_resume_graph(
 
     graphs = process_pickle_files(f"{base_path}/{iteration_name}/", is_local)
 
-    error_manager = RoslynErrorManager(solution_path, restriction_options)
+    language = get_language(initial_change_file)
+
+    error_manager: IErrorManager
+    if language == "python":
+        error_manager = MypyErrorManager(solution_path, restriction_options)
+    elif language == "c_sharp":
+        error_manager = RoslynErrorManager(solution_path, restriction_options)
 
     file_modifier: IModifyle = IntegralModifyle()
 
