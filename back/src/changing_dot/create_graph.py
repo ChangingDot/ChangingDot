@@ -1,4 +1,3 @@
-import os
 import uuid
 from typing import TYPE_CHECKING, Literal
 
@@ -67,7 +66,7 @@ def run_create_graph(
 
     G = ChangingGraph()
 
-    DG = create_dependency_graph_from_folder(os.path.dirname(solution_path), language)
+    DG = create_dependency_graph_from_folder(solution_path, language)
 
     observer = Observer(
         G,

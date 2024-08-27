@@ -1,4 +1,3 @@
-import os
 import uuid
 
 from changing_dot_visualize.observer import Observer
@@ -53,6 +52,6 @@ def run_apply_graph_changes(
 
     language = get_language(initial_change_file)
 
-    DG = create_dependency_graph_from_folder(os.path.dirname(solution_path), language)
+    DG = create_dependency_graph_from_folder(solution_path, language)
 
     apply_graph_changes(G, DG, file_modifier, observer)
