@@ -11,6 +11,9 @@ def get_python_files(dir_to_explore: str) -> list[str]:
     if not os.path.exists(dir_to_explore):
         raise FileNotFoundError(f"The path {dir_to_explore} does not exist.")
 
+    if os.path.isfile(dir_to_explore):
+        dir_to_explore = os.path.dirname(dir_to_explore)
+
     python_files = glob.glob(os.path.join(dir_to_explore, "**", "*.py"), recursive=True)
 
     exclude_patterns = [
