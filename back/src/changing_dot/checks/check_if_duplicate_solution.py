@@ -1,7 +1,7 @@
 from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.custom_types import (
     BlockEdit,
-    InstructionBlock,
+    Instruction,
     SolutionNode,
 )
 from changing_dot_visualize.observer import Observer
@@ -9,7 +9,7 @@ from changing_dot_visualize.observer import Observer
 
 def find_same_solution_block(
     G: ChangingGraph,
-    instruction_to_match: InstructionBlock,
+    instruction_to_match: Instruction,
     edits_to_match: list[BlockEdit],
 ) -> list[int]:
     matching_nodes = []

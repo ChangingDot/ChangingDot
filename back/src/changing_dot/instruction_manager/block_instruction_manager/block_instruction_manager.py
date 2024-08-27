@@ -1,7 +1,7 @@
 from typing import Literal
 
 from changing_dot.changing_graph.changing_graph import ChangingGraph
-from changing_dot.custom_types import InstructionBlock
+from changing_dot.custom_types import Instruction
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_manager.block_instruction_manager.prompt import (
     prompt,
@@ -58,7 +58,7 @@ class InstructionOutputParser(BaseOutputParser[InstructionOutput]):
 class IInstructionManagerBlock:
     def get_node_instruction(
         self, G: ChangingGraph, DG: DependencyGraph, node_index: int
-    ) -> InstructionBlock:
+    ) -> Instruction:
         raise NotImplementedError()
 
 
@@ -94,7 +94,7 @@ class BlockInstructionManager(IInstructionManagerBlock):
 
     def get_node_instruction(
         self, G: ChangingGraph, DG: DependencyGraph, node_index: int
-    ) -> InstructionBlock:
+    ) -> Instruction:
         chain = self.make_chain()
 
         # get relevant error node

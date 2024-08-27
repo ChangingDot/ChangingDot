@@ -4,7 +4,7 @@ from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.checks.check_if_duplicate_solution import (
     check_if_duplicate_solution_block,
 )
-from changing_dot.custom_types import BlockEdit, CompileError, InstructionBlock
+from changing_dot.custom_types import BlockEdit, CompileError, Instruction
 
 if TYPE_CHECKING:
     from changing_dot.custom_types import SolutionNode
@@ -30,7 +30,7 @@ def test_no_duplicates_find_no_duplicates() -> None:
         "index": 1,
         "node_type": "solution",
         "status": "pending",
-        "instruction": InstructionBlock(
+        "instruction": Instruction(
             block_id=1,
             file_path="./tests/core/checks/fixtures/basic_file.cs",
             solution="Do this original change",
@@ -74,7 +74,7 @@ def test_duplicates_find_no_duplicates() -> None:
         "index": 1,
         "node_type": "solution",
         "status": "pending",
-        "instruction": InstructionBlock(
+        "instruction": Instruction(
             block_id=1,
             file_path="./tests/core/checks/fixtures/basic_file.cs",
             solution="Do this original change",
@@ -101,7 +101,7 @@ def test_duplicates_find_no_duplicates() -> None:
         "index": 12,
         "node_type": "solution",
         "status": "pending",
-        "instruction": InstructionBlock(
+        "instruction": Instruction(
             block_id=1,
             file_path="./tests/core/checks/fixtures/basic_file.cs",
             solution="Do this original change",

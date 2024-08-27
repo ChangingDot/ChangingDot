@@ -1,6 +1,6 @@
 from typing import Literal
 
-from changing_dot.custom_types import BlockEdit, EmptyEdit, InstructionBlock
+from changing_dot.custom_types import BlockEdit, EmptyEdit, Instruction
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_interpreter.block_prompts import (
     edits_template,
@@ -38,7 +38,7 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
         return prompt | self.model | StrOutputParser()
 
     def get_edit_from_instruction(
-        self, instruction: InstructionBlock, DG: DependencyGraph
+        self, instruction: Instruction, DG: DependencyGraph
     ) -> BlockEdit:
         before_node = DG.get_node(instruction["block_id"])
         before = before_node.text
