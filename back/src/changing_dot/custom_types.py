@@ -52,7 +52,7 @@ class ErrorInitialization(TypedDict):
 Initialization = ErrorInitialization
 
 
-class CompileError(TypedDict):
+class CompileError(BaseModel):
     text: str
     file_path: str
     project_name: str

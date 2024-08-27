@@ -121,9 +121,7 @@ class BlockInstructionManager(IInstructionManagerBlock):
 
         failed_attempts = get_failed_attempts(G, node_index)
 
-        blocks = get_blocks_from_dependency_graph(
-            DG, problem_node["error"]["file_path"]
-        )
+        blocks = get_blocks_from_dependency_graph(DG, problem_node["error"].file_path)
 
         task = {
             "goal": self.goal,
@@ -137,7 +135,7 @@ class BlockInstructionManager(IInstructionManagerBlock):
 
         return {
             "block_id": output.block_id,
-            "file_path": error["file_path"],
+            "file_path": error.file_path,
             "solution": output.instructions,
         }
 

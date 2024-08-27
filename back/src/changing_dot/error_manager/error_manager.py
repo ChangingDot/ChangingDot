@@ -53,7 +53,7 @@ def filter_restricted_errors(
         filtered_errors = [
             error
             for error in filtered_errors
-            if error["file_path"] == restriction_options.restrict_change_to_single_file
+            if error.file_path == restriction_options.restrict_change_to_single_file
         ]
 
         observer.log(f"We now have {len(filtered_errors)} compile_errors")
@@ -66,7 +66,7 @@ def filter_restricted_errors(
         filtered_errors = [
             error
             for error in filtered_errors
-            if error["project_name"] == restriction_options.restrict_to_project
+            if error.project_name == restriction_options.restrict_to_project
         ]
 
         observer.log(f"We now have {len(filtered_errors)} compile_errors")
@@ -81,7 +81,7 @@ def filter_restricted_errors(
         filtered_errors = [
             error
             for error in filtered_errors
-            if error["project_name"] not in project_blacklist
+            if error.project_name not in project_blacklist
         ]
 
         observer.log(f"We now have {len(filtered_errors)} compile_errors")

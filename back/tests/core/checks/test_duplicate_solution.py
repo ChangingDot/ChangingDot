@@ -4,7 +4,7 @@ from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.checks.check_if_duplicate_solution import (
     check_if_duplicate_solution_block,
 )
-from changing_dot.custom_types import BlockEdit, InstructionBlock
+from changing_dot.custom_types import BlockEdit, CompileError, InstructionBlock
 
 if TYPE_CHECKING:
     from changing_dot.custom_types import SolutionNode
@@ -17,12 +17,12 @@ def test_no_duplicates_find_no_duplicates() -> None:
             "index": 0,
             "node_type": "problem",
             "status": "pending",
-            "error": {
-                "text": "This is Hello World, it is not original",
-                "file_path": "./tests/core/checks/fixtures/basic_file.cs",
-                "pos": (5, 0, 5, 0),
-                "project_name": "Initial project",
-            },
+            "error": CompileError(
+                text="This is Hello World, it is not original",
+                file_path="./tests/core/checks/fixtures/basic_file.cs",
+                pos=(5, 0, 5, 0),
+                project_name="Initial project",
+            ),
         }
     )
 
@@ -61,12 +61,12 @@ def test_duplicates_find_no_duplicates() -> None:
             "index": 0,
             "node_type": "problem",
             "status": "pending",
-            "error": {
-                "text": "This is Hello World, it is not original",
-                "file_path": "./tests/core/checks/fixtures/basic_file.cs",
-                "pos": (5, 0, 5, 0),
-                "project_name": "Initial project",
-            },
+            "error": CompileError(
+                text="This is Hello World, it is not original",
+                file_path="./tests/core/checks/fixtures/basic_file.cs",
+                pos=(5, 0, 5, 0),
+                project_name="Initial project",
+            ),
         }
     )
 

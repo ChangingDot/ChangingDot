@@ -10,6 +10,7 @@ from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.create_graph import create_graph
 from changing_dot.custom_types import (
     BlockEdit,
+    CompileError,
     InitialChange,
     RestrictionOptions,
     ResumeInitialNode,
@@ -71,12 +72,12 @@ def test_e2e() -> None:
         [
             [],  # fisrt assert to check if all is ok
             [
-                {
-                    "text": "DistincId does not exist",
-                    "file_path": "./tests/core/fixtures/e2e/base.cs",
-                    "project_name": "test",
-                    "pos": (17, 0, 17, 0),
-                }
+                CompileError(
+                    text="DistincId does not exist",
+                    file_path="./tests/core/fixtures/e2e/base.cs",
+                    project_name="test",
+                    pos=(17, 0, 17, 0),
+                )
             ],  # does solution fix error -> No
             [],  # does solution fix error -> Yes
         ]
@@ -212,12 +213,12 @@ def test_e2e() -> None:
     resume_initial_node = ResumeInitialNode(
         index=0,
         status="handled",
-        error={
-            "text": "DistincId does not exist",
-            "file_path": "./tests/core/fixtures/e2e/base.cs",
-            "project_name": "test",
-            "pos": (17, 0, 17, 0),
-        },
+        error=CompileError(
+            text="DistincId does not exist",
+            file_path="./tests/core/fixtures/e2e/base.cs",
+            project_name="test",
+            pos=(17, 0, 17, 0),
+        ),
     )
 
     resume_DG = DependencyGraph(["./tests/core/fixtures/e2e/base.cs"])

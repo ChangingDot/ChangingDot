@@ -40,12 +40,12 @@ class RoslynErrorManager(IErrorManager):
                 GetCompileErrorsRequest(filePath=self.solution_file_path)
             )
             compile_errors: list[CompileError] = [
-                {
-                    "text": error.errorText,
-                    "file_path": error.filePath,
-                    "project_name": error.projectName,
-                    "pos": tuple(error.position),
-                }
+                CompileError(
+                    text=error.errorText,
+                    file_path=error.filePath,
+                    project_name=error.projectName,
+                    pos=tuple(error.position),
+                )
                 for error in error_response.Errors
             ]
 
@@ -54,7 +54,7 @@ class RoslynErrorManager(IErrorManager):
 
             # Remove when 2 errors are on the same line for now
             for error in compile_errors:
-                new_line_pos_tuple = (error["file_path"], error["pos"][0])
+                new_line_pos_tuple = (error.file_path, error.pos[0])
                 if new_line_pos_tuple not in unique_line_pos_tuples:
                     unique_line_pos_tuples.add(new_line_pos_tuple)
                     result.append(error)
