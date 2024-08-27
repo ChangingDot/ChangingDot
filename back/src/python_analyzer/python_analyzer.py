@@ -17,7 +17,12 @@ class MypyOutput(BaseModel):
 
 def run_mypy(project_path: str) -> MypyOutput:
     result_stdout, result_stderr, exit_status = mypy.api.run(
-        ["--output=json", project_path]
+        [
+            "--output=json",
+            "--config-file",
+            "./src/python_analyzer/setup.cfg",
+            project_path,
+        ]
     )
 
     if "[syntax]" in result_stdout:
