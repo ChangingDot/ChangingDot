@@ -17,6 +17,7 @@ from changing_dot.custom_types import (
 )
 from changing_dot.optimize_graph import run_optimize_graph
 from changing_dot.resume_graph import run_resume_graph
+from changing_dot.utils.get_algorithm_language import get_language
 from changing_dot_visualize.main import visualize_graph
 
 from changing_dot_cli.setup_feedback_server import feedback_server
@@ -67,7 +68,10 @@ def cdot() -> None:
 def create(config: str, local: bool, dev: bool) -> None:
     config_dict = get_config_dict(config)
     create_graph_input = CreateGraphInput(**config_dict, is_local=local)
-    if dev:
+
+    language = get_language(create_graph_input.initial_change.file_path)
+
+    if dev or language == "python":
         run_create_graph(
             create_graph_input.iteration_name,
             create_graph_input.project_name,
@@ -167,7 +171,10 @@ def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
     resume_graph_input = ResumeGraphInput(
         **config_dict, is_local=local, resume_initial_node=resume_initial_node
     )
-    if dev:
+
+    language = get_language(resume_graph_input.initial_change.file_path)
+
+    if dev or language == "python":
         run_resume_graph(
             resume_graph_input.iteration_name,
             resume_graph_input.project_name,
