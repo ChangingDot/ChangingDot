@@ -29,7 +29,7 @@ tree-sitter = "^0.22.3"
 tree-sitter-c-sharp = "^0.21.3"
 tree-sitter-xml = "^0.6.4"
 cdot-tree-sitter-python = "^0.21.0"
-
+mypy = "^1.9.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -40,7 +40,6 @@ pytest-cov = "^3"
 ruff = "0.3.7"
 grpcio-tools = "^1.60.0"
 grpc-stubs = "^1.53.0.5"
-mypy = "^1.9.0"
 types-pyyaml = "^6.0.12.12"
 types-requests = "^2.31.0.20240218"
 pandas-stubs = "^2.2.1.240316"
