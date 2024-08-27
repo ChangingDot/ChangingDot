@@ -46,7 +46,6 @@ def run_create_graph(
 ) -> None:
     job_id = str(uuid.uuid4())
 
-    # TODO rajouter llm provider in parent
     instruction_manager: BlockInstructionManager = create_instruction_manager(
         goal, llm_provider
     )
