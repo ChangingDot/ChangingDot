@@ -21,12 +21,12 @@ def get_consecutive_errors(
     consecutive_errors = [error]
     found_next_error = True
     while found_next_error:
-        next_error = error.copy()
-        next_error["pos"] = (
-            next_error["pos"][0] + i,
-            next_error["pos"][1],
-            next_error["pos"][2] + i,
-            next_error["pos"][3],
+        next_error = error.model_copy()
+        next_error.pos = (
+            next_error.pos[0] + i,
+            next_error.pos[1],
+            next_error.pos[2] + i,
+            next_error.pos[3],
         )
 
         if next_error in compile_errors:
@@ -93,14 +93,14 @@ def simple_check_solution_validity_block(
 
     # Do not take project_name into account
     return {
-        "file_path": os.path.abspath(problem_node["error"]["file_path"]),
-        "pos": problem_node["error"]["pos"],
-        "text": problem_node["error"]["text"],
+        "file_path": os.path.abspath(problem_node["error"].file_path),
+        "pos": problem_node["error"].pos,
+        "text": problem_node["error"].text,
     } not in [
         {
-            "file_path": os.path.abspath(error["file_path"]),
-            "pos": error["pos"],
-            "text": error["text"],
+            "file_path": os.path.abspath(error.file_path),
+            "pos": error.pos,
+            "text": error.text,
         }
         for error in compile_errors
     ]

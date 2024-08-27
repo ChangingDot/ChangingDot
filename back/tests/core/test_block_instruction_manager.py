@@ -1,5 +1,5 @@
 from changing_dot.changing_graph.changing_graph import ChangingGraph
-from changing_dot.custom_types import InstructionBlock
+from changing_dot.custom_types import CompileError, InstructionBlock
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
     BlockInstructionManager,
@@ -24,12 +24,12 @@ you know"""
             "index": 0,
             "node_type": "problem",
             "status": "pending",
-            "error": {
-                "text": "This is Hello World, it is not original",
-                "file_path": "./tests/core/fixtures/instruction_manager/basic_file.cs",
-                "pos": (5, 0, 5, 0),
-                "project_name": "Initial project",
-            },
+            "error": CompileError(
+                text="This is Hello World, it is not original",
+                file_path="./tests/core/fixtures/instruction_manager/basic_file.cs",
+                pos=(5, 0, 5, 0),
+                project_name="Initial project",
+            ),
         }
     )
 
@@ -63,12 +63,12 @@ def test_with_multiple_blocks_instruction() -> None:
             "index": 0,
             "node_type": "problem",
             "status": "pending",
-            "error": {
-                "text": "ChangedSize does not exist",
-                "file_path": "./tests/core/fixtures/instruction_manager/basic_change.cs",
-                "pos": (26, 0, 26, 0),
-                "project_name": "Initial project",
-            },
+            "error": CompileError(
+                text="ChangedSize does not exist",
+                file_path="./tests/core/fixtures/instruction_manager/basic_change.cs",
+                pos=(26, 0, 26, 0),
+                project_name="Initial project",
+            ),
         }
     )
 

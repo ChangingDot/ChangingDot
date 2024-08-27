@@ -4,7 +4,12 @@ from typing import TYPE_CHECKING, Literal
 from changing_dot_visualize.observer import Observer
 
 from changing_dot.changing_graph.changing_graph import ChangingGraph
-from changing_dot.custom_types import InitialChange, Initialization, RestrictionOptions
+from changing_dot.custom_types import (
+    CompileError,
+    InitialChange,
+    Initialization,
+    RestrictionOptions,
+)
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.error_manager.error_manager import IErrorManager
 from changing_dot.error_manager.roslyn_error_manager import RoslynErrorManager
@@ -105,12 +110,12 @@ def create_graph(
                 "index": -1,
                 "node_type": "problem",
                 "status": "pending",
-                "error": {
-                    "text": initialization["initial_error"],
-                    "file_path": initialization["initial_file_path"],
-                    "pos": initialization["initial_error_position"],
-                    "project_name": "Initial project",
-                },
+                "error": CompileError(
+                    text=initialization["initial_error"],
+                    file_path=initialization["initial_file_path"],
+                    pos=initialization["initial_error_position"],
+                    project_name="Initial project",
+                ),
             }
         )
 

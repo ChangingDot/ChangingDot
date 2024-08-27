@@ -23,10 +23,8 @@ class CustomInstructionManager(IInstructionManager):
         assert node["node_type"] == "problem"
 
         # hack to get solution from error rather than node index
-        node_error = "".join(node["error"]["text"].replace("'", "").split(" "))
-        error_index = (
-            f"{node_error}_{node['error']['file_path']}_{node['error']['pos'][0]}"
-        )
+        node_error = "".join(node["error"].text.replace("'", "").split(" "))
+        error_index = f"{node_error}_{node['error'].file_path}_{node['error'].pos[0]}"
         if self.fake_memory.get(error_index) is not None:
             value = self.fake_memory.get(error_index)
         else:
@@ -48,11 +46,9 @@ class CustomInstructionManager(IInstructionManager):
             return {
                 "edit_type": edit_type,  # type: ignore
                 "programming_language": "c#",
-                "file_path": node["error"]["file_path"],
-                "line_number": (
-                    line_number if line_number else node["error"]["pos"][0]
-                ),
-                "error": node["error"]["text"],
+                "file_path": node["error"].file_path,
+                "line_number": (line_number if line_number else node["error"].pos[0]),
+                "error": node["error"].text,
                 "solution": solution,
             }
 
@@ -60,18 +56,18 @@ class CustomInstructionManager(IInstructionManager):
             return {
                 "edit_type": edit_type,  # type: ignore
                 "programming_language": "c#",
-                "file_path": node["error"]["file_path"],
+                "file_path": node["error"].file_path,
                 "line_number": line_number if line_number else 1,
-                "error": node["error"]["text"],
+                "error": node["error"].text,
                 "solution": solution,
             }
 
         return {
             "edit_type": edit_type,  # type: ignore
             "programming_language": "c#",
-            "file_path": node["error"]["file_path"],
-            "line_number": line_number if line_number else node["error"]["pos"][0],
-            "error": node["error"]["text"],
+            "file_path": node["error"].file_path,
+            "line_number": line_number if line_number else node["error"].pos[0],
+            "error": node["error"].text,
             "solution": solution,
         }
 
