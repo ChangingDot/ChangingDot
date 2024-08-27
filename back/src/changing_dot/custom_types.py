@@ -68,33 +68,6 @@ class Instruction(TypedDict):
     solution: str
 
 
-class ReplaceEdit(TypedDict):
-    edit_type: Literal["replace"]
-    file_path: str
-    line_number: int
-    before: str
-    after: str
-
-
-class AddEdit(TypedDict):
-    edit_type: Literal["add"]
-    file_path: str
-    line_number: int
-    line_to_add: str
-
-
-class RemoveEdit(TypedDict):
-    edit_type: Literal["remove"]
-    file_path: str
-    line_number: int
-    line_to_remove: str
-
-
-Edit = ReplaceEdit | AddEdit | RemoveEdit
-
-Edits = list[Edit]
-
-
 NodeStatus = Literal["pending"] | Literal["handled"] | Literal["failed"]
 
 
