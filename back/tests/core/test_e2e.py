@@ -2,7 +2,6 @@ import os
 import pickle
 import shutil
 from collections.abc import Generator
-from typing import TYPE_CHECKING
 
 import pytest
 from changing_dot.apply_graph_changes import apply_graph_changes
@@ -11,6 +10,7 @@ from changing_dot.create_graph import create_graph
 from changing_dot.custom_types import (
     BlockEdit,
     CompileError,
+    ErrorInitialization,
     InitialChange,
     RestrictionOptions,
     ResumeInitialNode,
@@ -30,9 +30,6 @@ from changing_dot.modifyle.modifyle import IntegralModifyle
 from changing_dot.optimize_graph import optimize_graph
 from changing_dot.utils.text_functions import read_text, write_text
 from changing_dot_visualize.observer import Observer
-
-if TYPE_CHECKING:
-    from changing_dot.custom_types import ErrorInitialization
 
 
 @pytest.fixture(autouse=True)
@@ -114,12 +111,12 @@ def test_e2e() -> None:
         is_local=is_local,
     )
 
-    initialisation: ErrorInitialization = {
-        "init_type": "error",
-        "initial_error": initial_change.error,
-        "initial_file_path": initial_change.file_path,
-        "initial_error_position": initial_change.error_position,
-    }
+    initialisation = ErrorInitialization(
+        init_type="error",
+        initial_error=initial_change.error,
+        initial_file_path=initial_change.file_path,
+        initial_error_position=initial_change.error_position,
+    )
 
     create_graph(
         G,

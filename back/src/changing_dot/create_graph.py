@@ -7,6 +7,7 @@ from changing_dot_visualize.observer import Observer
 from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.custom_types import (
     CompileError,
+    ErrorInitialization,
     InitialChange,
     Initialization,
     RestrictionOptions,
@@ -33,7 +34,6 @@ from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
 from changing_dot.utils.get_algorithm_language import get_language
 
 if TYPE_CHECKING:
-    from changing_dot.custom_types import ErrorInitialization
     from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
         BlockInstructionManager,
     )
@@ -79,12 +79,12 @@ def run_create_graph(
 
     interpreter = create_instruction_interpreter(observer, llm_provider)
 
-    initialisation: ErrorInitialization = {
-        "init_type": "error",
-        "initial_error": initial_change.error,
-        "initial_file_path": initial_change.file_path,
-        "initial_error_position": initial_change.error_position,
-    }
+    initialisation = ErrorInitialization(
+        init_type="error",
+        initial_error=initial_change.error,
+        initial_file_path=initial_change.file_path,
+        initial_error_position=initial_change.error_position,
+    )
 
     create_graph(
         G,
@@ -110,7 +110,7 @@ def create_graph(
     observer: Observer,
     restriction_options: RestrictionOptions,
 ) -> None:
-    if initialization["init_type"] == "error":
+    if initialization.init_type == "error":
         # Check we are in a correct state
         compile_errors = error_manager.get_compile_errors(observer)
         assert len(compile_errors) == 0
@@ -121,9 +121,9 @@ def create_graph(
                 "node_type": "problem",
                 "status": "pending",
                 "error": CompileError(
-                    text=initialization["initial_error"],
-                    file_path=initialization["initial_file_path"],
-                    pos=initialization["initial_error_position"],
+                    text=initialization.initial_error,
+                    file_path=initialization.initial_file_path,
+                    pos=initialization.initial_error_position,
                     project_name="Initial project",
                 ),
             }
