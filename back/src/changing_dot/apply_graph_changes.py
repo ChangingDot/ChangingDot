@@ -1,11 +1,15 @@
+import os
 import uuid
 
 from changing_dot_visualize.observer import Observer
 
 from changing_dot.changing_graph.changing_graph import ChangingGraph
-from changing_dot.dependency_graph.dependency_graph import DependencyGraph
+from changing_dot.dependency_graph.dependency_graph import (
+    DependencyGraph,
+    create_dependency_graph_from_folder,
+)
 from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
-from changing_dot.utils.file_utils import get_csharp_files
+from changing_dot.utils.get_algorithm_language import get_language
 from changing_dot.utils.process_pickle_files import process_pickle_files
 
 
@@ -28,6 +32,7 @@ def run_apply_graph_changes(
     project_name: str,
     solution_path: str,
     base_path: str,
+    initial_change_file: str,
     is_local: bool,
 ) -> None:
     job_id = str(uuid.uuid4())
@@ -46,6 +51,8 @@ def run_apply_graph_changes(
 
     file_modifier: IModifyle = IntegralModifyle()
 
-    DG = DependencyGraph(get_csharp_files(solution_path))
+    language = get_language(initial_change_file)
+
+    DG = create_dependency_graph_from_folder(os.path.dirname(solution_path), language)
 
     apply_graph_changes(G, DG, file_modifier, observer)
