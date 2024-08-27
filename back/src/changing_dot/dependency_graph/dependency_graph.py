@@ -13,7 +13,9 @@ from changing_dot.dependency_graph.types import (
     DependencyGraphNode,
     DependencyGraphNodeType,
     DependencyGraphNodeWithIndex,
+    SupportedLanguages,
 )
+from changing_dot.utils.file_utils import get_csharp_files, get_python_files
 from changing_dot.utils.text_functions import read_text
 from changing_dot.utils.tree_sitter_utils import get_node_text_from_file_path
 from tree_sitter import Node, Tree
@@ -342,3 +344,17 @@ class DependencyGraph:
             file_path=file_path,
             text=f"{comment_text}{get_node_text_from_file_path(node, file_path)}",
         )
+
+
+def create_dependency_graph_from_folder(
+    folder_path: str, language: SupportedLanguages
+) -> DependencyGraph:
+    if language == "python":
+        python_files = get_python_files(folder_path)
+        return DependencyGraph(python_files)
+    if language == "c_sharp":
+        python_files = get_csharp_files(folder_path)
+        return DependencyGraph(python_files)
+
+    else:
+        raise NotImplementedError("This language is not implemented yet")

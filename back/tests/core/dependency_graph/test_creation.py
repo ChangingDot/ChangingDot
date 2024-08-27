@@ -1,5 +1,6 @@
 from changing_dot.dependency_graph.dependency_graph import (
     DependencyGraph,
+    create_dependency_graph_from_folder,
 )
 from changing_dot.dependency_graph.types import (
     DependencyGraphNode,
@@ -577,3 +578,17 @@ def test_relations_in_multiple_files() -> None:
         ),
     ]:
         assert relation in graph.get_parent_child_relationships()
+
+
+def test_we_can_give_python_and_folder_path() -> None:
+    graph = create_dependency_graph_from_folder(
+        get_fixture_path("python_folder"), "python"
+    )
+    assert graph.get_number_of_nodes() == 2
+
+
+def test_we_can_give_c_sharp_and_folder_path() -> None:
+    graph = create_dependency_graph_from_folder(
+        get_fixture_path("c_sharp_folder"), "c_sharp"
+    )
+    assert graph.get_number_of_nodes() == 2
