@@ -1,14 +1,9 @@
-from typing import TYPE_CHECKING
-
-from changing_dot.custom_types import BlockEdit, EmptyEdit
+from changing_dot.custom_types import BlockEdit, EmptyEdit, Instruction
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_interpreter.block_instruction_interpreter import (
     BlockInstructionInterpreter,
 )
 from langchain_community.chat_models.fake import FakeListChatModel
-
-if TYPE_CHECKING:
-    from changing_dot.custom_types import Instruction
 
 
 def make_instruction_interpreter(
@@ -21,11 +16,11 @@ def make_instruction_interpreter(
 
 def test_empty_instruction() -> None:
     DG = DependencyGraph(["./tests/core/fixtures/block_interpreter/subject.cs"])
-    instruction: Instruction = {
-        "file_path": "./tests/core/fixtures/block_interpreter/subject.cs",
-        "block_id": 1,
-        "solution": "No changes",
-    }
+    instruction = Instruction(
+        file_path="./tests/core/fixtures/block_interpreter/subject.cs",
+        block_id=1,
+        solution="No changes",
+    )
 
     interpreter = make_instruction_interpreter(
         """
@@ -43,11 +38,11 @@ def test_empty_instruction() -> None:
 
 def test_basic_change() -> None:
     DG = DependencyGraph(["./tests/core/fixtures/block_interpreter/subject.cs"])
-    instruction: Instruction = {
-        "file_path": "./tests/core/fixtures/block_interpreter/subject.cs",
-        "block_id": 1,
-        "solution": "Change Hello, World! to Welcome, World!",
-    }
+    instruction = Instruction(
+        file_path="./tests/core/fixtures/block_interpreter/subject.cs",
+        block_id=1,
+        solution="Change Hello, World! to Welcome, World!",
+    )
 
     interpreter = make_instruction_interpreter(
         """
@@ -81,11 +76,11 @@ random blabla
 
 def test_that_generated_code_matches_code_indentation() -> None:
     DG = DependencyGraph(["./tests/core/fixtures/block_interpreter/subject.cs"])
-    instruction: Instruction = {
-        "file_path": "./tests/core/fixtures/block_interpreter/subject.cs",
-        "block_id": 1,
-        "solution": "Change Hello, World! to Welcome, World!",
-    }
+    instruction = Instruction(
+        file_path="./tests/core/fixtures/block_interpreter/subject.cs",
+        block_id=1,
+        solution="Change Hello, World! to Welcome, World!",
+    )
 
     interpreter = make_instruction_interpreter(
         """
@@ -119,11 +114,11 @@ random blabla
 
 def test_that_generated_code_matches_code_indentation_python() -> None:
     DG = DependencyGraph(["./tests/core/python_fixtures/subject.py"])
-    instruction: Instruction = {
-        "file_path": "./tests/core/python_fixtures/subject.py",
-        "block_id": 2,
-        "solution": "Change result to 'The value of attribute is: {self.attribute}'",
-    }
+    instruction = Instruction(
+        file_path="./tests/core/python_fixtures/subject.py",
+        block_id=2,
+        solution="Change result to 'The value of attribute is: {self.attribute}'",
+    )
 
     interpreter = make_instruction_interpreter(
         """
@@ -151,11 +146,11 @@ random blabla
 
 def test_handles_empty_lines() -> None:
     DG = DependencyGraph(["./tests/core/python_fixtures/subject.py"])
-    instruction: Instruction = {
-        "file_path": "./tests/core/python_fixtures/subject.py",
-        "block_id": 2,
-        "solution": "Change result to 'The value of attribute is: {self.attribute}' and add an empty line",
-    }
+    instruction = Instruction(
+        file_path="./tests/core/python_fixtures/subject.py",
+        block_id=2,
+        solution="Change result to 'The value of attribute is: {self.attribute}' and add an empty line",
+    )
 
     interpreter = make_instruction_interpreter(
         """

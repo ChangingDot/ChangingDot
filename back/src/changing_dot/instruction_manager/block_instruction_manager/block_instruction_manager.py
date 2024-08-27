@@ -133,11 +133,11 @@ class BlockInstructionManager(IInstructionManagerBlock):
 
         output: InstructionOutput = chain.invoke(task)
 
-        return {
-            "block_id": output.block_id,
-            "file_path": error.file_path,
-            "solution": output.instructions,
-        }
+        return Instruction(
+            block_id=output.block_id,
+            file_path=error.file_path,
+            solution=output.instructions,
+        )
 
     def make_chain(self) -> RunnableSerializable[dict[str, str], InstructionOutput]:
         instruction_prompt = ChatPromptTemplate.from_messages(

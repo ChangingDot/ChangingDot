@@ -12,6 +12,7 @@ from changing_dot.custom_types import (
     CompileError,
     ErrorInitialization,
     InitialChange,
+    Instruction,
     RestrictionOptions,
     ResumeInitialNode,
 )
@@ -81,11 +82,11 @@ def test_e2e() -> None:
     )
 
     instruction_manager = HardCodedInstructionManager(
-        {
-            "block_id": 4,
-            "file_path": "./tests/core/fixtures/e2e/base.cs",
-            "solution": "Change DistincId to NewVariableName",
-        }
+        Instruction(
+            block_id=4,
+            file_path="./tests/core/fixtures/e2e/base.cs",
+            solution="Change DistincId to NewVariableName",
+        )
     )
 
     interpreter = HardCodedInstructionInterpreter(
