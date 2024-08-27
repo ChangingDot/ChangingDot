@@ -11,7 +11,8 @@ def get_csharp_files(dir_to_explore: str) -> list[str]:
     if not os.path.exists(dir_to_explore):
         raise FileNotFoundError(f"The path {dir_to_explore} does not exist.")
 
-    dir_to_explore = os.path.dirname(dir_to_explore)
+    if os.path.isfile(dir_to_explore) and dir_to_explore.lower().endswith(".sln"):
+        dir_to_explore = os.path.dirname(dir_to_explore)
 
     csharp_files = glob.glob(os.path.join(dir_to_explore, "**", "*.cs"), recursive=True)
     cs_proj_files = glob.glob(
