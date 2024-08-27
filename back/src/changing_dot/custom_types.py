@@ -14,7 +14,7 @@ def validate_and_convert_path(value: Any) -> str:
         raise ValueError(f"Invalid path: {value}")
 
 
-class InstructionBlock(TypedDict):
+class Instruction(TypedDict):
     block_id: int
     file_path: str
     solution: str
@@ -59,15 +59,6 @@ class CompileError(BaseModel):
     pos: tuple[int, int, int, int]
 
 
-class Instruction(TypedDict):
-    edit_type: Literal["replace"] | Literal["add"] | Literal["remove"]
-    programming_language: str
-    file_path: str
-    line_number: int
-    error: str
-    solution: str
-
-
 NodeStatus = Literal["pending"] | Literal["handled"] | Literal["failed"]
 
 
@@ -75,7 +66,7 @@ class SolutionNode(TypedDict):
     index: int
     node_type: Literal["solution"]
     status: NodeStatus
-    instruction: InstructionBlock
+    instruction: Instruction
     edits: list[BlockEdit]
 
 
@@ -90,7 +81,7 @@ class ErrorSolutionNode(TypedDict):
     index: int
     node_type: Literal["error_solution"]
     status: NodeStatus
-    instruction: InstructionBlock
+    instruction: Instruction
     edits: list[BlockEdit]
     error_text: str
 
@@ -101,7 +92,7 @@ class ErrorProblemNode(TypedDict):
     status: NodeStatus
     error: CompileError
     error_text: str
-    suspected_instruction: InstructionBlock | None
+    suspected_instruction: Instruction | None
     suspected_edits: list[BlockEdit] | None
 
 
@@ -196,7 +187,7 @@ class ResumeInitialNode(BaseModel):
     index: int
     status: NodeStatus
     error: CompileError
-    new_instruction: InstructionBlock | None = Field(default=None)
+    new_instruction: Instruction | None = Field(default=None)
     new_edits: list[BlockEdit] | None = Field(default=None)
 
 

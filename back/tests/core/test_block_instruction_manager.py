@@ -1,5 +1,5 @@
 from changing_dot.changing_graph.changing_graph import ChangingGraph
-from changing_dot.custom_types import CompileError, InstructionBlock
+from changing_dot.custom_types import CompileError, Instruction
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
     BlockInstructionManager,
@@ -37,7 +37,7 @@ you know"""
 
     instruction = intruction_manager_SUT.get_node_instruction(G, DG, 0)
 
-    assert instruction == InstructionBlock(
+    assert instruction == Instruction(
         block_id=1,
         file_path="./tests/core/fixtures/instruction_manager/basic_file.cs",
         solution="""Do what you like bro
@@ -76,7 +76,7 @@ def test_with_multiple_blocks_instruction() -> None:
 
     instruction = intruction_manager_SUT.get_node_instruction(G, DG, 0)
 
-    assert instruction == InstructionBlock(
+    assert instruction == Instruction(
         block_id=7,
         file_path="./tests/core/fixtures/instruction_manager/basic_change.cs",
         solution="Change line 26 from `public int ChangedSize { get; set; }` to `public int Size { get; set; }`",

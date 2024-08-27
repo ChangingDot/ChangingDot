@@ -13,7 +13,7 @@ from changing_dot.checks.check_solution_validity import (
 from changing_dot.custom_types import (
     BlockEdit,
     ErrorProblemNode,
-    InstructionBlock,
+    Instruction,
     ProblemNode,
     RestrictionOptions,
     SolutionNode,
@@ -228,7 +228,7 @@ def resume_problem_node(
     DG: DependencyGraph,
     node_index: int,
     new_node: ProblemNode,
-    new_instruction: InstructionBlock | None,
+    new_instruction: Instruction | None,
     new_edits: list[BlockEdit] | None,
     error_manager: IErrorManager,
     instruction_manager: IInstructionManagerBlock,

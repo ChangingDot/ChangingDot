@@ -1,5 +1,5 @@
 from changing_dot.changing_graph.changing_graph import ChangingGraph
-from changing_dot.custom_types import InstructionBlock
+from changing_dot.custom_types import Instruction
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
     IInstructionManagerBlock,
@@ -7,12 +7,12 @@ from changing_dot.instruction_manager.block_instruction_manager.block_instructio
 
 
 class HardCodedInstructionManager(IInstructionManagerBlock):
-    hardcoded_instruction: InstructionBlock
+    hardcoded_instruction: Instruction
 
-    def __init__(self, instruction: InstructionBlock):
+    def __init__(self, instruction: Instruction):
         self.hardcoded_instruction = instruction
 
     def get_node_instruction(
         self, G: ChangingGraph, DG: DependencyGraph, node_index: int
-    ) -> InstructionBlock:
+    ) -> Instruction:
         return self.hardcoded_instruction
