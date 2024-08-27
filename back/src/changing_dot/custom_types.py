@@ -14,7 +14,7 @@ def validate_and_convert_path(value: Any) -> str:
         raise ValueError(f"Invalid path: {value}")
 
 
-class Instruction(TypedDict):
+class Instruction(BaseModel):
     block_id: int
     file_path: str
     solution: str

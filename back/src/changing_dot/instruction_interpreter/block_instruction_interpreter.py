@@ -40,12 +40,12 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
     def get_edit_from_instruction(
         self, instruction: Instruction, DG: DependencyGraph
     ) -> BlockEdit:
-        before_node = DG.get_node(instruction["block_id"])
+        before_node = DG.get_node(instruction.block_id)
         before = before_node.text
 
         chain = self.make_chain()
 
-        output = chain.invoke({"solution": instruction["solution"], "content": before})
+        output = chain.invoke({"solution": instruction.solution, "content": before})
 
         if self.observer:
             self.observer.log(f"Got from LLM the following response : {output}")
@@ -54,8 +54,8 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
 
         if len(code_blocks) == 0:
             return EmptyEdit(
-                block_id=instruction["block_id"],
-                file_path=instruction["file_path"],
+                block_id=instruction.block_id,
+                file_path=instruction.file_path,
             )
 
         code_block = code_blocks[-1]
@@ -84,8 +84,8 @@ class BlockInstructionInterpreter(IBlockInstructionInterpreter):
             code_block = code_block[:-1]
 
         return BlockEdit(
-            block_id=instruction["block_id"],
-            file_path=instruction["file_path"],
+            block_id=instruction.block_id,
+            file_path=instruction.file_path,
             before=before,
             after=code_block,
         )

@@ -20,14 +20,11 @@ def find_same_solution_block(
         if attrs.get("status") == "failed":
             continue
 
-        if (
-            attrs.get("instruction").get("file_path")
-            != instruction_to_match["file_path"]
-        ):
+        if attrs.get("instruction").file_path != instruction_to_match.file_path:
             continue
 
-        node_block_id = attrs.get("instruction")["block_id"]
-        if node_block_id != instruction_to_match["block_id"]:
+        node_block_id = attrs.get("instruction").block_id
+        if node_block_id != instruction_to_match.block_id:
             continue
 
         node_edit_afters = [edit.after for edit in attrs.get("edits")]
