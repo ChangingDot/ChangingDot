@@ -74,12 +74,12 @@ if __name__ == "__main__":
                 observer, config["llm_provider"]
             )
 
-            initialisation: ErrorInitialization = {
-                "init_type": "error",
-                "initial_error": config["initial_change"]["error"],
-                "initial_file_path": config["initial_change"]["file_path"],
-                "initial_error_position": config["initial_change"]["error_position"],
-            }
+            initialisation = ErrorInitialization(
+                init_type="error",
+                initial_error=config["initial_change"]["error"],
+                initial_file_path=config["initial_change"]["file_path"],
+                initial_error_position=config["initial_change"]["error_position"],
+            )
 
             try:
                 set_repo(config["commit"])

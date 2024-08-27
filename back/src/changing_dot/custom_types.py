@@ -42,7 +42,7 @@ class EmptyEdit(BlockEdit):
     after: str = ""
 
 
-class ErrorInitialization(TypedDict):
+class ErrorInitialization(BaseModel):
     init_type: Literal["error"]
     initial_error: str
     initial_file_path: str

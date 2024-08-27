@@ -30,7 +30,6 @@ from changing_dot_visualize.observer import Observer
 from loguru import logger
 
 if TYPE_CHECKING:
-    from changing_dot.custom_types import ErrorInitialization
     from changing_dot.instruction_interpreter.instruction_interpreter import (
         IBlockInstructionInterpreter,
     )
@@ -85,12 +84,12 @@ def benchmark_job(
                 observer, llm_provider
             )
 
-            initialisation: ErrorInitialization = {
-                "init_type": "error",
-                "initial_error": initial_change.error,
-                "initial_file_path": initial_change.file_path,
-                "initial_error_position": initial_change.error_position,
-            }
+            initialisation = ErrorInitialization(
+                init_type="error",
+                initial_error=initial_change.error,
+                initial_file_path=initial_change.file_path,
+                initial_error_position=initial_change.error_position,
+            )
 
             try:
                 set_repo(commit)
