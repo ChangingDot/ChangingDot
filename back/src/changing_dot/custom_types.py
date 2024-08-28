@@ -2,7 +2,6 @@ import os
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator
-from typing_extensions import TypedDict
 
 
 def validate_and_convert_path(value: Any) -> str:
@@ -62,41 +61,41 @@ class CompileError(BaseModel):
 NodeStatus = Literal["pending"] | Literal["handled"] | Literal["failed"]
 
 
-class SolutionNode(TypedDict):
+class NodeData(BaseModel):
     index: int
-    node_type: Literal["solution"]
+    node_type: (
+        Literal["solution"]
+        | Literal["problem"]
+        | Literal["error_problem"]
+        | Literal["error_solution"]
+    )
     status: NodeStatus
+
+
+class SolutionNode(NodeData):
+    node_type: Literal["solution"]
     instruction: Instruction
     edits: list[BlockEdit]
 
 
-class ProblemNode(TypedDict):
-    index: int
+class ProblemNode(NodeData):
     node_type: Literal["problem"]
-    status: NodeStatus
     error: CompileError
 
 
-class ErrorSolutionNode(TypedDict):
-    index: int
+class ErrorSolutionNode(NodeData):
     node_type: Literal["error_solution"]
-    status: NodeStatus
     instruction: Instruction
     edits: list[BlockEdit]
     error_text: str
 
 
-class ErrorProblemNode(TypedDict):
-    index: int
+class ErrorProblemNode(NodeData):
     node_type: Literal["error_problem"]
-    status: NodeStatus
     error: CompileError
     error_text: str
     suspected_instruction: Instruction | None
     suspected_edits: list[BlockEdit] | None
-
-
-NodeData = SolutionNode | ProblemNode | ErrorSolutionNode | ErrorProblemNode
 
 
 class InitialChange(BaseModel):

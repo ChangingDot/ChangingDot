@@ -70,7 +70,7 @@ def get_failed_attempts(G: ChangingGraph, node_index: int) -> str:
     attempt_diffs = [
         f"Attempt {i}\n{edit.after}\n"
         for i, node in enumerate(failed_attempt_nodes)
-        for edit in node["edits"]
+        for edit in node.edits
     ]
 
     return f"We have already tried this, but it did not fix the error : {attempt_diffs}"
@@ -98,9 +98,8 @@ class BlockInstructionManager(IInstructionManagerBlock):
         chain = self.make_chain()
 
         # get relevant error node
-        problem_node = G.get_node(node_index)
-        assert problem_node["node_type"] == "problem"
-        error = problem_node["error"]
+        problem_node = G.get_problem_node(node_index)
+        error = problem_node.error
 
         if node_index == 0:
             edits = []
@@ -111,17 +110,13 @@ class BlockInstructionManager(IInstructionManagerBlock):
             assert len(solution_parent_node_indexes) > 0
             # TODO what do we do if many problems caused the same problem ?
             # -> for now take first
-            solution_node = G.get_node(solution_parent_node_indexes[0])
-            assert solution_node["node_type"] == "solution"
-            edits = solution_node["edits"]
+            solution_node = G.get_solution_node(solution_parent_node_indexes[0])
+            edits = solution_node.edits
 
         # get global objective
-        root_node = G.get_node(0)
-        assert root_node["node_type"] == "problem"
-
         failed_attempts = get_failed_attempts(G, node_index)
 
-        blocks = get_blocks_from_dependency_graph(DG, problem_node["error"].file_path)
+        blocks = get_blocks_from_dependency_graph(DG, problem_node.error.file_path)
 
         task = {
             "goal": self.goal,

@@ -5,7 +5,12 @@ from changing_dot_visualize.observer import Observer
 
 from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.commit.reset_repo import set_repo
-from changing_dot.custom_types import Commit, RestrictionOptions, ResumeInitialNode
+from changing_dot.custom_types import (
+    Commit,
+    ProblemNode,
+    RestrictionOptions,
+    ResumeInitialNode,
+)
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.error_manager.mypy_error_manager import MypyErrorManager
 from changing_dot.error_manager.roslyn_error_manager import (
@@ -24,7 +29,6 @@ from changing_dot.utils.get_algorithm_language import get_language
 from changing_dot.utils.process_pickle_files import process_pickle_files
 
 if TYPE_CHECKING:
-    from changing_dot.custom_types import ProblemNode
     from changing_dot.error_manager.error_manager import IErrorManager
     from changing_dot.modifyle.modifyle import IModifyle
 
@@ -75,17 +79,17 @@ def run_resume_graph(
 
     interpreter = create_instruction_interpreter(observer, llm_provider)
 
-    node: ProblemNode = {
-        "index": resume_initial_node.index,
-        "node_type": "problem",
-        "status": "pending",
-        "error": resume_initial_node.error,
-    }
+    node = ProblemNode(
+        index=resume_initial_node.index,
+        node_type="problem",
+        status="pending",
+        error=resume_initial_node.error,
+    )
 
     resume_problem_node(
         G,
         DG,
-        node["index"],
+        node.index,
         node,
         resume_initial_node.new_instruction,
         resume_initial_node.new_edits,

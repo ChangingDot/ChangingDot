@@ -7,17 +7,17 @@ from changing_dot_visualize.observer import Observer
 
 
 def merge_solution_nodes(solution_nodes: list[SolutionNode]) -> SolutionNode:
-    return {
-        "index": -1,
-        "node_type": "solution",
-        "status": "handled",
-        "instruction": solution_nodes[0]["instruction"],
-        "edits": functools.reduce(
+    return SolutionNode(
+        index=-1,
+        node_type="solution",
+        status="handled",
+        instruction=solution_nodes[0].instruction,
+        edits=functools.reduce(
             operator.iadd,
-            (solution_node.get("edits", []) for solution_node in solution_nodes),
+            (solution_node.edits for solution_node in solution_nodes),
             [],
         ),
-    }
+    )
 
 
 def merge_cycles(G: ChangingGraph, observer: Observer) -> None:
@@ -31,7 +31,7 @@ def merge_cycles(G: ChangingGraph, observer: Observer) -> None:
         cycle_solution_nodes: list[SolutionNode] = [
             G.get_node(index)  # type: ignore
             for index in cycle
-            if G.get_node(index)["node_type"] == "solution"
+            if G.get_node(index).node_type == "solution"
         ]
 
         merged_node_index = G.add_solution_node(
