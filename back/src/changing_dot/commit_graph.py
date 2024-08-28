@@ -1,5 +1,5 @@
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from changing_dot_visualize.observer import Observer
 from git import Repo
@@ -10,14 +10,13 @@ from changing_dot.commit.conflict_handler import (
     IConflictHandler,
     create_openai_conflict_handler,
 )
-from changing_dot.custom_types import Commit
+from changing_dot.custom_types import Commit, SolutionNode
 from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
 from changing_dot.utils.process_pickle_files import process_pickle_files
 
 if TYPE_CHECKING:
     from changing_dot.custom_types import (
         BlockEdit,
-        SolutionNode,
     )
 
 
@@ -43,10 +42,11 @@ def commit_graph(
 
         node = G.get_node(leaf)
 
-        if node["node_type"] == "solution":
-            if node["status"] != "handled":
+        if node.node_type == "solution":
+            node = cast(SolutionNode, node)
+            if node.status != "handled":
                 observer.log(
-                    f"Removing node {node['index']} because of status {node['status']}"
+                    f"Removing node {node.index} because of status {node.status}"
                 )
                 G.remove_node(leaf)
                 continue
@@ -63,9 +63,7 @@ def commit_graph(
     # there is part of the graph that we can't commit
     assert G.get_number_of_nodes() == 0
 
-    edits_list: list[list[BlockEdit]] = [
-        node["edits"] for node in list_of_solution_nodes
-    ]
+    edits_list: list[list[BlockEdit]] = [node.edits for node in list_of_solution_nodes]
 
     observer.log("Got list of all edits, committing the changes one by one")
 

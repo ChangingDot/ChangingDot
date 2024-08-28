@@ -49,8 +49,7 @@ def get_solution_node_from_problem(
     instruction = None
     edits = None
 
-    node = G.get_node(node_index)
-    assert node["node_type"] == "problem"
+    node = G.get_problem_node(node_index)
 
     try:
         instruction = instruction_manager.get_node_instruction(G, DG, node_index)
@@ -61,25 +60,25 @@ def get_solution_node_from_problem(
 
         observer.log_dict("got edit :", edit)
 
-        return {
-            "index": -1,
-            "node_type": "solution",
-            "status": "pending",
-            "instruction": instruction,
-            "edits": [edit],
-        }
+        return SolutionNode(
+            index=-1,
+            node_type="solution",
+            status="pending",
+            instruction=instruction,
+            edits=[edit],
+        )
 
     except Exception as e:
         observer.log(f"Encountered error {e}\n{traceback.format_exc()}")
-        return {
-            "index": node_index,
-            "node_type": "error_problem",
-            "status": node["status"],
-            "error": node["error"],
-            "error_text": f"{e}",
-            "suspected_instruction": instruction,
-            "suspected_edits": edits,
-        }
+        return ErrorProblemNode(
+            index=node_index,
+            node_type="error_problem",
+            status=node.status,
+            error=node.error,
+            error_text=f"{e}",
+            suspected_instruction=instruction,
+            suspected_edits=edits,
+        )
 
 
 def handle_problem_node(
@@ -96,7 +95,7 @@ def handle_problem_node(
         G, DG, problem_node_index, instruction_manager, interpreter, observer
     )
 
-    if solution_node_or_error["node_type"] == "error_problem":
+    if solution_node_or_error.node_type == "error_problem":
         error = solution_node_or_error
         G.error_on_problem_node(error)
         return
@@ -104,7 +103,7 @@ def handle_problem_node(
     solution_node = solution_node_or_error
 
     is_solution_syntactically_correct = check_solution_syntax_correctness(
-        DG, solution_node["edits"], error_manager
+        DG, solution_node.edits, error_manager
     )
 
     observer.log(
@@ -112,7 +111,7 @@ def handle_problem_node(
     )
 
     does_solution_fix_problem = simple_check_solution_validity_block(
-        G, DG, problem_node_index, solution_node["edits"], error_manager, observer
+        G, DG, problem_node_index, solution_node.edits, error_manager, observer
     )
 
     observer.log(f"Does solution fix problem : {does_solution_fix_problem}")
@@ -122,7 +121,7 @@ def handle_problem_node(
     observer.log(f"Is solution valid : {is_solution_valid}")
 
     while not is_solution_valid:
-        solution_node["status"] = "failed"
+        solution_node.status = "failed"
         failed_node_index = G.add_solution_node(solution_node)
         G.add_edge(problem_node_index, failed_node_index)
         # try again
@@ -132,7 +131,7 @@ def handle_problem_node(
         new_solution_node_or_error = get_solution_node_from_problem(
             G, DG, problem_node_index, instruction_manager, interpreter, observer
         )
-        if new_solution_node_or_error["node_type"] == "error_problem":
+        if new_solution_node_or_error.node_type == "error_problem":
             error = new_solution_node_or_error
             G.error_on_problem_node(error)
             return
@@ -143,17 +142,15 @@ def handle_problem_node(
             G,
             DG,
             problem_node_index,
-            solution_node["edits"],
+            solution_node.edits,
             error_manager,
             observer,
-        ) and check_solution_syntax_correctness(
-            DG, solution_node["edits"], error_manager
-        )
+        ) and check_solution_syntax_correctness(DG, solution_node.edits, error_manager)
 
     # Solution is now valid and can be added
 
-    solution_node["status"] = "handled"
-    file_modifier.apply_change(DG, solution_node["edits"])
+    solution_node.status = "handled"
+    file_modifier.apply_change(DG, solution_node.edits)
 
     new_solution_index = G.add_solution_node(solution_node)
 
@@ -162,27 +159,27 @@ def handle_problem_node(
     # connect all other problems that were solved
     current_compile_errors = error_manager.get_compile_errors(observer)
 
-    existing_compile_errors = [node["error"] for node in pending_problem_nodes]
+    existing_compile_errors = [node.error for node in pending_problem_nodes]
 
     for problem_node in pending_problem_nodes:
-        if problem_node["error"] not in current_compile_errors:
+        if problem_node.error not in current_compile_errors:
             # problem was fixed by solution
-            G.add_edge(problem_node["index"], new_solution_index)
-            G.mark_node_as(problem_node["index"], "handled")
+            G.add_edge(problem_node.index, new_solution_index)
+            G.mark_node_as(problem_node.index, "handled")
             observer.log(
-                f"Solved problem {problem_node['index']}, connecting it to {new_solution_index}"
+                f"Solved problem {problem_node.index}, connecting it to {new_solution_index}"
             )
 
     for compile_error in current_compile_errors:
         if compile_error not in existing_compile_errors:
             # new problem
             new_problem_index = G.add_problem_node(
-                {
-                    "index": -1,
-                    "node_type": "problem",
-                    "status": "pending",
-                    "error": compile_error,
-                }
+                ProblemNode(
+                    index=-1,
+                    node_type="problem",
+                    status="pending",
+                    error=compile_error,
+                )
             )
             G.add_edge(new_solution_index, new_problem_index)
             observer.log(f"New problem -> Added new node {new_problem_index}")
@@ -204,10 +201,10 @@ def handle_node(
 ) -> None:
     node = G.get_node(node_index)
 
-    if node["node_type"] == "solution":
+    if node.node_type == "solution":
         assert True is False
 
-    elif node["node_type"] == "problem":
+    elif node.node_type == "problem":
         observer.log(f"Handling problem node {node_index}")
         handle_problem_node(
             G,
@@ -238,8 +235,8 @@ def resume_problem_node(
     restriction_options: RestrictionOptions,
 ) -> None:
     assert (
-        G.get_node(node_index)["node_type"] == "error_problem"
-        or G.get_node(node_index)["node_type"] == "problem"
+        G.get_node(node_index).node_type == "error_problem"
+        or G.get_node(node_index).node_type == "problem"
     )
 
     # Check we are in a correct state
@@ -248,7 +245,7 @@ def resume_problem_node(
 
     G.update_problem_node(new_node)
 
-    for child_index in G.get_children(new_node["index"]):
+    for child_index in G.get_children(new_node.index):
         G.remove_node(child_index)
 
     apply_graph_changes(G, DG, file_modifier, observer)

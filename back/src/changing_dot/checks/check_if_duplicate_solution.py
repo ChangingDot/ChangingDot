@@ -47,12 +47,11 @@ def check_if_duplicate_solution_block(
         observer.log("Checking if solution already exists")
 
     matched_nodes = find_same_solution_block(
-        G, solution_node["instruction"], solution_node["edits"]
+        G, solution_node.instruction, solution_node.edits
     )
 
     assert len(matched_nodes) == 0 or len(matched_nodes) == 1
     if len(matched_nodes) == 1:
-        existing_solution = G.get_node(matched_nodes[0])
-        assert existing_solution["node_type"] == "solution"
+        existing_solution = G.get_solution_node(matched_nodes[0])
         return existing_solution
     return None

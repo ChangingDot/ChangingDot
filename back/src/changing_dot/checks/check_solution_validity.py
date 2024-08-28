@@ -18,16 +18,15 @@ def simple_check_solution_validity_block(
     error_manager: IErrorManager,
     observer: Observer,
 ) -> bool:
-    problem_node = G.get_node(problem_node_index)
-    assert problem_node["node_type"] == "problem"
+    problem_node = G.get_problem_node(problem_node_index)
     with applied_edits_context(DG, edits):
         compile_errors = error_manager.get_compile_errors(observer)
 
     # Do not take project_name into account
     return {
-        "file_path": os.path.abspath(problem_node["error"].file_path),
-        "pos": problem_node["error"].pos,
-        "text": problem_node["error"].text,
+        "file_path": os.path.abspath(problem_node.error.file_path),
+        "pos": problem_node.error.pos,
+        "text": problem_node.error.text,
     } not in [
         {
             "file_path": os.path.abspath(error.file_path),

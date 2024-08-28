@@ -9,6 +9,7 @@ from changing_dot.custom_types import (
     ErrorInitialization,
     InitialChange,
     Initialization,
+    ProblemNode,
     RestrictionOptions,
 )
 from changing_dot.dependency_graph.dependency_graph import (
@@ -115,17 +116,17 @@ def create_graph(
         assert len(compile_errors) == 0
 
         G.add_problem_node(
-            {
-                "index": -1,
-                "node_type": "problem",
-                "status": "pending",
-                "error": CompileError(
+            ProblemNode(
+                index=-1,
+                node_type="problem",
+                status="pending",
+                error=CompileError(
                     text=initialization.initial_error,
                     file_path=initialization.initial_file_path,
                     pos=initialization.initial_error_position,
                     project_name="Initial project",
                 ),
-            }
+            )
         )
 
     # while some nodes are pending

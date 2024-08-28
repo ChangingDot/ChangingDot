@@ -29,10 +29,10 @@ class ChangingGraph:
         self.G.add_node(
             index,
             index=index,
-            node_type=node_data["node_type"],
-            status=node_data["status"],
-            instruction=node_data["instruction"],
-            edits=node_data["edits"],
+            node_type=node_data.node_type,
+            status=node_data.status,
+            instruction=node_data.instruction,
+            edits=node_data.edits,
         )
         self.next_index += 1
         return index
@@ -42,18 +42,18 @@ class ChangingGraph:
         self.G.add_node(
             index,
             index=index,
-            node_type=node_data["node_type"],
-            status=node_data["status"],
-            error=node_data["error"],
+            node_type=node_data.node_type,
+            status=node_data.status,
+            error=node_data.error,
         )
         self.next_index += 1
         return index
 
     def update_solution_node(self, node_data: SolutionNode) -> None:
-        self.G.nodes[node_data["index"]].update(node_data)
+        self.G.nodes[node_data.index].update(node_data)
 
     def update_problem_node(self, node_data: ProblemNode) -> None:
-        self.G.nodes[node_data["index"]].update(node_data)
+        self.G.nodes[node_data.index].update(node_data)
 
     def add_edge(self, source_index: int, target_index: int) -> None:
         self.G.add_edge(source_index, target_index)
@@ -64,20 +64,41 @@ class ChangingGraph:
     def get_node(self, index: int) -> NodeData:
         node = self.G.nodes()[index]
         if node["node_type"] == "solution":
-            return {
-                "index": node["index"],
-                "node_type": node["node_type"],
-                "status": node["status"],
-                "instruction": node["instruction"],
-                "edits": node["edits"],
-            }
+            return SolutionNode(
+                index=node["index"],
+                node_type=node["node_type"],
+                status=node["status"],
+                instruction=node["instruction"],
+                edits=node["edits"],
+            )
         else:
-            return {
-                "index": node["index"],
-                "node_type": node["node_type"],
-                "status": node["status"],
-                "error": node["error"],
-            }
+            return ProblemNode(
+                index=node["index"],
+                node_type=node["node_type"],
+                status=node["status"],
+                error=node["error"],
+            )
+
+    def get_problem_node(self, index: int) -> ProblemNode:
+        node = self.G.nodes()[index]
+        assert node["node_type"] == "problem"
+        return ProblemNode(
+            index=node["index"],
+            node_type=node["node_type"],
+            status=node["status"],
+            error=node["error"],
+        )
+
+    def get_solution_node(self, index: int) -> SolutionNode:
+        node = self.G.nodes()[index]
+        assert node["node_type"] == "solution"
+        return SolutionNode(
+            index=node["index"],
+            node_type=node["node_type"],
+            status=node["status"],
+            instruction=node["instruction"],
+            edits=node["edits"],
+        )
 
     def mark_node_as(self, node_index: int, status: NodeStatus) -> None:
         self.G.nodes()[node_index]["status"] = status
@@ -126,7 +147,7 @@ class ChangingGraph:
 
     def get_all_pending_problem_nodes(self) -> list[ProblemNode]:
         return [
-            node
+            self.get_problem_node(index)
             for index, node in self.G.nodes(data=True)
             if node["node_type"] == "problem" and node["status"] == "pending"
         ]
@@ -136,7 +157,7 @@ class ChangingGraph:
 
     def get_failed_solution_to_problem(self, node_index: int) -> list[SolutionNode]:
         problem_node = self.get_node(node_index)
-        assert problem_node["node_type"] == "problem"
+        assert problem_node.node_type == "problem"
         failed_successors: list[SolutionNode] = [
             self.get_node(node_index)  # type: ignore
             for node_index in self.G.successors(node_index)
@@ -195,14 +216,14 @@ class ChangingGraph:
         self,
         error_node: ErrorProblemNode,
     ) -> None:
-        node = self.get_node(error_node["index"])
-        assert node["node_type"] == "problem"
-        self.G.nodes[error_node["index"]].update(error_node)
+        node = self.get_node(error_node.index)
+        assert node.node_type == "problem"
+        self.G.nodes[error_node.index].update(error_node)
 
     def error_on_solution_node(
         self,
         error_node: ErrorSolutionNode,
     ) -> None:
-        node = self.get_node(error_node["index"])
-        assert node["node_type"] == "solution"
-        self.G.nodes[error_node["index"]].update(error_node)
+        node = self.get_node(error_node.index)
+        assert node.node_type == "solution"
+        self.G.nodes[error_node.index].update(error_node)

@@ -13,6 +13,7 @@ from changing_dot.custom_types import (
     ErrorInitialization,
     InitialChange,
     Instruction,
+    ProblemNode,
     RestrictionOptions,
     ResumeInitialNode,
 )
@@ -227,12 +228,12 @@ def test_e2e() -> None:
         G,
         resume_DG,
         resume_initial_node.index,
-        {
-            "index": resume_initial_node.index,
-            "node_type": "problem",
-            "status": "pending",
-            "error": resume_initial_node.error,
-        },
+        ProblemNode(
+            index=resume_initial_node.index,
+            node_type="problem",
+            status="pending",
+            error=resume_initial_node.error,
+        ),
         resume_initial_node.new_instruction,
         resume_initial_node.new_edits,
         resume_error_manager,

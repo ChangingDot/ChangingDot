@@ -19,11 +19,10 @@ def apply_graph_changes(
     observer: Observer | None,
 ) -> None:
     for node_index in G.get_all_handled_solution_nodes():
-        node = G.get_node(node_index)
-        assert node["node_type"] == "solution"
+        node = G.get_solution_node(node_index)
         if observer:
-            observer.log(f"applying edits {node['edits']}")
-        modifyle.apply_change(DG, node["edits"])
+            observer.log(f"applying edits {node.edits}")
+        modifyle.apply_change(DG, node.edits)
 
 
 def run_apply_graph_changes(

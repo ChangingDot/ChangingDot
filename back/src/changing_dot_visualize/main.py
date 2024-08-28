@@ -4,7 +4,6 @@ from typing import Any
 import networkx as nx
 import vizro.models as vm
 import yaml
-from changing_dot.custom_types import NodeData
 from changing_dot.utils.process_pickle_files import process_pickle_files
 from dash import Input, Output, callback, html
 from vizro import Vizro
@@ -15,7 +14,7 @@ from changing_dot_visualize.node_presentation import NodePresentation
 from changing_dot_visualize.step_presentation import StepPresentation
 
 
-def get_node_color(node: NodeData) -> str:
+def get_node_color(node: Any) -> str:
     modifier = (
         "dark"
         if node["status"] == "pending"
