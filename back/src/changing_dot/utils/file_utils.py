@@ -15,6 +15,9 @@ def get_python_files(dir_to_explore: str) -> list[str]:
         dir_to_explore = os.path.dirname(dir_to_explore)
 
     python_files = glob.glob(os.path.join(dir_to_explore, "**", "*.py"), recursive=True)
+    pip_req_files = glob.glob(
+        os.path.join(dir_to_explore, "**", "requirements.txt"), recursive=True
+    )
 
     exclude_patterns = [
         os.path.sep + "__pycache__" + os.path.sep,
@@ -24,7 +27,7 @@ def get_python_files(dir_to_explore: str) -> list[str]:
     ]
 
     filtered_files = []
-    for file in python_files:
+    for file in python_files + pip_req_files:
         if not any(pattern in file for pattern in exclude_patterns):
             filtered_files.append(os.path.abspath(file))
 

@@ -3185,6 +3185,26 @@ files = [
 core = ["tree-sitter (>=0.21,<1.0)"]
 
 [[package]]
+name = "tree-sitter-requirements"
+version = "0.4.0"
+description = "pip requirements grammar for tree-sitter"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "tree-sitter-requirements-0.4.0.tar.gz", hash = "sha256:20a4bfc2812103e6c42b701676a9d6bec81d66f3e35597ca26a015580a481919"},
+    {file = "tree_sitter_requirements-0.4.0-cp39-abi3-macosx_10_9_x86_64.whl", hash = "sha256:4ae3c6f7a86b9ed4623839ac6579b9cfb6277dd83e035fdfbeb0ddfb87a3dfe9"},
+    {file = "tree_sitter_requirements-0.4.0-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:4326f442d3374892633a4bdc6d2c88713c897e6b7a3f544e0e5e3bb0f17af0e4"},
+    {file = "tree_sitter_requirements-0.4.0-cp39-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9914195a76490106d59a97a20e065978e445626e0f17bd5917440302f3bd8f60"},
+    {file = "tree_sitter_requirements-0.4.0-cp39-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7f81c6ed5dcbc8e26510fa664351eec27e89e8de0da3debdb88cc95304e155c1"},
+    {file = "tree_sitter_requirements-0.4.0-cp39-abi3-musllinux_1_1_aarch64.whl", hash = "sha256:6683ee65bb0804d79acbafa2b46a0bf9df081cb64b1329ec4e6092eb1e298b7f"},
+    {file = "tree_sitter_requirements-0.4.0-cp39-abi3-musllinux_1_1_x86_64.whl", hash = "sha256:15eecba225e461e096d02316bef9033ba06a355dc5de3ef88854b67dad6d1022"},
+    {file = "tree_sitter_requirements-0.4.0-cp39-abi3-win_amd64.whl", hash = "sha256:2f2db2f80f6181b54141f25832fab0826097669ba64fe39341aadf39c8480740"},
+]
+
+[package.extras]
+core = ["tree-sitter (>=0.22,<1.0)"]
+
+[[package]]
 name = "tree-sitter-xml"
 version = "0.6.4"
 description = "XML & DTD grammars for tree-sitter"
@@ -3625,4 +3645,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.4"
-content-hash = "ea3021e948c6c1fdd40cabb9eea31b50a308fdec59cb902a832cd7d1e825d65f"
+content-hash = "f98d65c222e43e5996d00b7efd889359cf789771425a2430d9ac415f559845e8"
