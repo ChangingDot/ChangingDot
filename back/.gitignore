@@ -33,3 +33,4 @@ src/scripts/manual_tests/
 dist/
 build/
 playground/
+temporary_env/

@@ -17,8 +17,8 @@ from changing_dot.custom_types import (
 )
 from changing_dot.optimize_graph import run_optimize_graph
 from changing_dot.resume_graph import run_resume_graph
-from changing_dot.utils.get_algorithm_language import get_language
 from changing_dot_visualize.main import visualize_graph
+from python_analyzer.temporary_venv_creator import create_temporary_venv
 
 from changing_dot_cli.setup_feedback_server import feedback_server
 
@@ -69,16 +69,31 @@ def create(config: str, local: bool, dev: bool) -> None:
     config_dict = get_config_dict(config)
     create_graph_input = CreateGraphInput(**config_dict, is_local=local)
 
-    language = get_language(create_graph_input.initial_change.file_path)
+    if create_graph_input.analyzer_options.language == "python":
+        with create_temporary_venv(
+            create_graph_input.analyzer_options.python_interpreter_path
+        ) as venv_path:
+            create_graph_input.analyzer_options.venv_path = venv_path
+            run_create_graph(
+                create_graph_input.iteration_name,
+                create_graph_input.project_name,
+                create_graph_input.goal,
+                create_graph_input.restriction_options,
+                create_graph_input.initial_change,
+                create_graph_input.analyzer_options,
+                create_graph_input.is_local,
+                create_graph_input.llm_provider,
+            )
+            return
 
-    if dev or language == "python":
+    if dev:
         run_create_graph(
             create_graph_input.iteration_name,
             create_graph_input.project_name,
             create_graph_input.goal,
-            create_graph_input.solution_path,
             create_graph_input.restriction_options,
             create_graph_input.initial_change,
+            create_graph_input.analyzer_options,
             create_graph_input.is_local,
             create_graph_input.llm_provider,
         )
@@ -89,9 +104,9 @@ def create(config: str, local: bool, dev: bool) -> None:
             create_graph_input.iteration_name,
             create_graph_input.project_name,
             create_graph_input.goal,
-            create_graph_input.solution_path,
             create_graph_input.restriction_options,
             create_graph_input.initial_change,
+            create_graph_input.analyzer_options,
             create_graph_input.is_local,
             create_graph_input.llm_provider,
         )
@@ -143,9 +158,8 @@ def apply_changes(config: str, local: bool) -> None:
     run_apply_graph_changes(
         apply_graph_changes_input.iteration_name,
         apply_graph_changes_input.project_name,
-        apply_graph_changes_input.solution_path,
         apply_graph_changes_input.base_path,
-        apply_graph_changes_input.initial_change.file_path,
+        apply_graph_changes_input.analyzer_options,
         local,
     )
 
@@ -172,19 +186,35 @@ def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
         **config_dict, is_local=local, resume_initial_node=resume_initial_node
     )
 
-    language = get_language(resume_graph_input.initial_change.file_path)
+    if resume_graph_input.analyzer_options.language == "python":
+        with create_temporary_venv(
+            resume_graph_input.analyzer_options.python_interpreter_path
+        ) as venv_path:
+            resume_graph_input.analyzer_options.venv_path = venv_path
+            run_resume_graph(
+                resume_graph_input.iteration_name,
+                resume_graph_input.project_name,
+                resume_graph_input.goal,
+                resume_graph_input.base_path,
+                resume_graph_input.commit,
+                resume_graph_input.restriction_options,
+                resume_graph_input.resume_initial_node,
+                resume_graph_input.analyzer_options,
+                resume_graph_input.llm_provider,
+                resume_graph_input.is_local,
+            )
+        return
 
-    if dev or language == "python":
+    if dev:
         run_resume_graph(
             resume_graph_input.iteration_name,
             resume_graph_input.project_name,
-            resume_graph_input.solution_path,
             resume_graph_input.goal,
             resume_graph_input.base_path,
             resume_graph_input.commit,
             resume_graph_input.restriction_options,
             resume_graph_input.resume_initial_node,
-            resume_graph_input.initial_change.file_path,
+            resume_graph_input.analyzer_options,
             resume_graph_input.llm_provider,
             resume_graph_input.is_local,
         )
@@ -194,13 +224,12 @@ def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
         run_resume_graph(
             resume_graph_input.iteration_name,
             resume_graph_input.project_name,
-            resume_graph_input.solution_path,
             resume_graph_input.goal,
             resume_graph_input.base_path,
             resume_graph_input.commit,
             resume_graph_input.restriction_options,
             resume_graph_input.resume_initial_node,
-            resume_graph_input.initial_change.file_path,
+            resume_graph_input.analyzer_options,
             resume_graph_input.llm_provider,
             resume_graph_input.is_local,
         )

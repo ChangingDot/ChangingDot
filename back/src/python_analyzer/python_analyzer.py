@@ -1,4 +1,6 @@
 import json
+import subprocess
+import sys
 
 import mypy.api
 from pydantic import BaseModel
@@ -15,12 +17,16 @@ class MypyOutput(BaseModel):
     semantic_errors: list[MypyError]
 
 
-def run_mypy(project_path: str) -> MypyOutput:
+def run_mypy(project_path: str, venv_path: str) -> MypyOutput:
+    python_executable_path = f"{venv_path}/bin/python"
+
     result_stdout, result_stderr, exit_status = mypy.api.run(
         [
             "--output=json",
             "--config-file",
             "./src/python_analyzer/setup.cfg",
+            "--python-executable",
+            python_executable_path,
             project_path,
         ]
     )
@@ -49,12 +55,29 @@ def run_mypy(project_path: str) -> MypyOutput:
 
 
 class MypyAnalyzer:
-    def __init__(self, project_path: str):
+    def __init__(self, project_path: str, venv_path: str, requirements_path: str):
         self.project_path = project_path
+        self.venv_path = venv_path
+        self.requirements_path = requirements_path
 
     def has_syntax_errors(self) -> bool:
-        return run_mypy(self.project_path).has_syntax_errors
+        return run_mypy(self.project_path, self.venv_path).has_syntax_errors
 
     def get_errors(self) -> list[MypyError]:
         assert not self.has_syntax_errors()
-        return run_mypy(self.project_path).semantic_errors
+        self.install_libs()
+        return run_mypy(self.project_path, self.venv_path).semantic_errors
+
+    def install_libs(self) -> None:
+        subprocess.run(
+            [
+                f"{self.venv_path}/bin/pip",
+                "install",
+                "-r",
+                self.requirements_path,
+            ],
+            stdin=sys.stdin,
+            stdout=sys.stdout,
+            stderr=sys.stderr,
+            check=True,
+        )
