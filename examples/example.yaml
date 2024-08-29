@@ -3,7 +3,8 @@ project_name: Level1
 
 goal: We want to simulate a private attribute changing name - change Length to Size
 
-solution_path: ./CustomChanges1.sln
+analyzer_options:
+  solution_path: ./CustomChanges1.sln
 
 base_path: ./outputs
 

@@ -125,11 +125,36 @@ class RestrictionOptions(BaseModel):
     project_blacklist: list[str] | None = None
 
 
+class MypyAnalyzerOptions(BaseModel):
+    name: Literal["mypy"] = "mypy"
+    language: Literal["python"] = "python"
+    folder_path: str
+    python_interpreter_path: str
+    requirements_path: str
+    venv_path: str | None = None
+
+    @field_validator("folder_path")
+    def validate_path(cls, value: str) -> str:
+        return validate_and_convert_path(value)
+
+
+class RoslynAnalyzerOptions(BaseModel):
+    name: Literal["roslyn"] = "roslyn"
+    language: Literal["c_sharp"] = "c_sharp"
+    solution_path: str
+
+    @field_validator("solution_path")
+    def validate_path(cls, value: str) -> str:
+        return validate_and_convert_path(value)
+
+
+AnalyzerOptions = MypyAnalyzerOptions | RoslynAnalyzerOptions
+
+
 class CreateGraphInput(BaseModel):
     iteration_name: str
     project_name: str
     goal: str
-    solution_path: str
     restriction_options: RestrictionOptions = Field(
         default=RestrictionOptions(
             project_blacklist=None,
@@ -138,12 +163,9 @@ class CreateGraphInput(BaseModel):
         )
     )
     initial_change: InitialChange
+    analyzer_options: AnalyzerOptions
     is_local: bool
     llm_provider: Literal["OPENAI", "MISTRAL"]
-
-    @field_validator("solution_path")
-    def validate_path(cls, value: str) -> str:
-        return validate_and_convert_path(value)
 
 
 class CommitGraphInput(BaseModel):
@@ -174,8 +196,8 @@ class ApplyGraphChangesInput(BaseModel):
     project_name: str
     solution_path: str
     base_path: str
-    initial_change: InitialChange
     is_local: bool
+    analyzer_options: AnalyzerOptions
 
     @field_validator("base_path")
     def validate_path(cls, value: str) -> str:
@@ -194,7 +216,6 @@ class ResumeGraphInput(BaseModel):
     iteration_name: str
     project_name: str
     goal: str
-    solution_path: str
     base_path: str
     commit: Commit
     initial_change: InitialChange
@@ -206,9 +227,10 @@ class ResumeGraphInput(BaseModel):
         )
     )
     resume_initial_node: ResumeInitialNode
+    analyzer_options: AnalyzerOptions
     is_local: bool
     llm_provider: Literal["OPENAI", "MISTRAL"]
 
-    @field_validator("solution_path", "base_path")
+    @field_validator("base_path")
     def validate_path(cls, value: str) -> str:
         return validate_and_convert_path(value)

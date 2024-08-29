@@ -5,6 +5,7 @@ from changing_dot_visualize.observer import Observer
 
 from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.custom_types import (
+    AnalyzerOptions,
     CompileError,
     ErrorInitialization,
     InitialChange,
@@ -31,7 +32,6 @@ from changing_dot.instruction_manager.block_instruction_manager.block_instructio
     create_instruction_manager,
 )
 from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
-from changing_dot.utils.get_algorithm_language import get_language
 
 if TYPE_CHECKING:
     from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
@@ -43,9 +43,9 @@ def run_create_graph(
     iteration_name: str,
     project_name: str,
     goal: str,
-    solution_path: str,
     restriction_options: RestrictionOptions,
     initial_change: InitialChange,
+    analyzer_options: AnalyzerOptions,
     is_local: bool,
     llm_provider: Literal["OPENAI", "MISTRAL"],
 ) -> None:
@@ -55,19 +55,30 @@ def run_create_graph(
         goal, llm_provider
     )
 
-    language = get_language(initial_change.file_path)
-
     error_manager: IErrorManager
-    if language == "python":
-        error_manager = MypyErrorManager(solution_path, restriction_options)
-    elif language == "c_sharp":
-        error_manager = RoslynErrorManager(solution_path, restriction_options)
+    folder_to_analyse: str
+    if analyzer_options.name == "mypy":
+        assert analyzer_options.venv_path is not None
+        error_manager = MypyErrorManager(
+            analyzer_options.folder_path,
+            analyzer_options.venv_path,
+            analyzer_options.requirements_path,
+            restriction_options,
+        )
+        folder_to_analyse = analyzer_options.folder_path
+    if analyzer_options.name == "roslyn":
+        error_manager = RoslynErrorManager(
+            analyzer_options.solution_path, restriction_options
+        )
+        folder_to_analyse = analyzer_options.solution_path
 
     file_modifier: IModifyle = IntegralModifyle()
 
     G = ChangingGraph()
 
-    DG = create_dependency_graph_from_folder(solution_path, language)
+    DG = create_dependency_graph_from_folder(
+        folder_to_analyse, analyzer_options.language
+    )
 
     observer = Observer(
         G,
@@ -113,6 +124,7 @@ def create_graph(
     if initialization.init_type == "error":
         # Check we are in a correct state
         compile_errors = error_manager.get_compile_errors(observer)
+        print("toto", compile_errors)
         assert len(compile_errors) == 0
 
         G.add_problem_node(

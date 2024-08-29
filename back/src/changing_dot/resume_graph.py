@@ -6,12 +6,15 @@ from changing_dot_visualize.observer import Observer
 from changing_dot.changing_graph.changing_graph import ChangingGraph
 from changing_dot.commit.reset_repo import set_repo
 from changing_dot.custom_types import (
+    AnalyzerOptions,
     Commit,
     ProblemNode,
     RestrictionOptions,
     ResumeInitialNode,
 )
-from changing_dot.dependency_graph.dependency_graph import DependencyGraph
+from changing_dot.dependency_graph.dependency_graph import (
+    create_dependency_graph_from_folder,
+)
 from changing_dot.error_manager.mypy_error_manager import MypyErrorManager
 from changing_dot.error_manager.roslyn_error_manager import (
     RoslynErrorManager,
@@ -24,8 +27,6 @@ from changing_dot.instruction_manager.block_instruction_manager.block_instructio
     create_instruction_manager,
 )
 from changing_dot.modifyle.modifyle import IntegralModifyle
-from changing_dot.utils.file_utils import get_csharp_files
-from changing_dot.utils.get_algorithm_language import get_language
 from changing_dot.utils.process_pickle_files import process_pickle_files
 
 if TYPE_CHECKING:
@@ -36,13 +37,12 @@ if TYPE_CHECKING:
 def run_resume_graph(
     iteration_name: str,
     project_name: str,
-    solution_path: str,
     goal: str,
     base_path: str,
     commit: Commit,
     restriction_options: RestrictionOptions,
     resume_initial_node: ResumeInitialNode,
-    initial_change_file: str,
+    analyzer_options: AnalyzerOptions,
     llm_provider: Literal["OPENAI", "MISTRAL"],
     is_local: bool = True,
 ) -> None:
@@ -54,19 +54,30 @@ def run_resume_graph(
 
     graphs = process_pickle_files(f"{base_path}/{iteration_name}/", is_local)
 
-    language = get_language(initial_change_file)
-
     error_manager: IErrorManager
-    if language == "python":
-        error_manager = MypyErrorManager(solution_path, restriction_options)
-    elif language == "c_sharp":
-        error_manager = RoslynErrorManager(solution_path, restriction_options)
+    folder_to_analyse: str
+    if analyzer_options.name == "mypy":
+        assert analyzer_options.venv_path is not None
+        error_manager = MypyErrorManager(
+            analyzer_options.folder_path,
+            analyzer_options.venv_path,
+            analyzer_options.requirements_path,
+            restriction_options,
+        )
+        folder_to_analyse = analyzer_options.folder_path
+    if analyzer_options.name == "roslyn":
+        error_manager = RoslynErrorManager(
+            analyzer_options.solution_path, restriction_options
+        )
+        folder_to_analyse = analyzer_options.solution_path
 
     file_modifier: IModifyle = IntegralModifyle()
 
     G = ChangingGraph(graphs[-1])
 
-    DG = DependencyGraph(get_csharp_files(solution_path))
+    DG = create_dependency_graph_from_folder(
+        folder_to_analyse, analyzer_options.language
+    )
 
     observer = Observer(
         G,
