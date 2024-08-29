@@ -41,6 +41,19 @@ class PythonMatcher(ILanguageMatcher):
         return ast_node.type in python_node_type_to_terminal[node_type]
 
 
+pip_req_node_type_to_terminal: NodeTypeToTerminal = {
+    "Class": [],
+    "Method": ["requirement"],
+    "Field": [],
+    "Import": [],
+}
+
+
+class PipReqMatcher(ILanguageMatcher):
+    def match_class(self, node_type: DependencyGraphNodeType, ast_node: Node) -> bool:
+        return ast_node.type in pip_req_node_type_to_terminal[node_type]
+
+
 class XmlMatcher(ILanguageMatcher):
     def match_class(self, node_type: DependencyGraphNodeType, ast_node: Node) -> bool:
         if node_type != "Method":

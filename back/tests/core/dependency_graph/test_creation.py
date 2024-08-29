@@ -422,6 +422,22 @@ def test_xml_csproj_files() -> None:
     assert len(graph.get_parent_child_relationships()) == 37 + 6
 
 
+def test_pip_requirements_files() -> None:
+    graph = DependencyGraph([get_fixture_path("requirements.txt")])
+    # for now each element is a method
+    assert graph.get_nodes_with_index() == [
+        DependencyGraphNodeWithIndex(
+            index=0,
+            node_type="Method",
+            file_path=get_fixture_path("requirements.txt"),
+            start_point=(0, 0),
+            end_point=(0, 17),
+            text="pydantic==1.10.18",
+        )
+    ]
+    assert len(graph.get_parent_child_relationships()) == 0
+
+
 def test_csproj_files() -> None:
     graph = DependencyGraph([get_fixture_path("small.csproj")])
     # for now each element is a method
