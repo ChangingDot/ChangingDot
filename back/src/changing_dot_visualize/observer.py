@@ -30,7 +30,7 @@ class Observer:
         iteration_name: str,
         project_name: str,
         job_id: str,
-        output_folder: str = "./outputs",
+        output_folder: str,
         step: int | None = None,
     ):
         self.G = G

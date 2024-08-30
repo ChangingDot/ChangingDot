@@ -41,6 +41,7 @@ def run_apply_graph_changes(
         iteration_name,
         project_name,
         job_id=job_id,
+        output_folder=base_path,
         step=len(graphs),
     )
 
