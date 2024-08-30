@@ -45,7 +45,6 @@ def createPage(
     iteration_name: str,
     project_name: str,
     base_path: str,
-    is_local: bool,
 ) -> vm.Page:
     @callback(
         Output(f"node_presentation_text_{step_index}", "children"),
@@ -96,7 +95,6 @@ def createPage(
                 iteration_name=iteration_name,
                 base_path=base_path,
                 step_index=step_index,
-                is_local=is_local,
             ),
             NodePresentation(
                 id=f"{step_index}_node",
@@ -104,22 +102,21 @@ def createPage(
                 iteration_name=iteration_name,
                 base_path=base_path,
                 step_index=step_index,
-                is_local=is_local,
             ),
         ],
         controls=[],
     )
 
 
-def visualize_graph(config: dict[str, Any], is_local: bool) -> None:
+def visualize_graph(config: dict[str, Any]) -> None:
     iteration_name = config["iteration_name"]
     project_name = config["project_name"]
     base_path = config["base_path"]
 
-    graphs = process_pickle_files(f"{base_path}/{iteration_name}", is_local)
+    graphs = process_pickle_files(f"{base_path}/{iteration_name}")
 
     pages = [
-        createPage(G, i, iteration_name, project_name, base_path, is_local)
+        createPage(G, i, iteration_name, project_name, base_path)
         for i, G in enumerate(graphs)
     ]
 
@@ -145,4 +142,4 @@ if __name__ == "__main__":
     with open(args.config_file_path) as file:
         config = yaml.safe_load(file)
 
-    visualize_graph(config, True)
+    visualize_graph(config)

@@ -79,11 +79,10 @@ def run_commit_graph(
     project_name: str,
     commit: Commit,
     base_path: str,
-    is_local: bool,
 ) -> None:
     job_id = str(uuid.uuid4())
 
-    graphs = process_pickle_files(f"{base_path}/{iteration_name}/", is_local)
+    graphs = process_pickle_files(f"{base_path}/{iteration_name}/")
 
     file_modifier: IModifyle = IntegralModifyle()
 
@@ -95,7 +94,6 @@ def run_commit_graph(
         project_name,
         job_id=job_id,
         step=len(graphs),
-        is_local=is_local,
     )
 
     conflict_handler = create_openai_conflict_handler()
@@ -103,11 +101,10 @@ def run_commit_graph(
     commit_graph(G, file_modifier, observer, conflict_handler, commit)
 
 
-def run_commit_graph_from_config(config: dict[str, Any], is_local: bool) -> None:
+def run_commit_graph_from_config(config: dict[str, Any]) -> None:
     run_commit_graph(
         config["iteration_name"],
         config["project_name"],
         config["commit"],
         config["base_path"],
-        is_local,
     )

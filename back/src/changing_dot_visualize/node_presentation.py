@@ -15,7 +15,6 @@ class NodePresentation(vm.VizroBaseModel):
     project_name: str
     step_index: int
     base_path: str
-    is_local: bool
 
     def build(self) -> html.Div:
         G = self.load_graph()
@@ -37,9 +36,6 @@ class NodePresentation(vm.VizroBaseModel):
 
     def load_graph(self) -> nx.Graph:
         file_path = f"{self.base_path}/{self.iteration_name}/{self.step_index}_{self.project_name}.pickle"
-        if self.is_local:
-            with open(file_path, "rb") as handle:
-                G: nx.Graph = pickle.load(handle)
-                return G
-        else:
-            raise NotImplementedError("Remote not yet implemented")
+        with open(file_path, "rb") as handle:
+            G: nx.Graph = pickle.load(handle)
+            return G

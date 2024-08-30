@@ -47,7 +47,6 @@ def run_create_graph(
     restriction_options: RestrictionOptions,
     initial_change: InitialChange,
     analyzer_options: AnalyzerOptions,
-    is_local: bool,
     llm_provider: Literal["OPENAI", "MISTRAL"],
 ) -> None:
     job_id = str(uuid.uuid4())
@@ -84,7 +83,6 @@ def run_create_graph(
         iteration_name,
         project_name,
         job_id,
-        is_local=is_local,
     )
 
     interpreter = create_instruction_interpreter(observer, llm_provider)

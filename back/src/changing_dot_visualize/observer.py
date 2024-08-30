@@ -19,7 +19,6 @@ class Observer:
     G: ChangingGraph
     iteration_name: str
     project_name: str
-    is_local: bool
 
     step: int
 
@@ -32,14 +31,12 @@ class Observer:
         project_name: str,
         job_id: str,
         output_folder: str = "./outputs",
-        is_local: bool = True,
         step: int | None = None,
     ):
         self.G = G
         self.iteration_name = iteration_name
         self.project_name = project_name
-        self.is_local = is_local
-        self.output_folder = output_folder if is_local else ""
+        self.output_folder = output_folder
         self.logs = []
         if step is None:
             step = 0
@@ -48,15 +45,10 @@ class Observer:
         self.logger = logger.bind(request_id=job_id)
 
     def save_graph_state(self) -> None:
-        if not self.is_local:
-            raise NotImplementedError("Remote not yet implemented")
-
         # Create the path for the file in GCS
         path = f"{self.output_folder}/{self.iteration_name}/{self.step}_{self.project_name}.pickle"
 
-        # Ensure directory exists (optional, for local operations, not required for GCS)
-        if self.is_local:
-            ensure_directory_exists(path)
+        ensure_directory_exists(path)
 
         # Adding attribute to underlying nx graph
         self.G.G.graph["step_logs"] = self.logs
@@ -64,16 +56,13 @@ class Observer:
         # Serialize the graph object to a bytes object
         pickle_data = pickle.dumps(self.G.G, protocol=pickle.HIGHEST_PROTOCOL)
 
-        if self.is_local:
-            with open(path, "wb") as file:
-                file.write(pickle_data)
+        with open(path, "wb") as file:
+            file.write(pickle_data)
 
         # Increment step and reset logs
         self.step += 1
         self.logs = []
-        self.logger.info(
-            f"Saved state to {'local' if self.is_local else 'GCS'} at {path}"
-        )
+        self.logger.info(f"Saved state at {path}")
 
     def log(self, log: str) -> None:
         self.logger.info(log)
