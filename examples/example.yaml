@@ -16,5 +16,6 @@ initial_change:
 commit:
   branch_name: changing_branch
   git_path: ./
+  repo_url: git@github.com:ChangingDot/ChangingLevels.git
 
 llm_provider: MISTRAL
