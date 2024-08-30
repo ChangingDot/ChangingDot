@@ -179,17 +179,6 @@ class CommitGraphInput(BaseModel):
         return validate_and_convert_path(value)
 
 
-class OptimizeGraphInput(BaseModel):
-    iteration_name: str
-    project_name: str
-    base_path: str
-    is_local: bool
-
-    @field_validator("base_path")
-    def validate_path(cls, value: str) -> str:
-        return validate_and_convert_path(value)
-
-
 class ApplyGraphChangesInput(BaseModel):
     iteration_name: str
     project_name: str

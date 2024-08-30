@@ -29,7 +29,6 @@ from changing_dot.instruction_manager.hard_coded_instruction_manager import (
     HardCodedInstructionManager,
 )
 from changing_dot.modifyle.modifyle import IntegralModifyle
-from changing_dot.optimize_graph import optimize_graph
 from changing_dot.utils.text_functions import read_text, write_text
 from changing_dot_visualize.observer import Observer
 
@@ -142,9 +141,9 @@ def test_e2e() -> None:
         if os.path.isfile(os.path.join(expected_directory_path, f))
     ]
 
-    assert len(files) == 1
+    assert len(files) == 2
 
-    expected_file_path = "./outputs/tmp/0_test.pickle"
+    expected_file_path = "./outputs/tmp/1_test.pickle"
 
     with open(expected_file_path, "rb") as pickle_file:
         data = pickle.load(pickle_file)
@@ -174,31 +173,6 @@ def test_e2e() -> None:
             "./tests/core/fixtures/base.cs",
         ),
     )
-
-    ### Optimize Graph
-
-    optimize_graph(G, observer)
-
-    ### assert
-
-    expected_directory_path = "./outputs/tmp"
-
-    files = [
-        f
-        for f in os.listdir(expected_directory_path)
-        if os.path.isfile(os.path.join(expected_directory_path, f))
-    ]
-
-    assert len(files) == 2  # add a new optimize step
-
-    expected_file_path = "./outputs/tmp/1_test.pickle"
-
-    with open(expected_file_path, "rb") as pickle_file:
-        data = pickle.load(pickle_file)
-        data_graph = ChangingGraph(data)
-        assert (
-            data_graph.get_number_of_nodes() == 3
-        )  # Same as before since nothing is optimized
 
     # ### Resume graph
 

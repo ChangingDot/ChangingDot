@@ -4,7 +4,6 @@ import os
 from changing_dot.custom_types import (
     ApplyGraphChangesInput,
     CreateGraphInput,
-    OptimizeGraphInput,
     ResumeGraphInput,
     ResumeInitialNode,
 )
@@ -17,7 +16,6 @@ def test_example_configs() -> None:
         config_path = os.path.join(example_config_path, file_name)
         config_dict = get_config_dict(config_path)
         _create_graph_input = CreateGraphInput(**config_dict, is_local=True)
-        _optimize_graph_input = OptimizeGraphInput(**config_dict, is_local=True)
         _apply_graph_changes_input = ApplyGraphChangesInput(
             **config_dict, is_local=True
         )
