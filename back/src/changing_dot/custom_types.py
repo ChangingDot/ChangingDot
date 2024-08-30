@@ -131,7 +131,6 @@ class MypyAnalyzerOptions(BaseModel):
     folder_path: str
     python_interpreter_path: str
     requirements_path: str
-    venv_path: str | None = None
 
     @field_validator("folder_path")
     def validate_path(cls, value: str) -> str:
