@@ -19,8 +19,6 @@ def create_temporary_venv(python_interpreter_path: str) -> Iterator[str]:
         check=True,
     )
 
-    print(f"Virtual environment created at {venv_path}")
-
     yield venv_path
 
     shutil.rmtree(tmpdir)
