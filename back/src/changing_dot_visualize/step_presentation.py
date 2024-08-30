@@ -11,7 +11,7 @@ class StepPresentation(vm.VizroBaseModel):
     iteration_name: str
     project_name: str
     step_index: int
-    base_path: str
+    output_path: str
 
     def build(self) -> html.Div:
         G = self.load_graph()
@@ -34,7 +34,7 @@ class StepPresentation(vm.VizroBaseModel):
         )
 
     def load_graph(self) -> nx.Graph:
-        file_path = f"{self.base_path}/{self.iteration_name}/{self.step_index}_{self.project_name}.pickle"
+        file_path = f"{self.output_path}/{self.iteration_name}/{self.step_index}_{self.project_name}.pickle"
         with open(file_path, "rb") as handle:
             G: nx.Graph = pickle.load(handle)
             return G

@@ -156,7 +156,7 @@ class CreateGraphInput(BaseModel):
     iteration_name: str
     project_name: str
     goal: str
-    base_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
+    output_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     restriction_options: RestrictionOptions = Field(
         default=RestrictionOptions(
             project_blacklist=None,
@@ -168,7 +168,7 @@ class CreateGraphInput(BaseModel):
     analyzer_options: AnalyzerOptions
     llm_provider: Literal["OPENAI", "MISTRAL"]
 
-    @field_validator("base_path")
+    @field_validator("output_path")
     def validate_path(cls, value: str) -> str:
         return validate_and_convert_path(value)
 
@@ -176,10 +176,10 @@ class CreateGraphInput(BaseModel):
 class CommitGraphInput(BaseModel):
     iteration_name: str
     project_name: str
-    base_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
+    output_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     commit: Commit
 
-    @field_validator("base_path")
+    @field_validator("output_path")
     def validate_path(cls, value: str) -> str:
         return validate_and_convert_path(value)
 
@@ -187,10 +187,10 @@ class CommitGraphInput(BaseModel):
 class ApplyGraphChangesInput(BaseModel):
     iteration_name: str
     project_name: str
-    base_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
+    output_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     analyzer_options: AnalyzerOptions
 
-    @field_validator("base_path")
+    @field_validator("output_path")
     def validate_path(cls, value: str) -> str:
         return validate_and_convert_path(value)
 
@@ -207,7 +207,7 @@ class ResumeGraphInput(BaseModel):
     iteration_name: str
     project_name: str
     goal: str
-    base_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
+    output_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     commit: Commit
     initial_change: InitialChange
     restriction_options: RestrictionOptions = Field(
@@ -221,6 +221,6 @@ class ResumeGraphInput(BaseModel):
     analyzer_options: AnalyzerOptions
     llm_provider: Literal["OPENAI", "MISTRAL"]
 
-    @field_validator("base_path")
+    @field_validator("output_path")
     def validate_path(cls, value: str) -> str:
         return validate_and_convert_path(value)

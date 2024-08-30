@@ -39,7 +39,7 @@ def run_resume_graph(
     iteration_name: str,
     project_name: str,
     goal: str,
-    base_path: str,
+    output_path: str,
     commit: Commit,
     restriction_options: RestrictionOptions,
     resume_initial_node: ResumeInitialNode,
@@ -52,7 +52,7 @@ def run_resume_graph(
 
     instruction_manager = create_instruction_manager(goal, llm_provider)
 
-    graphs = process_pickle_files(f"{base_path}/{iteration_name}/")
+    graphs = process_pickle_files(f"{output_path}/{iteration_name}/")
 
     error_manager: IErrorManager
     folder_to_analyse: str
@@ -82,7 +82,7 @@ def run_resume_graph(
         iteration_name,
         project_name,
         job_id=job_id,
-        output_folder=base_path,
+        output_folder=output_path,
         step=len(graphs),
     )
 
