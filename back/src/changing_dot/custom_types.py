@@ -163,7 +163,6 @@ class CreateGraphInput(BaseModel):
     )
     initial_change: InitialChange
     analyzer_options: AnalyzerOptions
-    is_local: bool
     llm_provider: Literal["OPENAI", "MISTRAL"]
 
 
@@ -172,7 +171,6 @@ class CommitGraphInput(BaseModel):
     project_name: str
     base_path: str
     commit: Commit
-    is_local: bool
 
     @field_validator("base_path")
     def validate_path(cls, value: str) -> str:
@@ -183,7 +181,6 @@ class ApplyGraphChangesInput(BaseModel):
     iteration_name: str
     project_name: str
     base_path: str
-    is_local: bool
     analyzer_options: AnalyzerOptions
 
     @field_validator("base_path")
@@ -215,7 +212,6 @@ class ResumeGraphInput(BaseModel):
     )
     resume_initial_node: ResumeInitialNode
     analyzer_options: AnalyzerOptions
-    is_local: bool
     llm_provider: Literal["OPENAI", "MISTRAL"]
 
     @field_validator("base_path")

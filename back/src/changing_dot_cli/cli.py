@@ -61,11 +61,10 @@ def cdot() -> None:
     prompt="Path to yaml config file",
     help="Path to yaml config file.",
 )
-@click.option("--local/--remote", default=True)
 @click.option("--dev", is_flag=True, default=False)
-def create(config: str, local: bool, dev: bool) -> None:
+def create(config: str, dev: bool) -> None:
     config_dict = get_config_dict(config)
-    create_graph_input = CreateGraphInput(**config_dict, is_local=local)
+    create_graph_input = CreateGraphInput(**config_dict)
 
     if create_graph_input.analyzer_options.language == "python":
         with create_temporary_venv(
@@ -78,7 +77,6 @@ def create(config: str, local: bool, dev: bool) -> None:
                 create_graph_input.restriction_options,
                 create_graph_input.initial_change,
                 create_graph_input.analyzer_options,
-                create_graph_input.is_local,
                 create_graph_input.llm_provider,
             )
             return
@@ -91,7 +89,6 @@ def create(config: str, local: bool, dev: bool) -> None:
             create_graph_input.restriction_options,
             create_graph_input.initial_change,
             create_graph_input.analyzer_options,
-            create_graph_input.is_local,
             create_graph_input.llm_provider,
         )
         return
@@ -104,7 +101,6 @@ def create(config: str, local: bool, dev: bool) -> None:
             create_graph_input.restriction_options,
             create_graph_input.initial_change,
             create_graph_input.analyzer_options,
-            create_graph_input.is_local,
             create_graph_input.llm_provider,
         )
 
@@ -116,10 +112,9 @@ def create(config: str, local: bool, dev: bool) -> None:
     prompt="Path to yaml config file",
     help="Path to yaml config file.",
 )
-@click.option("--local/--remote", default=True)
-def visualize(config: str, local: bool) -> None:
+def visualize(config: str) -> None:
     config_dict = get_config_dict(config)
-    visualize_graph(config_dict, local)
+    visualize_graph(config_dict)
 
 
 @cdot.command()
@@ -129,16 +124,14 @@ def visualize(config: str, local: bool) -> None:
     prompt="Path to yaml config file",
     help="Path to yaml config file.",
 )
-@click.option("--local/--remote", default=True)
-def apply_changes(config: str, local: bool) -> None:
+def apply_changes(config: str) -> None:
     config_dict = get_config_dict(config)
-    apply_graph_changes_input = ApplyGraphChangesInput(**config_dict, is_local=local)
+    apply_graph_changes_input = ApplyGraphChangesInput(**config_dict)
     run_apply_graph_changes(
         apply_graph_changes_input.iteration_name,
         apply_graph_changes_input.project_name,
         apply_graph_changes_input.base_path,
         apply_graph_changes_input.analyzer_options,
-        local,
     )
 
 
@@ -149,7 +142,6 @@ def apply_changes(config: str, local: bool) -> None:
     prompt="Path to yaml config file",
     help="Path to yaml config file.",
 )
-@click.option("--local/--remote", default=True)
 @click.option(
     "--resume-node",
     "-r",
@@ -157,11 +149,11 @@ def apply_changes(config: str, local: bool) -> None:
     help="Node from where you want to resume",
 )
 @click.option("--dev", is_flag=True, default=False)
-def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
+def resume(config: str, resume_node: str, dev: bool) -> None:
     config_dict = get_config_dict(config)
     resume_initial_node = ResumeInitialNode(**json.loads(resume_node))
     resume_graph_input = ResumeGraphInput(
-        **config_dict, is_local=local, resume_initial_node=resume_initial_node
+        **config_dict, resume_initial_node=resume_initial_node
     )
 
     if resume_graph_input.analyzer_options.language == "python":
@@ -178,7 +170,6 @@ def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
                 resume_graph_input.resume_initial_node,
                 resume_graph_input.analyzer_options,
                 resume_graph_input.llm_provider,
-                resume_graph_input.is_local,
             )
         return
 
@@ -193,7 +184,6 @@ def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
             resume_graph_input.resume_initial_node,
             resume_graph_input.analyzer_options,
             resume_graph_input.llm_provider,
-            resume_graph_input.is_local,
         )
         return
 
@@ -208,7 +198,6 @@ def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
             resume_graph_input.resume_initial_node,
             resume_graph_input.analyzer_options,
             resume_graph_input.llm_provider,
-            resume_graph_input.is_local,
         )
 
 
@@ -219,10 +208,9 @@ def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
     prompt="Path to yaml config file",
     help="Path to yaml config file.",
 )
-@click.option("--local/--remote", default=True)
-def commit(config: str, local: bool) -> None:
+def commit(config: str) -> None:
     config_dict = get_config_dict(config)
-    run_commit_graph_from_config(config_dict, local)
+    run_commit_graph_from_config(config_dict)
 
 
 if __name__ == "__main__":

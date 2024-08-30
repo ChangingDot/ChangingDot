@@ -30,10 +30,9 @@ def run_apply_graph_changes(
     project_name: str,
     base_path: str,
     analyzer_options: AnalyzerOptions,
-    is_local: bool,
 ) -> None:
     job_id = str(uuid.uuid4())
-    graphs = process_pickle_files(f"{base_path}/{iteration_name}/", is_local)
+    graphs = process_pickle_files(f"{base_path}/{iteration_name}/")
 
     G = ChangingGraph(graphs[-1])
 
@@ -43,7 +42,6 @@ def run_apply_graph_changes(
         project_name,
         job_id=job_id,
         step=len(graphs),
-        is_local=is_local,
     )
 
     file_modifier: IModifyle = IntegralModifyle()

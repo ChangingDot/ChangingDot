@@ -54,7 +54,6 @@ def test_e2e() -> None:
     job_id = "job_id"
     iteration_name = "tmp"
     project_name = "test"
-    is_local = True
     initial_change = InitialChange(
         error="DistincId does not exist",
         file_path="./tests/core/fixtures/e2e/base.cs",
@@ -109,7 +108,6 @@ def test_e2e() -> None:
         iteration_name,
         project_name,
         job_id,
-        is_local=is_local,
     )
 
     initialisation = ErrorInitialization(

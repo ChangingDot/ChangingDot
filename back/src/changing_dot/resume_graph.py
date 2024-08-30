@@ -45,7 +45,6 @@ def run_resume_graph(
     resume_initial_node: ResumeInitialNode,
     analyzer_options: AnalyzerOptions,
     llm_provider: Literal["OPENAI", "MISTRAL"],
-    is_local: bool = True,
 ) -> None:
     set_repo(commit)
 
@@ -53,7 +52,7 @@ def run_resume_graph(
 
     instruction_manager = create_instruction_manager(goal, llm_provider)
 
-    graphs = process_pickle_files(f"{base_path}/{iteration_name}/", is_local)
+    graphs = process_pickle_files(f"{base_path}/{iteration_name}/")
 
     error_manager: IErrorManager
     folder_to_analyse: str
@@ -83,7 +82,6 @@ def run_resume_graph(
         iteration_name,
         project_name,
         job_id=job_id,
-        is_local=is_local,
         step=len(graphs),
     )
 
