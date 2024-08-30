@@ -8,6 +8,7 @@ from time import sleep
 
 import click
 import requests
+from changing_dot.config.constants import CDOT_PATH
 
 FEEDBACK_SERVER_VERSION = "v0.0.1-alpha"
 
@@ -75,9 +76,8 @@ def extract_zip(zip_path: str, extract_to: str) -> None:
 
 
 def setup_binary_if_not_found() -> str:
-    path = "~/.cdot/bin"
+    binary_dir = os.path.join(CDOT_PATH, "bin")
 
-    binary_dir = os.path.expanduser(path)
     os.makedirs(binary_dir, exist_ok=True)
 
     specific_os_folder_name = get_platform_slug()
