@@ -1,9 +1,22 @@
+import difflib
 import json
 
 import networkx as nx
 from dash import dcc, html
 
 from changing_dot_visualize.utils import convert_to_dict
+
+
+def get_diff_from_before_after(before: str, after: str) -> str:
+    return "\n".join(
+        difflib.unified_diff(
+            before.splitlines(),
+            after.splitlines(),
+            lineterm="",
+            fromfile="before",
+            tofile="after",
+        )
+    )
 
 
 def get_text_from_graph(G: nx.Graph, i: int) -> html:
@@ -86,7 +99,17 @@ def get_text_from_graph(G: nx.Graph, i: int) -> html:
                                 [
                                     html.P(f" - {key} : {value}")
                                     for key, value in edit.items()
+                                    if key != "before" and key != "after"
                                 ]
+                            )
+                            for edit in node["edits"]
+                        ],
+                        *[
+                            html.Div(
+                                get_diff_from_before_after(
+                                    edit["before"], edit["after"]
+                                ),
+                                style={"whiteSpace": "pre-line"},
                             )
                             for edit in node["edits"]
                         ],
