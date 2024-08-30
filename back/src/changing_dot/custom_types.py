@@ -3,6 +3,8 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator
 
+from changing_dot.config.constants import CDOT_PATH
+
 
 def validate_and_convert_path(value: Any) -> str:
     if not isinstance(value, str):
@@ -154,6 +156,7 @@ class CreateGraphInput(BaseModel):
     iteration_name: str
     project_name: str
     goal: str
+    base_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     restriction_options: RestrictionOptions = Field(
         default=RestrictionOptions(
             project_blacklist=None,
@@ -165,11 +168,15 @@ class CreateGraphInput(BaseModel):
     analyzer_options: AnalyzerOptions
     llm_provider: Literal["OPENAI", "MISTRAL"]
 
+    @field_validator("base_path")
+    def validate_path(cls, value: str) -> str:
+        return validate_and_convert_path(value)
+
 
 class CommitGraphInput(BaseModel):
     iteration_name: str
     project_name: str
-    base_path: str
+    base_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     commit: Commit
 
     @field_validator("base_path")
@@ -180,7 +187,7 @@ class CommitGraphInput(BaseModel):
 class ApplyGraphChangesInput(BaseModel):
     iteration_name: str
     project_name: str
-    base_path: str
+    base_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     analyzer_options: AnalyzerOptions
 
     @field_validator("base_path")
@@ -200,7 +207,7 @@ class ResumeGraphInput(BaseModel):
     iteration_name: str
     project_name: str
     goal: str
-    base_path: str
+    base_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     commit: Commit
     initial_change: InitialChange
     restriction_options: RestrictionOptions = Field(

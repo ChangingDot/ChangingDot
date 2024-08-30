@@ -44,6 +44,7 @@ def run_create_graph(
     iteration_name: str,
     project_name: str,
     goal: str,
+    base_path: str,
     restriction_options: RestrictionOptions,
     initial_change: InitialChange,
     analyzer_options: AnalyzerOptions,
@@ -83,6 +84,7 @@ def run_create_graph(
         iteration_name,
         project_name,
         job_id,
+        base_path,
     )
 
     interpreter = create_instruction_interpreter(observer, llm_provider)

@@ -6,8 +6,6 @@ goal: We want to simulate a private attribute changing name - change Length to S
 analyzer_options:
   solution_path: ./CustomChanges1.sln
 
-base_path: ./outputs
-
 initial_change:
   error: We want to simulate a private attribute changing name - change Length to Size
   file_path: ./Level1/Item.cs

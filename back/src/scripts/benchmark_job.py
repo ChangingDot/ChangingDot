@@ -78,7 +78,9 @@ def benchmark_job(
         with analytics.benchmark_item(benchmark_item) as current_benchmark_result:
             job_id = str(uuid.uuid4())
 
-            observer = Observer(G, analytics.run.name, benchmark_item, job_id)
+            observer = Observer(
+                G, analytics.run.name, benchmark_item, "./outputs", job_id
+            )
 
             interpreter: IBlockInstructionInterpreter = create_instruction_interpreter(
                 observer, llm_provider
