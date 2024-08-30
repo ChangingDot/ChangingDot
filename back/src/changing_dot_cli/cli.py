@@ -11,11 +11,9 @@ from changing_dot.create_graph import run_create_graph
 from changing_dot.custom_types import (
     ApplyGraphChangesInput,
     CreateGraphInput,
-    OptimizeGraphInput,
     ResumeGraphInput,
     ResumeInitialNode,
 )
-from changing_dot.optimize_graph import run_optimize_graph
 from changing_dot.resume_graph import run_resume_graph
 from changing_dot_visualize.main import visualize_graph
 from python_analyzer.temporary_venv_creator import create_temporary_venv
@@ -122,25 +120,6 @@ def create(config: str, local: bool, dev: bool) -> None:
 def visualize(config: str, local: bool) -> None:
     config_dict = get_config_dict(config)
     visualize_graph(config_dict, local)
-
-
-@cdot.command()
-@click.option(
-    "--config",
-    "-c",
-    prompt="Path to yaml config file",
-    help="Path to yaml config file.",
-)
-@click.option("--local/--remote", default=True)
-def optimize(config: str, local: bool) -> None:
-    config_dict = get_config_dict(config)
-    optimize_graph_input = OptimizeGraphInput(**config_dict, is_local=local)
-    run_optimize_graph(
-        optimize_graph_input.iteration_name,
-        optimize_graph_input.project_name,
-        optimize_graph_input.base_path,
-        local,
-    )
 
 
 @cdot.command()

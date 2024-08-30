@@ -27,6 +27,7 @@ from changing_dot.instruction_manager.block_instruction_manager.block_instructio
     create_instruction_manager,
 )
 from changing_dot.modifyle.modifyle import IntegralModifyle
+from changing_dot.optimize_graph import optimize_graph
 from changing_dot.utils.process_pickle_files import process_pickle_files
 
 if TYPE_CHECKING:
@@ -109,3 +110,7 @@ def run_resume_graph(
         observer,
         restriction_options,
     )
+
+    optimize_graph(G, observer)
+
+    observer.log("Finished")

@@ -32,6 +32,7 @@ from changing_dot.instruction_manager.block_instruction_manager.block_instructio
     create_instruction_manager,
 )
 from changing_dot.modifyle.modifyle import IModifyle, IntegralModifyle
+from changing_dot.optimize_graph import optimize_graph
 
 if TYPE_CHECKING:
     from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
@@ -161,5 +162,7 @@ def create_graph(
         pending_nodes = G.get_all_pending_nodes()
 
     file_modifier.revert_changes(DG)
+
+    optimize_graph(G, observer)
 
     observer.log("Finished")
