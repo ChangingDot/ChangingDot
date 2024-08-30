@@ -72,8 +72,7 @@ def create(config: str, local: bool, dev: bool) -> None:
     if create_graph_input.analyzer_options.language == "python":
         with create_temporary_venv(
             create_graph_input.analyzer_options.python_interpreter_path
-        ) as venv_path:
-            create_graph_input.analyzer_options.venv_path = venv_path
+        ):
             run_create_graph(
                 create_graph_input.iteration_name,
                 create_graph_input.project_name,
@@ -189,8 +188,7 @@ def resume(config: str, local: bool, resume_node: str, dev: bool) -> None:
     if resume_graph_input.analyzer_options.language == "python":
         with create_temporary_venv(
             resume_graph_input.analyzer_options.python_interpreter_path
-        ) as venv_path:
-            resume_graph_input.analyzer_options.venv_path = venv_path
+        ):
             run_resume_graph(
                 resume_graph_input.iteration_name,
                 resume_graph_input.project_name,

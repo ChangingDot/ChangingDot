@@ -58,10 +58,8 @@ def run_create_graph(
     error_manager: IErrorManager
     folder_to_analyse: str
     if analyzer_options.name == "mypy":
-        assert analyzer_options.venv_path is not None
         error_manager = MypyErrorManager(
             analyzer_options.folder_path,
-            analyzer_options.venv_path,
             analyzer_options.requirements_path,
             restriction_options,
         )

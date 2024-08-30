@@ -15,14 +15,12 @@ class MypyErrorManager(IErrorManager):
     def __init__(
         self,
         directory_path: str,
-        venv_path: str,
         requirements_path: str,
         restriction_options: RestrictionOptions,
     ) -> None:
         self.directory_path = directory_path
-        self.analyzer = MypyAnalyzer(directory_path, venv_path, requirements_path)
+        self.analyzer = MypyAnalyzer(directory_path, requirements_path)
         self.restriction_options = restriction_options
-        self.venv_path = venv_path
 
     def get_compile_errors(self, observer: Observer) -> list[CompileError]:
         mypy_errors = self.analyzer.get_errors()

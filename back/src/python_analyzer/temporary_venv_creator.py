@@ -5,10 +5,12 @@ import sys
 from collections.abc import Iterator
 from contextlib import contextmanager
 
+from changing_dot.config.constants import CDOT_PATH
+
 
 @contextmanager
-def create_temporary_venv(python_interpreter_path: str) -> Iterator[str]:
-    tmpdir = "./temporary_env"
+def create_temporary_venv(python_interpreter_path: str) -> Iterator[None]:
+    tmpdir = os.path.join(CDOT_PATH, "temporary_env")
     venv_path = os.path.join(tmpdir, "venv")
 
     subprocess.run(
@@ -19,6 +21,6 @@ def create_temporary_venv(python_interpreter_path: str) -> Iterator[str]:
         check=True,
     )
 
-    yield venv_path
+    yield
 
     shutil.rmtree(tmpdir)

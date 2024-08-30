@@ -1,8 +1,10 @@
 import json
+import os
 import subprocess
 import sys
 
 import mypy.api
+from changing_dot.config.constants import CDOT_PATH
 from pydantic import BaseModel
 
 
@@ -55,10 +57,10 @@ def run_mypy(project_path: str, venv_path: str) -> MypyOutput:
 
 
 class MypyAnalyzer:
-    def __init__(self, project_path: str, venv_path: str, requirements_path: str):
+    def __init__(self, project_path: str, requirements_path: str):
         self.project_path = project_path
-        self.venv_path = venv_path
         self.requirements_path = requirements_path
+        self.venv_path = os.path.join(CDOT_PATH, "temporary_env", "venv")
 
     def has_syntax_errors(self) -> bool:
         return run_mypy(self.project_path, self.venv_path).has_syntax_errors
