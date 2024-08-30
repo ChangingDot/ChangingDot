@@ -193,7 +193,6 @@ class OptimizeGraphInput(BaseModel):
 class ApplyGraphChangesInput(BaseModel):
     iteration_name: str
     project_name: str
-    solution_path: str
     base_path: str
     is_local: bool
     analyzer_options: AnalyzerOptions
