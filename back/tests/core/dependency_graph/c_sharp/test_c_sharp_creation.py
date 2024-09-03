@@ -9,7 +9,7 @@ from changing_dot.dependency_graph.types import (
 
 
 def get_fixture_path(file_path: str) -> str:
-    return "./tests/core/dependency_graph/fixtures/" + file_path
+    return "./tests/core/dependency_graph/c_sharp/fixtures/" + file_path
 
 
 def test_empty_file() -> None:
@@ -52,6 +52,61 @@ def test_empty_class_multiple_times_same_file_path() -> None:
 }""",
     )
     assert graph.get_parent_child_relationships() == []
+
+
+def test_multiple_files() -> None:
+    graph = DependencyGraph(
+        [
+            get_fixture_path("simple_property.cs"),
+            get_fixture_path("imports.cs"),
+        ]
+    )
+    assert graph.get_number_of_nodes() == 15
+    assert len(graph.get_node_by_type("Import")) == 12
+    assert graph.get_node_by_type("Class") == [
+        DependencyGraphNode(
+            node_type="Class",
+            start_point=(0, 0),
+            end_point=(7, 1),
+            file_path=get_fixture_path("simple_property.cs"),
+            text="""public class Person
+{
+    public string Name { get; }
+    public Person(string name)
+    {
+        Name = name;
+    }
+}""",
+        )
+    ]
+    assert (graph.get_node_by_type("Field")) == [
+        DependencyGraphNode(
+            node_type="Field",
+            start_point=(2, 4),
+            end_point=(2, 31),
+            file_path=get_fixture_path("simple_property.cs"),
+            text="""public string Name { get; }""",
+        ),
+    ]
+    assert (graph.get_node_by_type("Method")) == [
+        DependencyGraphNode(
+            node_type="Method",
+            start_point=(3, 4),
+            end_point=(6, 5),
+            file_path=get_fixture_path("simple_property.cs"),
+            text="""public Person(string name)
+    {
+        Name = name;
+    }""",
+        ),
+    ]
+    assert DependencyGraphNode(
+        node_type="Import",
+        start_point=(10, 0),
+        end_point=(10, 25),
+        file_path=get_fixture_path("imports.cs"),
+        text="using PostHog.Exceptions;",
+    ) in graph.get_node_by_type("Import")
 
 
 def test_simple_method() -> None:
@@ -444,7 +499,5 @@ def test_relations_in_multiple_files() -> None:
 
 
 def test_we_can_give_c_sharp_and_folder_path() -> None:
-    graph = create_dependency_graph_from_folder(
-        get_fixture_path("c_sharp_folder"), "c_sharp"
-    )
+    graph = create_dependency_graph_from_folder(get_fixture_path("folder"), "c_sharp")
     assert graph.get_number_of_nodes() == 2
