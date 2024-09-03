@@ -34,6 +34,20 @@ def test_full_python_relations() -> None:
     assert (
         DependencyGraphRelation(
             origin=DependencyGraphNodeWithIndex(
+                index=3,
+                node_type="Constructor",
+                start_point=(7, 4),
+                end_point=(13, 53),
+                file_path=get_fixture_path("full.py"),
+                text="""def __init__(
+        self, name: str, value: int, created_at: datetime.datetime | None = None
+    ):
+        self.name = name
+        self.value = value
+        self.created_at = created_at if created_at else datetime.datetime.now()
+        logging.info(f"GenericClass created: {self}")""",
+            ),
+            target=DependencyGraphNodeWithIndex(
                 index=2,
                 node_type="Class",
                 start_point=(6, 0),
@@ -73,20 +87,6 @@ def test_full_python_relations() -> None:
         except Exception as e:
             logging.error(f"Failed to load object from file: {e}")
             return None""",
-            ),
-            target=DependencyGraphNodeWithIndex(
-                index=3,
-                node_type="Constructor",
-                start_point=(7, 4),
-                end_point=(13, 53),
-                file_path=get_fixture_path("full.py"),
-                text="""def __init__(
-        self, name: str, value: int, created_at: datetime.datetime | None = None
-    ):
-        self.name = name
-        self.value = value
-        self.created_at = created_at if created_at else datetime.datetime.now()
-        logging.info(f"GenericClass created: {self}")""",
             ),
             relation_type="Constructs/ConstructedBy",
         )
