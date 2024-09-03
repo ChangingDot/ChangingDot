@@ -4,7 +4,7 @@ from changing_dot.dependency_graph.dependency_graph import (
 
 
 def get_fixture_path(file_path: str) -> str:
-    return "./tests/core/dependency_graph/fixtures/" + file_path
+    return "./tests/core/dependency_graph/" + file_path
 
 
 def test_empty_list() -> None:

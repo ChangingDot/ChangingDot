@@ -13,7 +13,7 @@ from changing_dot.utils.text_functions import write_text
 
 
 def get_fixture_path(file_path: str) -> str:
-    return "./tests/core/dependency_graph/fixtures/updates/" + file_path
+    return "./tests/core/dependency_graph/c_sharp/fixtures/updates/" + file_path
 
 
 def get_fixture(file_path: str) -> str:
@@ -845,7 +845,7 @@ def test_handle_csproj_simple_update() -> None:
             node_type="Method",
             start_point=(0, 0),
             end_point=(12, 10),
-            file_path="./tests/core/dependency_graph/fixtures/updates/subject.csproj",
+            file_path=get_fixture_path("subject.csproj"),
             text='<Project Sdk="Microsoft.NET.Sdk">\n\n  <PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>net6.0</TargetFramework>\n  </PropertyGroup>\n\n  <ItemGroup>\n    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />\n    <PackageReference Include="Serilog" Version="3.0.1" />\n  </ItemGroup>\n\n</Project>',
             index=0,
         ),
@@ -853,7 +853,7 @@ def test_handle_csproj_simple_update() -> None:
             node_type="Method",
             start_point=(2, 2),
             end_point=(5, 18),
-            file_path="./tests/core/dependency_graph/fixtures/updates/subject.csproj",
+            file_path=get_fixture_path("subject.csproj"),
             text="<PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>net6.0</TargetFramework>\n  </PropertyGroup>",
             index=1,
         ),
@@ -861,7 +861,7 @@ def test_handle_csproj_simple_update() -> None:
             node_type="Method",
             start_point=(7, 2),
             end_point=(10, 14),
-            file_path="./tests/core/dependency_graph/fixtures/updates/subject.csproj",
+            file_path=get_fixture_path("subject.csproj"),
             text='<ItemGroup>\n    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />\n    <PackageReference Include="Serilog" Version="3.0.1" />\n  </ItemGroup>',
             index=2,
         ),
