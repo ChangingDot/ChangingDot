@@ -16,7 +16,8 @@ def test_full_python() -> None:
     graph_py = DependencyGraph([get_fixture_path("full.py")])
     assert len(graph_py.get_node_by_type("Import")) == 2
     assert len(graph_py.get_node_by_type("Class")) == 1
-    assert len(graph_py.get_node_by_type("Method")) == 5
+    assert len(graph_py.get_node_by_type("Method")) == 4
+    assert len(graph_py.get_node_by_type("Constructor")) == 1
     assert len(graph_py.get_node_by_type("Field")) == 0
 
 
@@ -75,7 +76,7 @@ def test_full_python_relations() -> None:
             ),
             target=DependencyGraphNodeWithIndex(
                 index=3,
-                node_type="Method",
+                node_type="Constructor",
                 start_point=(7, 4),
                 end_point=(13, 53),
                 file_path=get_fixture_path("full.py"),

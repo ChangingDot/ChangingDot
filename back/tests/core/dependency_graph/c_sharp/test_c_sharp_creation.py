@@ -89,9 +89,9 @@ def test_multiple_files() -> None:
             text="""public string Name { get; }""",
         ),
     ]
-    assert (graph.get_node_by_type("Method")) == [
+    assert (graph.get_node_by_type("Constructor")) == [
         DependencyGraphNode(
-            node_type="Method",
+            node_type="Constructor",
             start_point=(3, 4),
             end_point=(6, 5),
             file_path=get_fixture_path("simple_property.cs"),
@@ -196,9 +196,9 @@ def test_simple_constructor() -> None:
             text="""public string Name;""",
         ),
     ]
-    assert (graph.get_node_by_type("Method")) == [
+    assert (graph.get_node_by_type("Constructor")) == [
         DependencyGraphNode(
-            node_type="Method",
+            node_type="Constructor",
             start_point=(3, 4),
             end_point=(6, 5),
             file_path=get_fixture_path("simple_constructor.cs"),
@@ -238,9 +238,9 @@ def test_simple_property() -> None:
             text="""public string Name { get; }""",
         ),
     ]
-    assert (graph.get_node_by_type("Method")) == [
+    assert (graph.get_node_by_type("Constructor")) == [
         DependencyGraphNode(
-            node_type="Method",
+            node_type="Constructor",
             start_point=(3, 4),
             end_point=(6, 5),
             file_path=get_fixture_path("simple_property.cs"),
@@ -476,7 +476,7 @@ def test_relations_in_multiple_files() -> None:
             ),
             target=DependencyGraphNodeWithIndex(
                 index=2,
-                node_type="Method",
+                node_type="Constructor",
                 start_point=(3, 4),
                 end_point=(6, 5),
                 file_path=get_fixture_path("simple_constructor.cs"),

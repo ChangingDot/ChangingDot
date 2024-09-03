@@ -17,7 +17,8 @@ class EmptyMatcher(ILanguageMatcher):
 
 c_sharp_node_type_to_terminal: NodeTypeToTerminal = {
     "Class": ["class_declaration"],
-    "Method": ["method_declaration", "constructor_declaration"],
+    "Method": ["method_declaration"],
+    "Constructor": ["constructor_declaration"],
     "Field": ["field_declaration", "property_declaration"],
     "Import": ["using_directive"],
 }
@@ -31,6 +32,7 @@ class CSharpMatcher(ILanguageMatcher):
 python_node_type_to_terminal: NodeTypeToTerminal = {
     "Class": ["class_definition"],
     "Method": ["function_definition"],
+    "Constructor": [],
     "Field": [],
     "Import": ["import_statement"],
 }
@@ -38,12 +40,26 @@ python_node_type_to_terminal: NodeTypeToTerminal = {
 
 class PythonMatcher(ILanguageMatcher):
     def match_class(self, node_type: DependencyGraphNodeType, ast_node: Node) -> bool:
-        return ast_node.type in python_node_type_to_terminal[node_type]
+        if node_type != "Constructor" and node_type != "Method":
+            return ast_node.type in python_node_type_to_terminal[node_type]
+        else:
+            if node_type == "Constructor":
+                return (
+                    ast_node.type in python_node_type_to_terminal["Method"]
+                    and ast_node.text is not None
+                    and "def __init__(" in ast_node.text.decode("utf-8")
+                )
+            elif node_type == "Method":
+                return ast_node.type in python_node_type_to_terminal["Method"] and not (
+                    ast_node.text is not None
+                    and "def __init__(" in ast_node.text.decode("utf-8")
+                )
 
 
 pip_req_node_type_to_terminal: NodeTypeToTerminal = {
     "Class": [],
     "Method": ["requirement"],
+    "Constructor": [],
     "Field": [],
     "Import": [],
 }

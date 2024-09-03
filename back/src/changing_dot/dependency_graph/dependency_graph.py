@@ -1,6 +1,6 @@
 import copy
 from collections.abc import Generator
-from typing import Any, Literal, TypedDict
+from typing import Any, TypedDict
 
 import networkx as nx
 from changing_dot.custom_types import BlockEdit
@@ -334,11 +334,15 @@ class DependencyGraph:
             node.start_point if comment_node is None else comment_node.start_point
         )
 
-        node_type: Literal["Import", "Class", "Method", "Field"] | None = None
+        node_type: DependencyGraphNodeType | None = None
         if self.file_path_to_language_matcher[file_path].match_class("Class", node):
             node_type = "Class"
         elif self.file_path_to_language_matcher[file_path].match_class("Method", node):
             node_type = "Method"
+        elif self.file_path_to_language_matcher[file_path].match_class(
+            "Constructor", node
+        ):
+            node_type = "Constructor"
         elif self.file_path_to_language_matcher[file_path].match_class("Field", node):
             node_type = "Field"
         elif self.file_path_to_language_matcher[file_path].match_class("Import", node):
