@@ -277,7 +277,7 @@ class DependencyGraph:
         matched_nodes = [
             ast_node
             for ast_node in iterate_nodes(new_tree.root_node)
-            if language_matcher.match_class(node.node_type, ast_node)
+            if language_matcher.match_class(ast_node) == node.node_type
             and ast_node.text is not None
             and isinstance(ast_node.text, bytes)
             and remove_comments(ast_node.text.decode("utf-8"))
@@ -339,19 +339,9 @@ class DependencyGraph:
             node.start_point if comment_node is None else comment_node.start_point
         )
 
-        node_type: DependencyGraphNodeType | None = None
-        if self.file_path_to_language_matcher[file_path].match_class("Class", node):
-            node_type = "Class"
-        elif self.file_path_to_language_matcher[file_path].match_class("Method", node):
-            node_type = "Method"
-        elif self.file_path_to_language_matcher[file_path].match_class(
-            "Constructor", node
-        ):
-            node_type = "Constructor"
-        elif self.file_path_to_language_matcher[file_path].match_class("Field", node):
-            node_type = "Field"
-        elif self.file_path_to_language_matcher[file_path].match_class("Import", node):
-            node_type = "Import"
+        node_type: DependencyGraphNodeType | None = self.file_path_to_language_matcher[
+            file_path
+        ].match_class(node)
 
         if node_type is None:
             return None
