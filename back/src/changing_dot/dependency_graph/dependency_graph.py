@@ -13,6 +13,7 @@ from changing_dot.dependency_graph.types import (
     DependencyGraphNode,
     DependencyGraphNodeType,
     DependencyGraphNodeWithIndex,
+    DependencyGraphRelation,
     SupportedLanguages,
 )
 from changing_dot.utils.file_utils import get_csharp_files, get_python_files
@@ -204,6 +205,10 @@ class DependencyGraph:
         node = self.G.nodes()[index]
         return DependencyGraphNode(**node)
 
+    def get_node_with_index(self, index: int) -> DependencyGraphNodeWithIndex:
+        node = self.G.nodes()[index]
+        return DependencyGraphNodeWithIndex(**node, index=index)
+
     def get_node_by_type(
         self, node_type: DependencyGraphNodeType
     ) -> list[DependencyGraphNode]:
@@ -226,13 +231,17 @@ class DependencyGraph:
 
     def get_parent_child_relations(
         self,
-    ) -> list[tuple[DependencyGraphNode, DependencyGraphNode]]:
-        parent_child_relations: list[
-            tuple[DependencyGraphNode, DependencyGraphNode]
-        ] = []
+    ) -> list[DependencyGraphRelation]:
+        parent_child_relations: list[DependencyGraphRelation] = []
 
         for i, j in self.G.edges():
-            parent_child_relations.append((self.get_node(i), self.get_node(j)))
+            parent_child_relations.append(
+                DependencyGraphRelation(
+                    origin=self.get_node_with_index(i),
+                    target=self.get_node_with_index(j),
+                    relation_type="ParentOf/ChildOf",
+                )
+            )
 
         return parent_child_relations
 

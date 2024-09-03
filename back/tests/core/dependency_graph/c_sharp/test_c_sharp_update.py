@@ -8,6 +8,7 @@ from changing_dot.dependency_graph.dependency_graph import (
 from changing_dot.dependency_graph.types import (
     DependencyGraphNode,
     DependencyGraphNodeWithIndex,
+    DependencyGraphRelation,
 )
 from changing_dot.utils.text_functions import write_text
 
@@ -385,6 +386,7 @@ def test_update_with_no_graph_impact_keeps_same_indexes() -> None:
     ]
 
 
+# TODO
 def test_update_that_adds_a_node() -> None:
     graph = DependencyGraph([get_fixture_path("subject_1.cs")])
 
@@ -461,8 +463,9 @@ def test_update_that_adds_a_node() -> None:
 
     assert len(graph.get_parent_child_relations()) == 2
     for relation in [
-        (
-            DependencyGraphNode(
+        DependencyGraphRelation(
+            origin=DependencyGraphNodeWithIndex(
+                index=0,
                 node_type="Class",
                 start_point=(0, 0),
                 end_point=(10, 1),
@@ -479,7 +482,8 @@ def test_update_that_adds_a_node() -> None:
     }
 }""",
             ),
-            DependencyGraphNode(
+            target=DependencyGraphNodeWithIndex(
+                index=2,
                 node_type="Method",
                 start_point=(2, 4),
                 end_point=(5, 5),
@@ -489,9 +493,11 @@ def test_update_that_adds_a_node() -> None:
         return "Hello, World!";
     }""",
             ),
+            relation_type="ParentOf/ChildOf",
         ),
-        (
-            DependencyGraphNode(
+        DependencyGraphRelation(
+            origin=DependencyGraphNodeWithIndex(
+                index=0,
                 node_type="Class",
                 start_point=(0, 0),
                 end_point=(10, 1),
@@ -508,7 +514,8 @@ def test_update_that_adds_a_node() -> None:
     }
 }""",
             ),
-            DependencyGraphNode(
+            target=DependencyGraphNodeWithIndex(
+                index=3,
                 node_type="Method",
                 start_point=(6, 4),
                 end_point=(9, 5),
@@ -518,6 +525,7 @@ def test_update_that_adds_a_node() -> None:
         return "Another Hello, World!";
     }""",
             ),
+            relation_type="ParentOf/ChildOf",
         ),
     ]:
         assert relation in graph.get_parent_child_relations()
@@ -601,8 +609,9 @@ def test_parent_that_updates_child_node() -> None:
         not in graph.get_nodes_with_index()
     )
     assert graph.get_parent_child_relations() == [
-        (
-            DependencyGraphNode(
+        DependencyGraphRelation(
+            origin=DependencyGraphNodeWithIndex(
+                index=0,
                 node_type="Class",
                 start_point=(0, 0),
                 end_point=(6, 1),
@@ -615,7 +624,8 @@ def test_parent_that_updates_child_node() -> None:
     }
 }""",
             ),
-            DependencyGraphNode(
+            target=DependencyGraphNodeWithIndex(
+                index=2,
                 node_type="Method",
                 start_point=(2, 4),
                 end_point=(5, 5),
@@ -625,6 +635,7 @@ def test_parent_that_updates_child_node() -> None:
         return "Updated Hello, World!";
     }""",
             ),
+            relation_type="ParentOf/ChildOf",
         )
     ]
 

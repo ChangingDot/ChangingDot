@@ -5,6 +5,7 @@ from changing_dot.dependency_graph.dependency_graph import (
 from changing_dot.dependency_graph.types import (
     DependencyGraphNode,
     DependencyGraphNodeWithIndex,
+    DependencyGraphRelation,
 )
 
 
@@ -303,8 +304,9 @@ class SimpleClass
 def test_class_parent_of_method() -> None:
     graph = DependencyGraph([get_fixture_path("simple_method.cs")])
     assert graph.get_parent_child_relations() == [
-        (
-            DependencyGraphNode(
+        DependencyGraphRelation(
+            origin=DependencyGraphNodeWithIndex(
+                index=0,
                 node_type="Class",
                 start_point=(0, 0),
                 end_point=(6, 1),
@@ -317,7 +319,8 @@ def test_class_parent_of_method() -> None:
     }
 }""",
             ),
-            DependencyGraphNode(
+            target=DependencyGraphNodeWithIndex(
+                index=1,
                 node_type="Method",
                 start_point=(2, 4),
                 end_point=(5, 5),
@@ -327,7 +330,8 @@ def test_class_parent_of_method() -> None:
         return "Hello, World!";
     }""",
             ),
-        )
+            relation_type="ParentOf/ChildOf",
+        ),
     ]
 
 
@@ -373,37 +377,43 @@ def test_csproj_files() -> None:
     assert len(graph.get_parent_child_relations()) == 2
 
     for relationship in [
-        (
-            DependencyGraphNode(
+        DependencyGraphRelation(
+            origin=DependencyGraphNodeWithIndex(
+                index=0,
                 node_type="Method",
                 file_path=get_fixture_path("small.csproj"),
                 start_point=(0, 0),
                 end_point=(11, 10),
                 text='<Project Sdk="Microsoft.NET.Sdk">\n\n  <PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>net6.0</TargetFramework>\n  </PropertyGroup>\n\n  <ItemGroup>\n    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />\n  </ItemGroup>\n\n</Project>',
             ),
-            DependencyGraphNode(
+            target=DependencyGraphNodeWithIndex(
+                index=1,
                 node_type="Method",
                 file_path=get_fixture_path("small.csproj"),
                 start_point=(2, 2),
                 end_point=(5, 18),
                 text="<PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>net6.0</TargetFramework>\n  </PropertyGroup>",
             ),
+            relation_type="ParentOf/ChildOf",
         ),
-        (
-            DependencyGraphNode(
+        DependencyGraphRelation(
+            origin=DependencyGraphNodeWithIndex(
+                index=0,
                 node_type="Method",
                 file_path=get_fixture_path("small.csproj"),
                 start_point=(0, 0),
                 end_point=(11, 10),
                 text='<Project Sdk="Microsoft.NET.Sdk">\n\n  <PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>net6.0</TargetFramework>\n  </PropertyGroup>\n\n  <ItemGroup>\n    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />\n  </ItemGroup>\n\n</Project>',
             ),
-            DependencyGraphNode(
+            target=DependencyGraphNodeWithIndex(
+                index=2,
                 node_type="Method",
                 file_path=get_fixture_path("small.csproj"),
                 start_point=(7, 2),
                 end_point=(9, 14),
                 text='<ItemGroup>\n    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />\n  </ItemGroup>',
             ),
+            relation_type="ParentOf/ChildOf",
         ),
     ]:
         assert relationship in graph.get_parent_child_relations()
@@ -420,8 +430,9 @@ def test_relations_in_multiple_files() -> None:
     assert len(graph.get_parent_child_relations()) == 3
 
     for relation in [
-        (
-            DependencyGraphNode(
+        DependencyGraphRelation(
+            origin=DependencyGraphNodeWithIndex(
+                index=3,
                 node_type="Class",
                 start_point=(0, 0),
                 end_point=(6, 1),
@@ -434,7 +445,8 @@ def test_relations_in_multiple_files() -> None:
     }
 }""",
             ),
-            DependencyGraphNode(
+            target=DependencyGraphNodeWithIndex(
+                index=4,
                 node_type="Method",
                 start_point=(2, 4),
                 end_point=(5, 5),
@@ -444,9 +456,11 @@ def test_relations_in_multiple_files() -> None:
         return "Hello, World!";
     }""",
             ),
+            relation_type="ParentOf/ChildOf",
         ),
-        (
-            DependencyGraphNode(
+        DependencyGraphRelation(
+            origin=DependencyGraphNodeWithIndex(
+                index=0,
                 node_type="Class",
                 start_point=(0, 0),
                 end_point=(7, 1),
@@ -460,7 +474,8 @@ def test_relations_in_multiple_files() -> None:
     }
 }""",
             ),
-            DependencyGraphNode(
+            target=DependencyGraphNodeWithIndex(
+                index=2,
                 node_type="Method",
                 start_point=(3, 4),
                 end_point=(6, 5),
@@ -470,9 +485,11 @@ def test_relations_in_multiple_files() -> None:
         Name = name;
     }""",
             ),
+            relation_type="ParentOf/ChildOf",
         ),
-        (
-            DependencyGraphNode(
+        DependencyGraphRelation(
+            origin=DependencyGraphNodeWithIndex(
+                index=0,
                 node_type="Class",
                 start_point=(0, 0),
                 end_point=(7, 1),
@@ -486,13 +503,15 @@ def test_relations_in_multiple_files() -> None:
     }
 }""",
             ),
-            DependencyGraphNode(
+            target=DependencyGraphNodeWithIndex(
+                index=1,
                 node_type="Field",
                 start_point=(2, 4),
                 end_point=(2, 23),
                 file_path=get_fixture_path("simple_constructor.cs"),
                 text="""public string Name;""",
             ),
+            relation_type="ParentOf/ChildOf",
         ),
     ]:
         assert relation in graph.get_parent_child_relations()

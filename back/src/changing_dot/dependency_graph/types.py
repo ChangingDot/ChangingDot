@@ -26,3 +26,12 @@ class DependencyGraphNode(BaseModel):
 
 class DependencyGraphNodeWithIndex(DependencyGraphNode):
     index: int
+
+
+RelationType = Literal["ParentOf/ChildOf"]
+
+
+class DependencyGraphRelation(BaseModel):
+    origin: DependencyGraphNodeWithIndex
+    target: DependencyGraphNodeWithIndex
+    relation_type: RelationType
