@@ -14,6 +14,7 @@ from changing_dot.dependency_graph.types import (
     DependencyGraphNodeType,
     DependencyGraphNodeWithIndex,
     DependencyGraphRelation,
+    RelationType,
     SupportedLanguages,
 )
 from changing_dot.utils.file_utils import get_csharp_files, get_python_files
@@ -171,8 +172,8 @@ class DependencyGraph:
     def create_graph_from_tree(self, tree: Tree, file_path: str) -> None:
         self.traverse_and_reduce(tree.root_node, file_path)
 
-    def add_edge(self, source: int, target: int) -> None:
-        self.G.add_edge(source, target)
+    def add_edge(self, source: int, target: int, relation_type: RelationType) -> None:
+        self.G.add_edge(source, target, relation_type=relation_type)
 
     def add_node(self, node: DependencyGraphNode) -> int:
         index = self.next_index
@@ -308,7 +309,7 @@ class DependencyGraph:
         if new_node is not None:
             node_index = self.add_node(new_node)
             if parent_index is not None:
-                self.add_edge(parent_index, node_index)
+                self.add_edge(parent_index, node_index, "ParentOf/ChildOf")
 
         for child in node.children:
             self.traverse_and_reduce(

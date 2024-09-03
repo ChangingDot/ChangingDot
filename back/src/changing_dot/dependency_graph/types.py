@@ -28,7 +28,7 @@ class DependencyGraphNodeWithIndex(DependencyGraphNode):
     index: int
 
 
-RelationType = Literal["ParentOf/ChildOf"]
+RelationType = Literal["ParentOf/ChildOf", "Constructs/ConstructedBy"]
 
 
 class DependencyGraphRelation(BaseModel):
