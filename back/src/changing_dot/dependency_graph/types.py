@@ -9,11 +9,12 @@ SupportedLanguages = Literal["python", "c_sharp", "xml", "csproj", "pip_requirem
 class NodeTypeToTerminal(TypedDict):
     Import: list[str]
     Class: list[str]
+    Constructor: list[str]
     Method: list[str]
     Field: list[str]
 
 
-DependencyGraphNodeType = Literal["Import", "Class", "Method", "Field"]
+DependencyGraphNodeType = Literal["Import", "Class", "Method", "Constructor", "Field"]
 
 
 class DependencyGraphNode(BaseModel):
