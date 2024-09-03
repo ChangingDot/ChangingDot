@@ -224,17 +224,17 @@ class DependencyGraph:
             for index in self.G.nodes()
         ]
 
-    def get_parent_child_relationships(
+    def get_parent_child_relations(
         self,
     ) -> list[tuple[DependencyGraphNode, DependencyGraphNode]]:
-        parent_child_relationships: list[
+        parent_child_relations: list[
             tuple[DependencyGraphNode, DependencyGraphNode]
         ] = []
 
         for i, j in self.G.edges():
-            parent_child_relationships.append((self.get_node(i), self.get_node(j)))
+            parent_child_relations.append((self.get_node(i), self.get_node(j)))
 
-        return parent_child_relationships
+        return parent_child_relations
 
     def has_syntax_errors(self) -> bool:
         return any(tree.root_node.has_error for tree in self.trees.values())

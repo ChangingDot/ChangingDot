@@ -27,9 +27,9 @@ def test_we_can_give_python_and_folder_path() -> None:
     assert graph.get_number_of_nodes() == 2
 
 
-def test_full_python_relationships() -> None:
+def test_full_python_relations() -> None:
     graph_py = DependencyGraph([get_fixture_path("full.py")])
-    parent_child_relationships = graph_py.get_parent_child_relationships()
+    parent_child_relations = graph_py.get_parent_child_relations()
     assert (
         DependencyGraphNode(
             node_type="Class",
@@ -84,8 +84,8 @@ def test_full_python_relationships() -> None:
         self.created_at = created_at if created_at else datetime.datetime.now()
         logging.info(f"GenericClass created: {self}")""",
         ),
-    ) in parent_child_relationships
-    assert len(parent_child_relationships) == 5
+    ) in parent_child_relations
+    assert len(parent_child_relations) == 5
 
 
 def test_pip_requirements_files() -> None:
@@ -101,4 +101,4 @@ def test_pip_requirements_files() -> None:
             text="pydantic==1.10.18",
         )
     ]
-    assert len(graph.get_parent_child_relationships()) == 0
+    assert len(graph.get_parent_child_relations()) == 0
