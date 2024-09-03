@@ -460,6 +460,17 @@ def test_relations_in_multiple_files() -> None:
         ),
         DependencyGraphRelation(
             origin=DependencyGraphNodeWithIndex(
+                index=2,
+                node_type="Constructor",
+                start_point=(3, 4),
+                end_point=(6, 5),
+                file_path=get_fixture_path("simple_constructor.cs"),
+                text="""public Person(string name)
+    {
+        Name = name;
+    }""",
+            ),
+            target=DependencyGraphNodeWithIndex(
                 index=0,
                 node_type="Class",
                 start_point=(0, 0),
@@ -473,17 +484,6 @@ def test_relations_in_multiple_files() -> None:
         Name = name;
     }
 }""",
-            ),
-            target=DependencyGraphNodeWithIndex(
-                index=2,
-                node_type="Constructor",
-                start_point=(3, 4),
-                end_point=(6, 5),
-                file_path=get_fixture_path("simple_constructor.cs"),
-                text="""public Person(string name)
-    {
-        Name = name;
-    }""",
             ),
             relation_type="Constructs/ConstructedBy",
         ),

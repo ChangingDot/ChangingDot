@@ -313,8 +313,12 @@ class DependencyGraph:
                 if new_node.node_type == "Constructor"
                 else "ParentOf/ChildOf"
             )
+
             if parent_index is not None:
-                self.add_edge(parent_index, node_index, relation_type)
+                if relation_type == "Constructs/ConstructedBy":
+                    self.add_edge(node_index, parent_index, relation_type)
+                else:
+                    self.add_edge(parent_index, node_index, relation_type)
 
         for child in node.children:
             self.traverse_and_reduce(
