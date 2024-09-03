@@ -459,7 +459,7 @@ def test_update_that_adds_a_node() -> None:
     ]:
         assert node in graph.get_nodes()
 
-    assert len(graph.get_parent_child_relationships()) == 2
+    assert len(graph.get_parent_child_relations()) == 2
     for relation in [
         (
             DependencyGraphNode(
@@ -520,7 +520,7 @@ def test_update_that_adds_a_node() -> None:
             ),
         ),
     ]:
-        assert relation in graph.get_parent_child_relationships()
+        assert relation in graph.get_parent_child_relations()
 
 
 def test_parent_that_updates_child_node() -> None:
@@ -600,7 +600,7 @@ def test_parent_that_updates_child_node() -> None:
         )
         not in graph.get_nodes_with_index()
     )
-    assert graph.get_parent_child_relationships() == [
+    assert graph.get_parent_child_relations() == [
         (
             DependencyGraphNode(
                 node_type="Class",

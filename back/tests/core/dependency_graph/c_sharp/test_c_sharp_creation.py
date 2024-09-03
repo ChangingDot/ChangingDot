@@ -15,7 +15,7 @@ def get_fixture_path(file_path: str) -> str:
 def test_empty_file() -> None:
     graph = DependencyGraph([get_fixture_path("empty.cs")])
     assert graph.get_number_of_nodes() == 0
-    assert graph.get_parent_child_relationships() == []
+    assert graph.get_parent_child_relations() == []
 
 
 def test_empty_class() -> None:
@@ -30,7 +30,7 @@ def test_empty_class() -> None:
 {
 }""",
     )
-    assert graph.get_parent_child_relationships() == []
+    assert graph.get_parent_child_relations() == []
 
 
 def test_empty_class_multiple_times_same_file_path() -> None:
@@ -51,7 +51,7 @@ def test_empty_class_multiple_times_same_file_path() -> None:
 {
 }""",
     )
-    assert graph.get_parent_child_relationships() == []
+    assert graph.get_parent_child_relations() == []
 
 
 def test_multiple_files() -> None:
@@ -302,7 +302,7 @@ class SimpleClass
 
 def test_class_parent_of_method() -> None:
     graph = DependencyGraph([get_fixture_path("simple_method.cs")])
-    assert graph.get_parent_child_relationships() == [
+    assert graph.get_parent_child_relations() == [
         (
             DependencyGraphNode(
                 node_type="Class",
@@ -337,7 +337,7 @@ def test_xml_csproj_files() -> None:
     )
     # for now each element is a method
     assert graph.get_number_of_nodes() == 38 + 7
-    assert len(graph.get_parent_child_relationships()) == 37 + 6
+    assert len(graph.get_parent_child_relations()) == 37 + 6
 
 
 def test_csproj_files() -> None:
@@ -370,7 +370,7 @@ def test_csproj_files() -> None:
             text='<ItemGroup>\n    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />\n  </ItemGroup>',
         ),
     ]
-    assert len(graph.get_parent_child_relationships()) == 2
+    assert len(graph.get_parent_child_relations()) == 2
 
     for relationship in [
         (
@@ -406,7 +406,7 @@ def test_csproj_files() -> None:
             ),
         ),
     ]:
-        assert relationship in graph.get_parent_child_relationships()
+        assert relationship in graph.get_parent_child_relations()
 
 
 def test_relations_in_multiple_files() -> None:
@@ -417,7 +417,7 @@ def test_relations_in_multiple_files() -> None:
         ]
     )
 
-    assert len(graph.get_parent_child_relationships()) == 3
+    assert len(graph.get_parent_child_relations()) == 3
 
     for relation in [
         (
@@ -495,7 +495,7 @@ def test_relations_in_multiple_files() -> None:
             ),
         ),
     ]:
-        assert relation in graph.get_parent_child_relationships()
+        assert relation in graph.get_parent_child_relations()
 
 
 def test_we_can_give_c_sharp_and_folder_path() -> None:
