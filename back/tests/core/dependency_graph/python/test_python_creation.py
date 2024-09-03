@@ -9,7 +9,7 @@ from changing_dot.dependency_graph.types import (
 
 
 def get_fixture_path(file_path: str) -> str:
-    return "./tests/core/dependency_graph/fixtures/" + file_path
+    return "./tests/core/dependency_graph/python/fixtures/" + file_path
 
 
 def test_full_python() -> None:
