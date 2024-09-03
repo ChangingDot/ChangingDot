@@ -88,7 +88,7 @@ def test_full_python_relations() -> None:
         self.created_at = created_at if created_at else datetime.datetime.now()
         logging.info(f"GenericClass created: {self}")""",
             ),
-            relation_type="ParentOf/ChildOf",
+            relation_type="Constructs/ConstructedBy",
         )
         in parent_child_relations
     )
