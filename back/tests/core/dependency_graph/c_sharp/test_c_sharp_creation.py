@@ -485,7 +485,7 @@ def test_relations_in_multiple_files() -> None:
         Name = name;
     }""",
             ),
-            relation_type="ParentOf/ChildOf",
+            relation_type="Constructs/ConstructedBy",
         ),
         DependencyGraphRelation(
             origin=DependencyGraphNodeWithIndex(
@@ -509,7 +509,7 @@ def test_relations_in_multiple_files() -> None:
                 start_point=(2, 4),
                 end_point=(2, 23),
                 file_path=get_fixture_path("simple_constructor.cs"),
-                text="""public string Name;""",
+                text="public string Name;",
             ),
             relation_type="ParentOf/ChildOf",
         ),

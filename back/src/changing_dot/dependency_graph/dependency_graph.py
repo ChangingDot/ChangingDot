@@ -235,12 +235,12 @@ class DependencyGraph:
     ) -> list[DependencyGraphRelation]:
         parent_child_relations: list[DependencyGraphRelation] = []
 
-        for i, j in self.G.edges():
+        for i, j, metadata in self.G.edges(data=True):
             parent_child_relations.append(
                 DependencyGraphRelation(
                     origin=self.get_node_with_index(i),
                     target=self.get_node_with_index(j),
-                    relation_type="ParentOf/ChildOf",
+                    relation_type=metadata["relation_type"],
                 )
             )
 
@@ -308,8 +308,13 @@ class DependencyGraph:
 
         if new_node is not None:
             node_index = self.add_node(new_node)
+            relation_type: RelationType = (
+                "Constructs/ConstructedBy"
+                if new_node.node_type == "Constructor"
+                else "ParentOf/ChildOf"
+            )
             if parent_index is not None:
-                self.add_edge(parent_index, node_index, "ParentOf/ChildOf")
+                self.add_edge(parent_index, node_index, relation_type)
 
         for child in node.children:
             self.traverse_and_reduce(
