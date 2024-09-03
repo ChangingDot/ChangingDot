@@ -2,7 +2,7 @@ from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 
 
 def get_fixture_path(file_path: str) -> str:
-    return "./tests/core/dependency_graph/fixtures/syntax_errors/" + file_path
+    return "./tests/core/dependency_graph/c_sharp/fixtures/syntax_errors/" + file_path
 
 
 def test_empty_file() -> None:
