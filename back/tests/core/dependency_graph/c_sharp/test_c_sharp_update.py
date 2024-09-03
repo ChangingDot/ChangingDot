@@ -386,7 +386,6 @@ def test_update_with_no_graph_impact_keeps_same_indexes() -> None:
     ]
 
 
-# TODO
 def test_update_that_adds_a_node() -> None:
     graph = DependencyGraph([get_fixture_path("subject_1.cs")])
 
@@ -421,7 +420,8 @@ def test_update_that_adds_a_node() -> None:
 
     assert graph.get_number_of_nodes() == 3
     for node in [
-        DependencyGraphNode(
+        DependencyGraphNodeWithIndex(
+            index=0,
             node_type="Class",
             start_point=(0, 0),
             end_point=(10, 1),
@@ -438,7 +438,8 @@ def test_update_that_adds_a_node() -> None:
     }
 }""",
         ),
-        DependencyGraphNode(
+        DependencyGraphNodeWithIndex(
+            index=2,
             node_type="Method",
             start_point=(2, 4),
             end_point=(5, 5),
@@ -448,7 +449,8 @@ def test_update_that_adds_a_node() -> None:
         return "Hello, World!";
     }""",
         ),
-        DependencyGraphNode(
+        DependencyGraphNodeWithIndex(
+            index=3,
             node_type="Method",
             start_point=(6, 4),
             end_point=(9, 5),
@@ -459,7 +461,7 @@ def test_update_that_adds_a_node() -> None:
     }""",
         ),
     ]:
-        assert node in graph.get_nodes()
+        assert node in graph.get_nodes_with_index()
 
     assert len(graph.get_parent_child_relations()) == 2
     for relation in [
