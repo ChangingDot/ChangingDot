@@ -204,6 +204,22 @@ def handle_node(
     if node.node_type == "solution":
         assert True is False
 
+    elif node.node_type == "initial_resolve":
+        observer.log(f"Handling intial node {node_index}")
+        for compile_error in error_manager.get_compile_errors(observer):
+            new_problem_index = G.add_problem_node(
+                ProblemNode(
+                    index=-1,
+                    node_type="problem",
+                    status="pending",
+                    error=compile_error,
+                )
+            )
+            G.add_edge(node_index, new_problem_index)
+            observer.log(f"New problem -> Added new node {new_problem_index}")
+
+        G.mark_node_as(node_index, "handled")
+
     elif node.node_type == "problem":
         observer.log(f"Handling problem node {node_index}")
         handle_problem_node(

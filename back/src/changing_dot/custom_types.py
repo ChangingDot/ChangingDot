@@ -67,11 +67,21 @@ class NodeData(BaseModel):
     index: int
     node_type: (
         Literal["solution"]
+        | Literal["initial_resolve"]
         | Literal["problem"]
         | Literal["error_problem"]
         | Literal["error_solution"]
     )
     status: NodeStatus
+
+
+class InitialResolveNode(NodeData):
+    node_type: Literal["initial_resolve"]
+    repo_path: str
+
+    @field_validator("repo_path")
+    def validate_path(cls, value: str) -> str:
+        return validate_and_convert_path(value)
 
 
 class SolutionNode(NodeData):
@@ -165,6 +175,26 @@ class CreateGraphInput(BaseModel):
         )
     )
     initial_change: InitialChange
+    analyzer_options: AnalyzerOptions
+    llm_provider: Literal["OPENAI", "MISTRAL"]
+
+    @field_validator("output_path")
+    def validate_path(cls, value: str) -> str:
+        return validate_and_convert_path(value)
+
+
+class ResolveGraphInput(BaseModel):
+    iteration_name: str
+    project_name: str
+    goal: str
+    output_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
+    restriction_options: RestrictionOptions = Field(
+        default=RestrictionOptions(
+            project_blacklist=None,
+            restrict_change_to_single_file=None,
+            restrict_to_project=None,
+        )
+    )
     analyzer_options: AnalyzerOptions
     llm_provider: Literal["OPENAI", "MISTRAL"]
 

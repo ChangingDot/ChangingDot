@@ -11,9 +11,11 @@ from changing_dot.create_graph import run_create_graph
 from changing_dot.custom_types import (
     ApplyGraphChangesInput,
     CreateGraphInput,
+    ResolveGraphInput,
     ResumeGraphInput,
     ResumeInitialNode,
 )
+from changing_dot.resolve_graph import run_resolve_graph
 from changing_dot.resume_graph import run_resume_graph
 from changing_dot_visualize.main import visualize_graph
 from python_analyzer.temporary_venv_creator import create_temporary_venv
@@ -105,6 +107,57 @@ def create(config: str, dev: bool) -> None:
             create_graph_input.initial_change,
             create_graph_input.analyzer_options,
             create_graph_input.llm_provider,
+        )
+
+
+@cdot.command()
+@click.option(
+    "--config",
+    "-c",
+    prompt="Path to yaml config file",
+    help="Path to yaml config file.",
+)
+@click.option("--dev", is_flag=True, default=False)
+def resolve(config: str, dev: bool) -> None:
+    config_dict = get_config_dict(config)
+    resolve_graph_input = ResolveGraphInput(**config_dict)
+
+    if resolve_graph_input.analyzer_options.language == "python":
+        with create_temporary_venv(
+            resolve_graph_input.analyzer_options.python_interpreter_path
+        ):
+            run_resolve_graph(
+                resolve_graph_input.iteration_name,
+                resolve_graph_input.project_name,
+                resolve_graph_input.goal,
+                resolve_graph_input.output_path,
+                resolve_graph_input.restriction_options,
+                resolve_graph_input.analyzer_options,
+                resolve_graph_input.llm_provider,
+            )
+            return
+
+    if dev:
+        run_resolve_graph(
+            resolve_graph_input.iteration_name,
+            resolve_graph_input.project_name,
+            resolve_graph_input.goal,
+            resolve_graph_input.output_path,
+            resolve_graph_input.restriction_options,
+            resolve_graph_input.analyzer_options,
+            resolve_graph_input.llm_provider,
+        )
+        return
+
+    with feedback_server():
+        run_resolve_graph(
+            resolve_graph_input.iteration_name,
+            resolve_graph_input.project_name,
+            resolve_graph_input.goal,
+            resolve_graph_input.output_path,
+            resolve_graph_input.restriction_options,
+            resolve_graph_input.analyzer_options,
+            resolve_graph_input.llm_provider,
         )
 
 
