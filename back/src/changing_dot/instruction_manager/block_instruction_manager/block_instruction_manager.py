@@ -101,13 +101,13 @@ class BlockInstructionManager(IInstructionManagerBlock):
         problem_node = G.get_problem_node(node_index)
         error = problem_node.error
 
-        if node_index == 0:
+        # get solution that caused that problem
+        solution_parent_node_indexes = G.get_solution_parent_nodes(node_index)
+
+        # if no problem caused it
+        if len(solution_parent_node_indexes) == 0:
             edits = []
         else:
-            # get solution that caused that problem
-            solution_parent_node_indexes = G.get_parent_nodes(node_index)
-            # all problems need to have a solution that caused it
-            assert len(solution_parent_node_indexes) > 0
             # TODO what do we do if many problems caused the same problem ?
             # -> for now take first
             solution_node = G.get_solution_node(solution_parent_node_indexes[0])

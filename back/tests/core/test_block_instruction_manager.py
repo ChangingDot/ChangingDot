@@ -1,5 +1,10 @@
 from changing_dot.changing_graph.changing_graph import ChangingGraph
-from changing_dot.custom_types import CompileError, Instruction, ProblemNode
+from changing_dot.custom_types import (
+    CompileError,
+    InitialResolveNode,
+    Instruction,
+    ProblemNode,
+)
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.instruction_manager.block_instruction_manager.block_instruction_manager import (
     BlockInstructionManager,
@@ -75,6 +80,52 @@ def test_with_multiple_blocks_instruction() -> None:
     intruction_manager_SUT = BlockInstructionManager(model, goal)
 
     instruction = intruction_manager_SUT.get_node_instruction(G, DG, 0)
+
+    assert instruction == Instruction(
+        block_id=7,
+        file_path="./tests/core/fixtures/instruction_manager/basic_change.cs",
+        solution="Change line 26 from `public int ChangedSize { get; set; }` to `public int Size { get; set; }`",
+    )
+
+
+def test_with_initial_resolve_node() -> None:
+    DG = DependencyGraph(["./tests/core/fixtures/instruction_manager/basic_change.cs"])
+    G = ChangingGraph()
+    goal = "We want to change ChangedSize to Size"
+
+    model = FakeListChatModel(
+        responses=[
+            """
+                Block: 7
+    Instruction: Change line 26 from `public int ChangedSize { get; set; }` to `public int Size { get; set; }`"""
+        ]
+    )
+
+    G.add_initial_resolve_node(
+        InitialResolveNode(
+            index=0,
+            node_type="initial_resolve",
+            status="pending",
+            repo_path="a random path",
+        )
+    )
+    G.add_problem_node(
+        ProblemNode(
+            index=1,
+            node_type="problem",
+            status="pending",
+            error=CompileError(
+                text="ChangedSize does not exist",
+                file_path="./tests/core/fixtures/instruction_manager/basic_change.cs",
+                pos=(26, 0, 26, 0),
+                project_name="Initial project",
+            ),
+        )
+    )
+
+    intruction_manager_SUT = BlockInstructionManager(model, goal)
+
+    instruction = intruction_manager_SUT.get_node_instruction(G, DG, 1)
 
     assert instruction == Instruction(
         block_id=7,

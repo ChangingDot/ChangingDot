@@ -4,6 +4,7 @@ import networkx as nx
 from changing_dot.custom_types import (
     ErrorProblemNode,
     ErrorSolutionNode,
+    InitialResolveNode,
     NodeData,
     NodeStatus,
     ProblemNode,
@@ -33,6 +34,18 @@ class ChangingGraph:
             status=node_data.status,
             instruction=node_data.instruction,
             edits=node_data.edits,
+        )
+        self.next_index += 1
+        return index
+
+    def add_initial_resolve_node(self, node_data: InitialResolveNode) -> int:
+        index = self.next_index
+        self.G.add_node(
+            index,
+            index=index,
+            node_type=node_data.node_type,
+            status=node_data.status,
+            repo_path=node_data.repo_path,
         )
         self.next_index += 1
         return index
@@ -70,6 +83,13 @@ class ChangingGraph:
                 status=node["status"],
                 instruction=node["instruction"],
                 edits=node["edits"],
+            )
+        if node["node_type"] == "initial_resolve":
+            return InitialResolveNode(
+                index=node["index"],
+                node_type=node["node_type"],
+                status=node["status"],
+                repo_path=node["repo_path"],
             )
         else:
             return ProblemNode(
@@ -111,6 +131,10 @@ class ChangingGraph:
         node_type_dict: dict[int, str] = nx.get_node_attributes(self.G, "node_type")
         return dict(Counter(node_type_dict.values()))
 
+    def get_number_of_edges(self) -> int:
+        n: int = nx.number_of_edges(self.G)
+        return n
+
     def get_number_of_layers(self, source: int) -> int:
         path_lengths = nx.single_source_shortest_path_length(self.G, source)
         distances: list[int] = list(path_lengths.values())
@@ -122,6 +146,13 @@ class ChangingGraph:
 
     def get_parent_nodes(self, node_index: int) -> list[int]:
         return list(self.G.predecessors(node_index))
+
+    def get_solution_parent_nodes(self, node_index: int) -> list[int]:
+        return [
+            node_index
+            for node_index in self.G.predecessors(node_index)
+            if self.get_node(node_index).node_type == "solution"
+        ]
 
     def get_shortest_distance(self, source: int, target: int) -> int:
         d: int = nx.shortest_path_length(self.G, source=source, target=target)
@@ -135,7 +166,11 @@ class ChangingGraph:
             node["index"]
             for index, node in self.G.nodes(data=True)
             if node["status"] == "pending"
-            and (node["node_type"] == "problem" or node["node_type"] == "solution")
+            and (
+                node["node_type"] == "problem"
+                or node["node_type"] == "solution"
+                or node["node_type"] == "initial_resolve"
+            )
         ]
 
     def get_all_handled_solution_nodes(self) -> list[int]:
