@@ -107,7 +107,6 @@ def run_resume_graph(
         interpreter,
         file_modifier,
         observer,
-        restriction_options,
     )
 
     optimize_graph(G, observer)

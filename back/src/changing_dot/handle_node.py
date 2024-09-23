@@ -15,7 +15,6 @@ from changing_dot.custom_types import (
     ErrorProblemNode,
     Instruction,
     ProblemNode,
-    RestrictionOptions,
     SolutionNode,
 )
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
@@ -191,13 +190,11 @@ def handle_node(
     G: ChangingGraph,
     DG: DependencyGraph,
     node_index: int,
-    i: int,
     file_modifier: IModifyle,
     observer: Observer,
     error_manager: IErrorManager,
     interpreter: IBlockInstructionInterpreter,
     instruction_manager: IInstructionManagerBlock,
-    restriction_options: RestrictionOptions,
 ) -> None:
     node = G.get_node(node_index)
 
@@ -248,7 +245,6 @@ def resume_problem_node(
     interpreter: IBlockInstructionInterpreter,
     file_modifier: IModifyle,
     observer: Observer,
-    restriction_options: RestrictionOptions,
 ) -> None:
     assert (
         G.get_node(node_index).node_type == "error_problem"
@@ -310,13 +306,11 @@ def resume_problem_node(
             G,
             DG,
             node_index,
-            G.get_shortest_distance(0, node_index),
             file_modifier,
             observer,
             error_manager,
             interpreter,
             instruction_manager,
-            restriction_options,
         )
 
         pending_nodes = G.get_all_pending_nodes()

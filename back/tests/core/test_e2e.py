@@ -215,7 +215,6 @@ def test_e2e() -> None:
         interpreter,
         resume_file_modifier,
         observer,
-        restriction_options,
     )
 
     ## assert
