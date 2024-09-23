@@ -150,13 +150,11 @@ def create_graph(
             G,
             DG,
             node_index,
-            G.get_shortest_distance(0, node_index),
             file_modifier,
             observer,
             error_manager,
             interpreter,
             instruction_manager,
-            restriction_options,
         )
 
         pending_nodes = G.get_all_pending_nodes()
