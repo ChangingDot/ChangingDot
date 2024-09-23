@@ -9,7 +9,6 @@ from changing_dot.custom_types import (
     BlockEdit,
     CompileError,
     Instruction,
-    RestrictionOptions,
 )
 from changing_dot.dependency_graph.dependency_graph import DependencyGraph
 from changing_dot.error_manager.error_manager import (
@@ -47,12 +46,6 @@ def test_e2e_resolve() -> None:
     iteration_name = "tmp"
     project_name = "test"
     output_path = "./outputs"
-
-    restriction_options = RestrictionOptions(
-        project_blacklist=None,
-        restrict_change_to_single_file=None,
-        restrict_to_project=None,
-    )
 
     error_manager = HardCodedErrorManager(
         [
@@ -108,7 +101,6 @@ def test_e2e_resolve() -> None:
         interpreter,
         file_modifier,
         observer,
-        restriction_options,
     )
 
     ### assert

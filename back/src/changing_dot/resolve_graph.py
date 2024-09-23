@@ -93,7 +93,6 @@ def run_resolve_graph(
         interpreter,
         file_modifier,
         observer,
-        restriction_options,
     )
 
 
@@ -105,7 +104,6 @@ def resolve_graph(
     interpreter: IBlockInstructionInterpreter,
     file_modifier: IModifyle,
     observer: Observer,
-    restriction_options: RestrictionOptions,
 ) -> None:
     G.add_initial_resolve_node(
         InitialResolveNode(
