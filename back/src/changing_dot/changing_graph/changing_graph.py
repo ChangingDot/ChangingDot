@@ -45,7 +45,6 @@ class ChangingGraph:
             index=index,
             node_type=node_data.node_type,
             status=node_data.status,
-            repo_path=node_data.repo_path,
         )
         self.next_index += 1
         return index
@@ -89,7 +88,6 @@ class ChangingGraph:
                 index=node["index"],
                 node_type=node["node_type"],
                 status=node["status"],
-                repo_path=node["repo_path"],
             )
         else:
             return ProblemNode(

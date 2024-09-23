@@ -106,7 +106,6 @@ def test_with_initial_resolve_node() -> None:
             index=0,
             node_type="initial_resolve",
             status="pending",
-            repo_path="a random path",
         )
     )
     G.add_problem_node(

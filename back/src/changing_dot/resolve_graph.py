@@ -1,4 +1,3 @@
-import os
 import uuid
 from typing import TYPE_CHECKING, Literal
 
@@ -110,7 +109,6 @@ def resolve_graph(
             index=-1,
             node_type="initial_resolve",
             status="pending",
-            repo_path=os.getcwd(),
         )
     )
 

@@ -77,11 +77,6 @@ class NodeData(BaseModel):
 
 class InitialResolveNode(NodeData):
     node_type: Literal["initial_resolve"]
-    repo_path: str
-
-    @field_validator("repo_path")
-    def validate_path(cls, value: str) -> str:
-        return validate_and_convert_path(value)
 
 
 class SolutionNode(NodeData):
