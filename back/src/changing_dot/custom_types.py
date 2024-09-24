@@ -181,7 +181,9 @@ class CreateGraphInput(BaseModel):
 class ResolveGraphInput(BaseModel):
     iteration_name: str
     project_name: str
-    goal: str
+    goal: str = Field(
+        default="We want to bring the repo to a stable state by finishing this refactoring"
+    )
     output_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     restriction_options: RestrictionOptions = Field(
         default=RestrictionOptions(
