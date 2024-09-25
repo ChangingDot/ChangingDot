@@ -1,4 +1,3 @@
-import uuid
 from typing import TYPE_CHECKING, Literal
 
 from changing_dot_visualize.observer import Observer
@@ -38,15 +37,12 @@ if TYPE_CHECKING:
 
 def run_resolve_graph(
     iteration_name: str,
-    project_name: str,
     goal: str,
     output_path: str,
     restriction_options: RestrictionOptions,
     analyzer_options: AnalyzerOptions,
     llm_provider: Literal["OPENAI", "MISTRAL"],
 ) -> None:
-    job_id = str(uuid.uuid4())
-
     instruction_manager: BlockInstructionManager = create_instruction_manager(
         goal, llm_provider
     )
@@ -74,13 +70,7 @@ def run_resolve_graph(
         folder_to_analyse, analyzer_options.language
     )
 
-    observer = Observer(
-        G,
-        iteration_name,
-        project_name,
-        job_id,
-        output_path,
-    )
+    observer = Observer(G, iteration_name, output_path)
 
     interpreter = create_instruction_interpreter(observer, llm_provider)
 

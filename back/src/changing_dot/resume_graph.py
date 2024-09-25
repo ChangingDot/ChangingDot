@@ -1,4 +1,3 @@
-import uuid
 from typing import TYPE_CHECKING, Literal
 
 from changing_dot_visualize.observer import Observer
@@ -37,7 +36,6 @@ if TYPE_CHECKING:
 
 def run_resume_graph(
     iteration_name: str,
-    project_name: str,
     goal: str,
     output_path: str,
     commit: Commit,
@@ -47,8 +45,6 @@ def run_resume_graph(
     llm_provider: Literal["OPENAI", "MISTRAL"],
 ) -> None:
     set_repo(commit)
-
-    job_id = str(uuid.uuid4())
 
     instruction_manager = create_instruction_manager(goal, llm_provider)
 
@@ -80,8 +76,6 @@ def run_resume_graph(
     observer = Observer(
         G,
         iteration_name,
-        project_name,
-        job_id=job_id,
         output_folder=output_path,
         step=len(graphs),
     )

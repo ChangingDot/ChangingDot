@@ -74,7 +74,6 @@ def create(config: str, dev: bool) -> None:
         ):
             run_create_graph(
                 create_graph_input.iteration_name,
-                create_graph_input.project_name,
                 create_graph_input.goal,
                 create_graph_input.output_path,
                 create_graph_input.restriction_options,
@@ -87,7 +86,6 @@ def create(config: str, dev: bool) -> None:
     if dev:
         run_create_graph(
             create_graph_input.iteration_name,
-            create_graph_input.project_name,
             create_graph_input.goal,
             create_graph_input.output_path,
             create_graph_input.restriction_options,
@@ -100,7 +98,6 @@ def create(config: str, dev: bool) -> None:
     with feedback_server():
         run_create_graph(
             create_graph_input.iteration_name,
-            create_graph_input.project_name,
             create_graph_input.goal,
             create_graph_input.output_path,
             create_graph_input.restriction_options,
@@ -128,7 +125,6 @@ def resolve(config: str, dev: bool) -> None:
         ):
             run_resolve_graph(
                 resolve_graph_input.iteration_name,
-                resolve_graph_input.project_name,
                 resolve_graph_input.goal,
                 resolve_graph_input.output_path,
                 resolve_graph_input.restriction_options,
@@ -140,7 +136,6 @@ def resolve(config: str, dev: bool) -> None:
     if dev:
         run_resolve_graph(
             resolve_graph_input.iteration_name,
-            resolve_graph_input.project_name,
             resolve_graph_input.goal,
             resolve_graph_input.output_path,
             resolve_graph_input.restriction_options,
@@ -152,7 +147,6 @@ def resolve(config: str, dev: bool) -> None:
     with feedback_server():
         run_resolve_graph(
             resolve_graph_input.iteration_name,
-            resolve_graph_input.project_name,
             resolve_graph_input.goal,
             resolve_graph_input.output_path,
             resolve_graph_input.restriction_options,
@@ -185,7 +179,6 @@ def apply_changes(config: str) -> None:
     apply_graph_changes_input = ApplyGraphChangesInput(**config_dict)
     run_apply_graph_changes(
         apply_graph_changes_input.iteration_name,
-        apply_graph_changes_input.project_name,
         apply_graph_changes_input.output_path,
         apply_graph_changes_input.analyzer_options,
     )
@@ -218,7 +211,6 @@ def resume(config: str, resume_node: str, dev: bool) -> None:
         ):
             run_resume_graph(
                 resume_graph_input.iteration_name,
-                resume_graph_input.project_name,
                 resume_graph_input.goal,
                 resume_graph_input.output_path,
                 resume_graph_input.commit,
@@ -232,7 +224,6 @@ def resume(config: str, resume_node: str, dev: bool) -> None:
     if dev:
         run_resume_graph(
             resume_graph_input.iteration_name,
-            resume_graph_input.project_name,
             resume_graph_input.goal,
             resume_graph_input.output_path,
             resume_graph_input.commit,
@@ -246,7 +237,6 @@ def resume(config: str, resume_node: str, dev: bool) -> None:
     with feedback_server():
         run_resume_graph(
             resume_graph_input.iteration_name,
-            resume_graph_input.project_name,
             resume_graph_input.goal,
             resume_graph_input.output_path,
             resume_graph_input.commit,
