@@ -1,12 +1,13 @@
 [tool.poetry]
 name = "changing-dot"
-version = "0.0.1-alpha.4"
-description = "ChangingDot repo"
+version = "0.0.1-alpha.6"
+description = "ChangingDot Repo"
 authors = ["Matthieu Rossignon <matthieu.rossignon@hotmail.fr>"]
 packages = [
     { include = "changing_dot_cli", from = "src" },
     { include = "changing_dot", from = "src" },
     { include = "changing_dot_visualize", from = "src" },
+    { include = "python_analyzer", from = "src" },
 ]
 
 [tool.poetry.dependencies]
