@@ -1,5 +1,6 @@
 import os
-import uuid
+import random
+import time
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator
@@ -158,8 +159,15 @@ class RoslynAnalyzerOptions(BaseModel):
 AnalyzerOptions = MypyAnalyzerOptions | RoslynAnalyzerOptions
 
 
-class CreateGraphInput(BaseModel):
-    iteration_name: str = Field(default_factory=lambda: str(uuid.uuid4()))
+def generate_ordered_id() -> str:
+    return f"{int(time.time() * 1000)}-{random.randint(1000, 9999)}"
+
+
+class BaseGraphInput(BaseModel):
+    iteration_name: str = Field(default_factory=generate_ordered_id)
+
+
+class CreateGraphInput(BaseGraphInput):
     goal: str
     output_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     restriction_options: RestrictionOptions = Field(
@@ -178,8 +186,7 @@ class CreateGraphInput(BaseModel):
         return validate_and_convert_path(value)
 
 
-class ResolveGraphInput(BaseModel):
-    iteration_name: str = Field(default_factory=lambda: str(uuid.uuid4()))
+class ResolveGraphInput(BaseGraphInput):
     goal: str = Field(
         default="We want to bring the repo to a stable state by finishing this refactoring"
     )
@@ -199,8 +206,7 @@ class ResolveGraphInput(BaseModel):
         return validate_and_convert_path(value)
 
 
-class CommitGraphInput(BaseModel):
-    iteration_name: str = Field(default_factory=lambda: str(uuid.uuid4()))
+class CommitGraphInput(BaseGraphInput):
     output_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     commit: Commit
 
@@ -209,8 +215,7 @@ class CommitGraphInput(BaseModel):
         return validate_and_convert_path(value)
 
 
-class ApplyGraphChangesInput(BaseModel):
-    iteration_name: str = Field(default_factory=lambda: str(uuid.uuid4()))
+class ApplyGraphChangesInput(BaseGraphInput):
     output_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     analyzer_options: AnalyzerOptions
 
@@ -227,8 +232,7 @@ class ResumeInitialNode(BaseModel):
     new_edits: list[BlockEdit] | None = Field(default=None)
 
 
-class ResumeGraphInput(BaseModel):
-    iteration_name: str = Field(default_factory=lambda: str(uuid.uuid4()))
+class ResumeGraphInput(BaseGraphInput):
     goal: str
     output_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     commit: Commit
