@@ -1,4 +1,3 @@
-import uuid
 from typing import TYPE_CHECKING, Any, cast
 
 from changing_dot_visualize.observer import Observer
@@ -76,12 +75,9 @@ def commit_graph(
 
 def run_commit_graph(
     iteration_name: str,
-    project_name: str,
     commit: Commit,
     output_path: str,
 ) -> None:
-    job_id = str(uuid.uuid4())
-
     graphs = process_pickle_files(f"{output_path}/{iteration_name}/")
 
     file_modifier: IModifyle = IntegralModifyle()
@@ -91,8 +87,6 @@ def run_commit_graph(
     observer = Observer(
         G,
         iteration_name,
-        project_name,
-        job_id=job_id,
         output_folder=output_path,
         step=len(graphs),
     )
@@ -105,7 +99,6 @@ def run_commit_graph(
 def run_commit_graph_from_config(config: dict[str, Any]) -> None:
     run_commit_graph(
         config["iteration_name"],
-        config["project_name"],
         config["commit"],
         config["output_path"],
     )

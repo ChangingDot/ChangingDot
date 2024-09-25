@@ -51,9 +51,7 @@ def test_e2e() -> None:
     initial_file_content = read_text("./tests/core/fixtures/e2e/base.cs")
     changed_file_content = read_text("./tests/core/fixtures/e2e_results/base.cs")
 
-    job_id = "job_id"
     iteration_name = "tmp"
-    project_name = "test"
     output_path = "./outputs"
     initial_change = InitialChange(
         error="DistincId does not exist",
@@ -107,8 +105,6 @@ def test_e2e() -> None:
     observer = Observer(
         G,
         iteration_name,
-        project_name,
-        job_id,
         output_path,
     )
 
@@ -143,7 +139,7 @@ def test_e2e() -> None:
 
     assert len(files) == 2
 
-    expected_file_path = "./outputs/tmp/1_test.pickle"
+    expected_file_path = "./outputs/tmp/step_1.pickle"
 
     with open(expected_file_path, "rb") as pickle_file:
         data = pickle.load(pickle_file)
@@ -229,7 +225,7 @@ def test_e2e() -> None:
 
     assert len(files) == 3  # add a new step
 
-    expected_file_path = "./outputs/tmp/2_test.pickle"
+    expected_file_path = "./outputs/tmp/step_2.pickle"
 
     with open(expected_file_path, "rb") as pickle_file:
         data = pickle.load(pickle_file)

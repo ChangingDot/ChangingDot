@@ -1,4 +1,5 @@
 import os
+import uuid
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator
@@ -158,8 +159,7 @@ AnalyzerOptions = MypyAnalyzerOptions | RoslynAnalyzerOptions
 
 
 class CreateGraphInput(BaseModel):
-    iteration_name: str
-    project_name: str
+    iteration_name: str = Field(default_factory=lambda: str(uuid.uuid4()))
     goal: str
     output_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     restriction_options: RestrictionOptions = Field(
@@ -179,8 +179,7 @@ class CreateGraphInput(BaseModel):
 
 
 class ResolveGraphInput(BaseModel):
-    iteration_name: str
-    project_name: str
+    iteration_name: str = Field(default_factory=lambda: str(uuid.uuid4()))
     goal: str = Field(
         default="We want to bring the repo to a stable state by finishing this refactoring"
     )
@@ -201,8 +200,7 @@ class ResolveGraphInput(BaseModel):
 
 
 class CommitGraphInput(BaseModel):
-    iteration_name: str
-    project_name: str
+    iteration_name: str = Field(default_factory=lambda: str(uuid.uuid4()))
     output_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     commit: Commit
 
@@ -212,8 +210,7 @@ class CommitGraphInput(BaseModel):
 
 
 class ApplyGraphChangesInput(BaseModel):
-    iteration_name: str
-    project_name: str
+    iteration_name: str = Field(default_factory=lambda: str(uuid.uuid4()))
     output_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     analyzer_options: AnalyzerOptions
 
@@ -231,8 +228,7 @@ class ResumeInitialNode(BaseModel):
 
 
 class ResumeGraphInput(BaseModel):
-    iteration_name: str
-    project_name: str
+    iteration_name: str = Field(default_factory=lambda: str(uuid.uuid4()))
     goal: str
     output_path: str = Field(default=os.path.join(CDOT_PATH, "outputs"))
     commit: Commit

@@ -68,9 +68,7 @@ if __name__ == "__main__":
 
             DG = DependencyGraph(get_csharp_files(config["solution_path"]))
 
-            observer = Observer(
-                G, analytics.run.name, benchmark_item, "./outputs", job_id
-            )
+            observer = Observer(G, analytics.run.name, "./outputs")
 
             interpreter: IBlockInstructionInterpreter = create_instruction_interpreter(
                 observer, config["llm_provider"]

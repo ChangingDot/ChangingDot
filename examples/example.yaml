@@ -1,6 +1,3 @@
-iteration_name: TestingOutChangingDot
-project_name: Level1
-
 goal: We want to simulate a private attribute changing name - change Length to Size
 
 analyzer_options:

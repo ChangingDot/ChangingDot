@@ -42,9 +42,7 @@ def _reset_repo() -> Generator[None, None, None]:
 def test_e2e_resolve() -> None:
     changed_file_content = read_text("./tests/core/fixtures/e2e_results/base.cs")
 
-    job_id = "job_id"
     iteration_name = "tmp"
-    project_name = "test"
     output_path = "./outputs"
 
     error_manager = HardCodedErrorManager(
@@ -88,8 +86,6 @@ def test_e2e_resolve() -> None:
     observer = Observer(
         G,
         iteration_name,
-        project_name,
-        job_id,
         output_path,
     )
 
@@ -116,7 +112,7 @@ def test_e2e_resolve() -> None:
     assert len(files) == 3
     # init step -> solve step -> opti step
 
-    expected_file_path = "./outputs/tmp/1_test.pickle"
+    expected_file_path = "./outputs/tmp/step_1.pickle"
 
     with open(expected_file_path, "rb") as pickle_file:
         data = pickle.load(pickle_file)

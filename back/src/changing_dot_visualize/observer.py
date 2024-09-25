@@ -18,7 +18,6 @@ def ensure_directory_exists(file_path: str) -> None:
 class Observer:
     G: ChangingGraph
     iteration_name: str
-    project_name: str
 
     step: int
 
@@ -28,25 +27,22 @@ class Observer:
         self,
         G: ChangingGraph,
         iteration_name: str,
-        project_name: str,
-        job_id: str,
         output_folder: str,
         step: int | None = None,
     ):
         self.G = G
         self.iteration_name = iteration_name
-        self.project_name = project_name
         self.output_folder = output_folder
         self.logs = []
         if step is None:
             step = 0
         self.step = step
 
-        self.logger = logger.bind(request_id=job_id)
+        self.logger = logger.bind(request_id=self.iteration_name)
 
     def save_graph_state(self) -> None:
         # Create the path for the file in GCS
-        path = f"{self.output_folder}/{self.iteration_name}/{self.step}_{self.project_name}.pickle"
+        path = f"{self.output_folder}/{self.iteration_name}/step_{self.step}.pickle"
 
         ensure_directory_exists(path)
 

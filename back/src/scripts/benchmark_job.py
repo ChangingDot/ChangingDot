@@ -1,4 +1,3 @@
-import uuid
 from typing import TYPE_CHECKING, Literal
 
 from analytics.wandb_analytics import WandbAnalytics
@@ -76,11 +75,7 @@ def benchmark_job(
         logger.info(f"Handling {benchmark_item}")
 
         with analytics.benchmark_item(benchmark_item) as current_benchmark_result:
-            job_id = str(uuid.uuid4())
-
-            observer = Observer(
-                G, analytics.run.name, benchmark_item, "./outputs", job_id
-            )
+            observer = Observer(G, analytics.run.name, "./outputs")
 
             interpreter: IBlockInstructionInterpreter = create_instruction_interpreter(
                 observer, llm_provider

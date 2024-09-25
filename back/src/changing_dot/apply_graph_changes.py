@@ -1,5 +1,3 @@
-import uuid
-
 from changing_dot_visualize.observer import Observer
 
 from changing_dot.changing_graph.changing_graph import ChangingGraph
@@ -27,11 +25,9 @@ def apply_graph_changes(
 
 def run_apply_graph_changes(
     iteration_name: str,
-    project_name: str,
     output_path: str,
     analyzer_options: AnalyzerOptions,
 ) -> None:
-    job_id = str(uuid.uuid4())
     graphs = process_pickle_files(f"{output_path}/{iteration_name}/")
 
     G = ChangingGraph(graphs[-1])
@@ -39,8 +35,6 @@ def run_apply_graph_changes(
     observer = Observer(
         G,
         iteration_name,
-        project_name,
-        job_id=job_id,
         output_folder=output_path,
         step=len(graphs),
     )
