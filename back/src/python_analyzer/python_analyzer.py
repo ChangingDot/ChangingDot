@@ -57,7 +57,7 @@ def run_mypy(project_path: str, venv_path: str) -> MypyOutput:
 
 
 class MypyAnalyzer:
-    def __init__(self, project_path: str, requirements_path: str):
+    def __init__(self, project_path: str, requirements_path: str | None):
         self.project_path = project_path
         self.requirements_path = requirements_path
         self.venv_path = os.path.join(CDOT_PATH, "temporary_env", "venv")
@@ -71,6 +71,9 @@ class MypyAnalyzer:
         return run_mypy(self.project_path, self.venv_path).semantic_errors
 
     def install_libs(self) -> None:
+        if self.requirements_path is None:
+            return
+
         subprocess.run(
             [
                 f"{self.venv_path}/bin/pip",

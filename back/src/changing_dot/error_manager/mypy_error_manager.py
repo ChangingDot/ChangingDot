@@ -9,16 +9,26 @@ from changing_dot_visualize.observer import Observer
 from python_analyzer.python_analyzer import MypyAnalyzer
 
 
+def find_requirements_file(directory: str) -> str | None:
+    for root, _, files in os.walk(directory):
+        if "requirements.txt" in files:
+            return os.path.join(root, "requirements.txt")
+    return None
+
+
 class MypyErrorManager(IErrorManager):
     restriction_options: RestrictionOptions
 
     def __init__(
         self,
         directory_path: str,
-        requirements_path: str,
+        requirements_path: str | None,
         restriction_options: RestrictionOptions,
     ) -> None:
         self.directory_path = directory_path
+        if requirements_path is None:
+            requirements_path = find_requirements_file(directory_path)
+
         self.analyzer = MypyAnalyzer(directory_path, requirements_path)
         self.restriction_options = restriction_options
 
