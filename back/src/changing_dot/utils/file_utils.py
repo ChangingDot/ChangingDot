@@ -60,3 +60,18 @@ def get_csharp_files(dir_to_explore: str) -> list[str]:
             filtered_files.append(os.path.abspath(file))
 
     return filtered_files
+
+
+def get_latest_directory(directory_path: str) -> str | None:
+    files = [
+        os.path.join(directory_path, f)
+        for f in os.listdir(directory_path)
+        if os.path.isdir(os.path.join(directory_path, f))
+    ]
+
+    if len(files) == 0:
+        return None
+
+    latest_file = max(files, key=os.path.getctime)
+
+    return latest_file

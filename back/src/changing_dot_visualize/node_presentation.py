@@ -12,7 +12,6 @@ class NodePresentation(vm.VizroBaseModel):
     type: Literal["nodepres"] = "nodepres"
 
     iteration_name: str
-    project_name: str
     step_index: int
     output_path: str
 
@@ -35,7 +34,9 @@ class NodePresentation(vm.VizroBaseModel):
         )
 
     def load_graph(self) -> nx.Graph:
-        file_path = f"{self.output_path}/{self.iteration_name}/{self.step_index}_{self.project_name}.pickle"
+        file_path = (
+            f"{self.output_path}/{self.iteration_name}/step_{self.step_index}.pickle"
+        )
         with open(file_path, "rb") as handle:
             G: nx.Graph = pickle.load(handle)
             return G
