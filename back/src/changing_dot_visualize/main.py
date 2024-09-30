@@ -1,9 +1,12 @@
 import argparse
+import os
 from typing import Any
 
 import networkx as nx
 import vizro.models as vm
 import yaml
+from changing_dot.config.constants import CDOT_PATH
+from changing_dot.utils.file_utils import get_latest_directory
 from changing_dot.utils.process_pickle_files import process_pickle_files
 from dash import Input, Output, callback, html
 from vizro import Vizro
@@ -43,7 +46,6 @@ def createPage(
     G: nx.Graph,
     step_index: int,
     iteration_name: str,
-    project_name: str,
     output_path: str,
 ) -> vm.Page:
     @callback(
@@ -91,14 +93,12 @@ def createPage(
             ),
             StepPresentation(
                 id=f"{step_index}_step",
-                project_name=project_name,
                 iteration_name=iteration_name,
                 output_path=output_path,
                 step_index=step_index,
             ),
             NodePresentation(
                 id=f"{step_index}_node",
-                project_name=project_name,
                 iteration_name=iteration_name,
                 output_path=output_path,
                 step_index=step_index,
@@ -109,20 +109,25 @@ def createPage(
 
 
 def visualize_graph(config: dict[str, Any]) -> None:
-    iteration_name = config["iteration_name"]
-    project_name = config["project_name"]
-    output_path = config["output_path"]
+    output_path = config.get("output_path") or os.path.join(CDOT_PATH, "outputs")
+    path_to_run = config.get("iteration_name") or get_latest_directory(output_path)
+
+    if path_to_run is None:
+        raise ValueError(
+            f"No iteration was found in this output directory {output_path}"
+        )
+
+    iteration_name = os.path.basename(path_to_run)
 
     graphs = process_pickle_files(f"{output_path}/{iteration_name}")
 
     pages = [
-        createPage(G, i, iteration_name, project_name, output_path)
-        for i, G in enumerate(graphs)
+        createPage(G, i, iteration_name, output_path) for i, G in enumerate(graphs)
     ]
 
     dashboard = vm.Dashboard(
         id="dashboard",
-        title=f"{project_name} - {iteration_name}",
+        title=f"Run {iteration_name}",
         theme="vizro_dark",
         pages=pages,
     )
