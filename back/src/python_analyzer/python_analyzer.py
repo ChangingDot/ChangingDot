@@ -4,6 +4,7 @@ import subprocess
 import sys
 
 import mypy.api
+import pkg_resources
 from changing_dot.config.constants import CDOT_PATH
 from pydantic import BaseModel
 
@@ -26,7 +27,7 @@ def run_mypy(project_path: str, venv_path: str) -> MypyOutput:
         [
             "--output=json",
             "--config-file",
-            "./src/python_analyzer/setup.cfg",
+            pkg_resources.resource_filename("python_analyzer", "setup.cfg"),
             "--python-executable",
             python_executable_path,
             project_path,
