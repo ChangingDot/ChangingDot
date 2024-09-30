@@ -33,9 +33,13 @@ def run_mypy(project_path: str, venv_path: str) -> MypyOutput:
         ]
     )
 
+    if exit_status == 2:
+        raise Exception(f"Mypy failed with exit status {exit_status}:\n{result_stderr}")
+
     if "[syntax]" in result_stdout:
         return MypyOutput(has_syntax_errors=True, semantic_errors=[])
 
+    # No type errors
     if exit_status == 0:
         return MypyOutput(has_syntax_errors=False, semantic_errors=[])
 
